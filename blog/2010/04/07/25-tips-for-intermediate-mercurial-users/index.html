@@ -1,0 +1,703 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>25 Tips for Intermediate Mercurial Users - Gavin Baker ~ antonym.org</title>
+  <meta name="author" content="Gavin Baker">
+
+  
+  <meta name="description" content="I recently read an interesting article by Andy Jeffries entitled 25 Tips for Intermediate Git Users (linked to via proggit) . It had lots of useful &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.antonym.org//blog/2010/04/07/25-tips-for-intermediate-mercurial-users">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Gavin Baker ~ antonym.org" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
+  
+
+</head>
+
+<body   class="collapse-sidebar sidebar-footer" >
+  <header role="banner">
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:www.antonym.org/" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+  
+    
+      <h1 class="entry-title">25 Tips for Intermediate Mercurial Users</h1>
+    
+  
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-04-07T23:58:00+10:00" pubdate data-updated="true">2010-04-07</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>I recently read an interesting article by Andy Jeffries entitled <a href="http://andyjeffries.co.uk/articles/25-tips-for-intermediate-git-users">25 Tips for Intermediate Git Users</a> (linked to via <a href="http://www.reddit.com/r/programming/">proggit</a>) .  It had lots of useful information condensed into bite-sized task-oriented chunks.</p>
+
+<p>I&rsquo;ve been using <a href="http://mercurial.selenic.com/">Mercurial</a> for a while now, so I thought I would write a similar set of tips by translating from <code>git</code> to the equivalent <code>hg</code> commands.  Thanks to Andy for blessing this translation work.  There may well be some mistakes herein &ndash; please leave a comment if you have any improvements or fixes to suggest.</p>
+
+<!--more-->
+
+
+<h1>Basic Tips</h1>
+
+<h2>1. First Steps After Install</h2>
+
+<p>Once you have <a href="http://www.selenic.com/mercurial/download/">installed Mercurial</a>, you should create the <code>.hgrc</code> file in your home directory which contains your default user configuration.  This is where you can customize options and load additional <a href="http://www.selenic.com/mercurial/wiki/Extensions">extensions</a>.  The absolute minimum is to specify your name and email address, which is recorded in every commit you make:</p>
+
+<pre><code>[ui]
+username = Joe Coder &lt;joe@example.com&gt;
+</code></pre>
+
+<p>To enable extensions, add a section called <code>[extensions]</code> and list the names.  I would recommend the following extensions, which are incredibly useful.  Just add another section to your config file:</p>
+
+<pre><code>[extensions]
+graphlog=
+pager=
+color=
+fetch=
+record=
+bookmarks=
+</code></pre>
+
+<p>To configure an extension, add a section with its name, and the options within.  For example, to configure the <code>pager</code> extension, you should configure it to not interfere with certain interactive commands.  Something like this:</p>
+
+<pre><code>[pager]
+pager = LESS='FSRX' less
+ignore = version, help, update, serve, record
+</code></pre>
+
+<p>For complete information about this file, see:</p>
+
+<pre><code>$ hg help config
+</code></pre>
+
+<h2>2. Mercurial is tree-based</h2>
+
+<p>Mercurial stores its repository in the &ldquo;revlog&rdquo; format.  This is a tree of commits and their metadata, with each commit being uniquely identified by its the SHA-1 hash.</p>
+
+<p><span class="mt-enclosure mt-enclosure-image" style="display: inline;"><img alt="MercurialRevisionTreeExample.png" src="http://antonym.org/hg25/MercurialRevisionTreeExample.png" width="703" height="221" class="mt-image-none" style="" /></span></p>
+
+<p>When you see a changeset in this format:</p>
+
+<pre><code>4225:cf1a9b1f9bee
+</code></pre>
+
+<p>this is showing the simple revision number, <code>4225</code>, and the revision hash, <code>cf1a9b1f9bee</code>.  Either can be used to refer to a revision, and usually the first four characters of the hash are sufficient to uniquely identify a revision.</p>
+
+<p>The simple revision number (akin to the sequentially numbered revisions in <code>svn</code>) is unique to a repository, but not necessarily across repository clones.</p>
+
+<p>Tags are simply labels associated with a revision.  Named branches are stored in the changeset metadata, while bookmarks are much like local tags that move with each commit.</p>
+
+<p>There is always one named branch in existence: <code>default</code>.  This is normally where mainline development occurs, and is equivalent to <code>trunk</code> in Subversion, or <code>master</code> in git.</p>
+
+<h2>3. Two parents &ndash; of course!</h2>
+
+<p>The <code>hg log</code> command lets you view the details of your commit history.  Normally each commit has one parent, which is the path up the tree.  But when you perform a <code>merge</code> operation, you are combining two branches of the tree together.  This is known as a &ldquo;merge commit&rdquo;, and the changeset is recorded as having two parents, referring to the two branches that were merged.</p>
+
+<p>For example, here is a commit from one of my repos showing r32 merging with r30, to produce r33:</p>
+
+<pre><code>.
+.
+|
+|
+o    changeset:   33:9710bef2500e
+|\   parent:      30:ad3a51b8aa18
+| |  parent:      32:a3f98e81c19c
+| |  user:        Gavin Baker &lt;gavinb@...&gt;
+| |  date:        Mon Nov 09 07:47:15 2009 +1100
+| |  summary:     Merged udp log work from deadlock branch
+| |
+| o  changeset:   32:a3f98e81c19c
+| |  branch:      deadlock_gb
+| |  user:        Gavin Baker &lt;gavinb@...&gt;
+| |  date:        Mon Nov 09 07:43:51 2009 +1100
+| |  summary:     Started adding udp logging
+| |
+. .
+. .
+</code></pre>
+
+<h2>4. Merge conflicts</h2>
+
+<p>Mercurial can be configured to use an external tool to process three-way merges.  For example, to use the popular <code>kdiff3</code> tool, add the following section to your <code>.hgrc</code>:</p>
+
+<pre><code>[merge-tools]
+# Override stock tool location
+kdiff3.executable = ~/bin/kdiff3
+# Specify command line
+kdiff3.args = $base $local $other -o $output
+# Give higher priority
+kdiff3.priority = 1
+</code></pre>
+
+<p>If you don&rsquo;t have an external merging tool, mercurial will save the left and right versions of the files, and place conflict markers (&ldquo;&lt;&lt;&lt;&lt;&rdquo;, &ldquo;&mdash;&ndash;&rdquo;, &ldquo;>>>>&rdquo;) in the working copy.  It is up to you to then edit the file, resolve the conflict, and then resolve or commit your changes.  To mark a conflicted file as resolved:</p>
+
+<pre><code>$ hg resolve -m main.c
+</code></pre>
+
+<p>To check the status of files involved in the merge:</p>
+
+<pre><code>$ hg resolve -l
+</code></pre>
+
+<h1>Servers, Branching and Tagging</h1>
+
+<h2>5. Remote servers</h2>
+
+<p>In Mercurial, every repository is self-contained and includes the full history of the project.  When you <code>clone</code> a repository, the URI of the original is stored in the repository&rsquo;s own <code>hgrc</code> file (stored in the <code>.hg</code> directory at the root of the repository).  In the section labelled <code>paths</code>, an entry is created called <code>default</code>, which points to the original repo.  This way, you do not have to specify a URI for certain commands that involve remote repositories.</p>
+
+<p>To see which changes have been made in the default remote repository since you last updated:</p>
+
+<pre><code>hg incoming
+</code></pre>
+
+<p>To see which changes you have locally that have not yet been pushed to the default remote repository:</p>
+
+<pre><code>hg outgoing
+</code></pre>
+
+<p>You can always add more entries to the remote server list by editing the <code>.hg/hgrc</code> file.  These are simply aliases for the full URI, which you can use along with commands that need a repository path.  For example, given the following entries in the <code>.hg/hgrc</code> of a given repo:</p>
+
+<pre><code>[paths]
+goog = http://code.google.com/p/golang/
+exp = https://bitbucket.org/gavinb/golang-exp/
+</code></pre>
+
+<p>the following sets of commands are equivalent:</p>
+
+<pre><code>$ hg incoming http://code.google.com/p/golang/
+$ hg incoming goog
+
+$ hg outgoing https://bitbucket.org/gavinb/golang-exp/
+$ hg outgoing exp
+</code></pre>
+
+<p>Open questions:</p>
+
+<ul>
+<li>Is there an extension equivalent to <code>git remote</code> for managing paths?</li>
+<li>How do you compare just a local and a remote branch (not the full set of changesets)?</li>
+</ul>
+
+
+<h2>6. Tagging</h2>
+
+<p>In Mercurial, there are two types of tags: regular tags and local tags.  Regular tags are stored in the <code>.hgtags</code> file in the root of the repository, and are versioned just like any other file.  These tags are also therefore propagated to any remote servers.  You can list all the current tags with:</p>
+
+<pre><code>$ hg tags
+</code></pre>
+
+<p>To add a regular tag to the current revision, you simply give it a name:</p>
+
+<pre><code>$ hg tag version_1_3
+</code></pre>
+
+<p>To associate a tag with a specific revision, you use the <code>-r</code> option:</p>
+
+<pre><code>$ hg tag -r 4a93 version_1_2_1
+</code></pre>
+
+<p><span class="mt-enclosure mt-enclosure-image" style="display: inline;"><img alt="MercurialTaggingExample.png" src="http://antonym.org/hg25/MercurialTaggingExample.png" width="702" height="248" class="mt-image-none" style="" /></span></p>
+
+<p>Once you have created a tag, you can use its name virtually anywhere you would normally specify a revision.  So after the above two operations, <code>hg tags</code> would show:</p>
+
+<pre><code>tip                 152:01ae0a9083c3
+version_1_3          79;08a49fb329a1
+version_1_2_1        22:4a93c0e1aa0b
+</code></pre>
+
+<p>A local tag works in almost the same way, except local tags do not get copied between repositories when running a <code>push</code> or <code>pull</code>.  You create a local tag by specifying the <code>-l</code> flag:</p>
+
+<pre><code>$ hg tag -l experimental
+</code></pre>
+
+<p>The <code>bookmarks</code> extension also provides a form of local tags, which move with the latest commit.  (Bookmarks are very much like git&rsquo;s cheap local branches, and a topic worth its own article.)</p>
+
+<h2>7. Creating Branches</h2>
+
+<p>Creating a named branch in Mercurial is a matter of simply specifying a branch name, which will be saved in the metadata of the next commit:</p>
+
+<pre><code>$ hg branch bug_fix_5948
+</code></pre>
+
+<p>To switch between branches, use the <code>update</code> command with the branch name:</p>
+
+<pre><code>$ hg update gui_changes_experimental
+</code></pre>
+
+<p>To display all the current branches, simply issue:</p>
+
+<pre><code>$ hg branches
+</code></pre>
+
+<p>The following example shows a feature branch for the GUI, and another for the database layer.  These branches are periodically merged with default, where releases are made:</p>
+
+<p><span class="mt-enclosure mt-enclosure-image" style="display: inline;"><img alt="MercurialBranchingExample.png" src="http://antonym.org/hg25/MercurialBranchingExample.png" width="904" height="291" class="mt-image-none" style="" /></span></p>
+
+<p>There are other types of branches too.  The simplest is an &ldquo;anonymous&rdquo; branch, which you can create simply by updating to an earlier revision, making some changes, and committing a new child revision.  This will result in a commit with two children &ndash; ie. a branch.  Steve Losh has written <a href="http://stevelosh.com/blog/2009/08/a-guide-to-branching-in-mercurial/">an excellent article on branching</a> which explains this in more detail.</p>
+
+<h2>8. Merging Branches</h2>
+
+<p>Once the work on your branch is complete, you will want to merge it back to the mainline of development (which is usually <code>default</code>).  To close the branch before you merge, use:</p>
+
+<pre><code># on branch gui_changes_experimental
+$ hg commit --close-branch -m "Experimental branch was a success"
+</code></pre>
+
+<p>Then you switch back to the target branch into which you want to merge your changes.</p>
+
+<pre><code>$ hg update default
+</code></pre>
+
+<p>And then specify the name of the branch to merge, like this:</p>
+
+<pre><code>$ hg merge gui_changes_experimental
+</code></pre>
+
+<p>Mercurial will then attempt to automatically merge all the changes, and notify you if there are any conflicts that require manual resolution.  At this point it can also launch a custom merging utility. (See tip #4 above.)</p>
+
+<p>If you would like to see which changesets would be merged from a branch, you can preview the merge using:</p>
+
+<pre><code>$ hg merge -P gui_changes_experimental
+</code></pre>
+
+<p>You can see a list of open branches using:</p>
+
+<pre><code>$ hg branches
+</code></pre>
+
+<p>And you can see which changes have yet to be merged by doing a diff with the branch name:</p>
+
+<pre><code># on branch default
+hg diff gui_changes_experimental
+</code></pre>
+
+<h2>9. Remote branches</h2>
+
+<p>By default, when you <code>push</code> your changes to a remote server, you push all commits made since the last update.  To push only a single branch, you can specify its name (or a given revision):</p>
+
+<pre><code>$ hg push -r gui_changes_experimental
+</code></pre>
+
+<p>This will push all the changesets starting from the head of the branch, and all its ancestors that do not appear in the remote repository.</p>
+
+<p>As far as I know, there is no direct equivalent to git&rsquo;s tracking branches in Mercurial.</p>
+
+<h1>Storing Content in stashes, etc</h1>
+
+<h2>10. Stashing</h2>
+
+<p>If you are in the middle of a set of changes, and you need to perform an operation on the repository without first committing all of your local changes, you can &ldquo;stash&rdquo; them away and set them aside using the <a href="http://mercurial.selenic.com/wiki/ShelveExtension">shelve</a> extension.  This puts your current set of changes into a temporary storage area, from which you can restore them later.</p>
+
+<p>To save your changes, run:</p>
+
+<pre><code>$ hg shelve
+</code></pre>
+
+<p>You can interactively specify which changes to shelve at the granularity level of individual hunks, or simply stash entire files.  To bring your changes back into the working directory, simply use:</p>
+
+<pre><code>$ hg unshelve
+</code></pre>
+
+<h2>11. Adding Interactively</h2>
+
+<p>Ideally every commit should be a discrete patch that applies one cohesive change.  But for various real-world reasons, you often find yourself with a working directory that contains modified files containing multiple unrelated changes.  Sometimes it is individual files, sometimes even within the one file.  It would be great to be able to commit a subset of your patches, and choose individual hunks or files to commit.  The <code>record</code> extension does exactly that.  Running:</p>
+
+<pre><code>$ hg record
+</code></pre>
+
+<p>interactively shows you each file, and lets you inspect each hunk that has changed, one by one.  You can accept individual hunks to commit, accept or ignore an entire file, and so on.  Any changes you do not commit will remain in your working copy to deal with later.  This is a great way to keep your commits clean and separate.</p>
+
+<h2>12. Handling Large Files</h2>
+
+<p>(There is no direct equivalent to the original list&rsquo;s item #12, &ldquo;Storing/Retrieving from the Filesystem&rdquo;.)</p>
+
+<p>Some projects (games are an excellent example) feature large binary resources, which do not lend themselves well to management under a VCS.  Examples include images, movies, sound files, level data, and so on.  You don&rsquo;t want to keep multiple versions of these files around if you can help it, and performance can suffer for files over about 10MB.</p>
+
+<p>The <a href="http://mercurial.selenic.com/wiki/BigfilesExtension"><code>bigfile</code> extension</a> aims to solve this problem by storing large binary files (Binary Large Objects, or BLOBs) in a separate location, while still allowing you to manage the files using Mercurial.  A sample session looks like this:</p>
+
+<p>*** TODO Insert bigfile example</p>
+
+<h1>Logging and What Changed</h1>
+
+<h2>13. Viewing a Log</h2>
+
+<p>To review the details of your commit history, you use the <code>log</code> command.  A brief one-line summary is displayed with:</p>
+
+<pre><code>$ hg log
+</code></pre>
+
+<p>To see the logs for a specific revision, range, tag or branch, use the <code>-r</code> switch:</p>
+
+<pre><code>$ hg log -r9584
+$ hg log -r release_1.3
+</code></pre>
+
+<p>To show all the details of the metadata, and the full commit message, use the verbose <code>-v</code> switch.</p>
+
+<p>If you want to view the patch itself, use:</p>
+
+<pre><code>$ hg log -p
+</code></pre>
+
+<p>If you enabled the <code>glog</code> extension (distributed with Mercurial), you can see a graphical representation (in ASCII art) of the commit tree, showing branches and merges using:</p>
+
+<pre><code>$ hg glog
+</code></pre>
+
+<h2>14. Searching the Log</h2>
+
+<p>To display only those changesets which have been committed by a given author, use the following command:</p>
+
+<pre><code>$ hg log -u joe
+</code></pre>
+
+<p>You can search for a username, real name or in fact any substring in the &lsquo;author&rsquo; field.</p>
+
+<p>To search for a keyword that appears in the commit message, use:</p>
+
+<pre><code>$ hg log -k regression
+</code></pre>
+
+<p>To search for commits that changed certain filenames, you can include or exclude patterns:</p>
+
+<pre><code>$ hg log -I "**/Makefile"
+$ hg log -X "*.xml"
+</code></pre>
+
+<p>To view all commits made since a given date:</p>
+
+<pre><code>$ hg log -d "&gt;2009-11-1"
+</code></pre>
+
+<p>There are many more date options &ndash; see <code>hg help dates</code> for the full list.</p>
+
+<p>The <code>log</code> command can also display the log output using a user-defined template, which can be very useful for scripting and custom reporting.  This example can be used to derive summary statistics of changed files by user:</p>
+
+<pre><code>$ hg log --template "{date}|{user}|{diffstat}" -d "&gt;2009-11-20"
+</code></pre>
+
+<p>See <code>hg help templating</code> for the complete syntax.</p>
+
+<h2>15. Selecting Revisions</h2>
+
+<p>There are many ways of specifying a revision when using commands such as <code>log</code>, <code>merge</code>, and so on.</p>
+
+<pre><code>$ hg log -r 4281               # By short revision number
+$ hg log -r d1b75410b793       # By full revision number (SHA-1 hash)
+$ hg log -r feature_213        # By branch name (refers to head of branch)
+$ hg log -r release_1_31       # By tag name
+$ hg log -r refactor_engine    # By bookmark name
+</code></pre>
+
+<p>If you install the <a href="http://mercurial.selenic.com/wiki/ParentrevspecExtension"><code>parentrevspec</code> extension</a>, you can also use git-style relative revisions, such as <code>foo^^</code> for the second parent of revision <code>foo</code>.</p>
+
+<h2>16. Selecting a range</h2>
+
+<p>To specify a range of revisions to a command taking a <code>-r</code> revision range, use the syntax <code>[BEGIN]:[END]</code>.  If <code>BEGIN</code> is not specified, it defaults to revision 0, and if <code>END</code> is not specified, the <code>tip</code> revision is used.  A single <code>:</code> by itself refers to all history.  You can even specify the revisions in reverse order, if <code>END</code> is less than <code>BEGIN</code>.  Again, a revision can be specified using any style as per tip #15 above.</p>
+
+<h1>Rewinding Time and Fixing Mistakes</h1>
+
+<h2>17. Resetting changes</h2>
+
+<p>If you have modified a file in your working directory, but you wish to discard the changes and not commit them, you can use:</p>
+
+<pre><code>$ hg revert parser.c
+</code></pre>
+
+<p>If you just committed a change that you didn&rsquo;t intend, you can back out that change.  (Note that this will only work if the commit was the very last transaction you applied.)  You run:</p>
+
+<pre><code>$ hg rollback
+</code></pre>
+
+<p>The working copy will be back to where it was before the commit, and the commit will be deleted from the repository.</p>
+
+<p>If you want to delete an entire branch, you can do so (provided you have the <code>mq</code> extension enabled) using:</p>
+
+<pre><code>$ hg strip -r 432
+</code></pre>
+
+<p>This will remove revision 432 <em>and all its descendants</em> from the repository.  So it is just like pruning a branch from a tree.  Note that this is a very destructive operation!  For your safety, Mercurial will store the stripped changesets into a bundle, so you can reapply the bundle if you made a mistake.</p>
+
+<p>The preferred way of undoing the effect of an older commit is to use:</p>
+
+<pre><code>$ hg backout -r 9684
+</code></pre>
+
+<p>This will create a new changeset that reverses the effect of the specified revision.  It may create a new head (depending on the working directory&rsquo;s parent), in which case you can merge the new head into default.</p>
+
+<h2>18. Committing to the wrong Branch</h2>
+
+<p>If you&rsquo;ve made a bunch of changes, then committed them to the wrong branch in multiple versions, all is not lost.  While <code>hg rollback</code> will undo the last transaction (ie. commit), it cannot reverse more.</p>
+
+<p>If you want to undo the changes in one changeset, use:</p>
+
+<pre><code>$ hg backout
+</code></pre>
+
+<p>which will create a new changeset that reverses the effect of the specified revision.  This will normally create a new head, so you will need to merge this into <code>tip</code>.</p>
+
+<p>If you have committed a series of changesets, you could also run <code>hg strip</code> from the errant revision to remove it from the tree.  Then switch to the correct branch, take the bundle file that <code>strip</code> saves for you, and apply the bundle.</p>
+
+<h2>19. Interactive Rebasing</h2>
+
+<p>The <a href="http://mercurial.selenic.com/wiki/HisteditExtension"><code>histedit</code> extension</a> provides similar functionality to git&rsquo;s powerful <code>rebase --interactive</code> command.  It allows you to take a series of changesets, and commit, fold into a previous commit, edit or drop each revision.  It will then reorder and reapply the changesets in the specified manner.</p>
+
+<p>This can be useful for cleaning up a feature branch before merging, for example.  Note that this does involve modifying existing changesets, so be careful to do it before pushing the changes to another repo.</p>
+
+<h2>20. Cleaning up</h2>
+
+<p>To clean up your working directory and remove files not under version control, you can display a list of untracked files (<code>-u</code>) without displaying the status (<code>-n</code>), then pipe the results to a command to delete them:</p>
+
+<pre><code>$ hg st -nu | xargs rm
+</code></pre>
+
+<p>If you want to clear away all the files in your working directory (but otherwise leave your repository intact) use:</p>
+
+<pre><code>$ hg checkout null
+</code></pre>
+
+<p>All tracked files will be removed, leaving your working copy empty (but of course the repository still intact).  This can be useful on servers, in clones, and to save space in older projects.</p>
+
+<h1>Miscellaneous Tips</h1>
+
+<h2>21. Previous References You&rsquo;ve Viewed</h2>
+
+<p>(This doesn&rsquo;t apply to hg.)</p>
+
+<h2>22. Branch Naming</h2>
+
+<p>Branch names can contain the usual characters, such as a-z, A-Z and numeric characters.  But you can also use other punctuation characters, so you can create a psueo-namespace:</p>
+
+<pre><code>$ hg branch experimental/parsing_performance
+</code></pre>
+
+<h2>23. Finding Who Dunnit</h2>
+
+<p>It can be very useful to see who made a particular change in a file.  The <code>annotate</code> command will display a file, and annotate each line with the revision and author of the last modification.  (This command is often known as the <code>blame</code> command, as you probably want to know who broke the build.)</p>
+
+<h2>24. Repository Maintenance</h2>
+
+<p>The Mercurial repository format (&ldquo;reflog&rdquo;) is designed to be reliable and efficient.  Unlike the git storage format, it does not require ongoing maintenance (such as garbage collection).</p>
+
+<p>Since file systems and hard drives are fallible, it is possible that an error could corrupt a repository.  To verify the integrity of the repository, run:</p>
+
+<pre><code>$ hg verify
+</code></pre>
+
+<p>This will perform an extensive series of tests, and report the results.</p>
+
+<h2>25. Ignore files by pattern</h2>
+
+<p>Your working directory can often become cluttered with generated or intermediate files that you do not want to check in to your repository.  You can add a list of files to ignore, either for all repos (by adding it to your <code>~/.hgrc</code>) or selectively for a given repository (by editing <code>.hgignore</code> in the root of your repo).  You can use either a simple globbing form, or a full regexp specification.  Here&rsquo;s an example:</p>
+
+<pre><code>syntax:glob
+*.o
+*.a
+*.dylib
+*.pyc
+*.res
+*~
+</code></pre>
+
+<p>This tells Mercurial to simply ignore these files.  If you are using Xcode, you will want to exclude the build product tree entirely, and also the per-user project settings (which change frequently and don&rsquo;t really need to be under version control):</p>
+
+<pre><code>build/*
+MyProject.xcodeproj/*.pbxuser
+MyProject.xcodeproj/*.mode1v3
+</code></pre>
+
+<h2>26. Bonus: Built-in Web Server</h2>
+
+<p>Thanks to its Python foundation, Mercurial features a built-in web server.  You can browse the revision history, review metadata, display a graphical timeline view, list tags and branches, and view file lists and contents.  It is fully configurable, with different styles and templates.  But to get up and running very quickly, simply run the following command:</p>
+
+<pre><code>$ hg serve -d -n myproject
+</code></pre>
+
+<p>The <code>-d</code> will daemonise the server, which will run it in the background.  By default, the server listens on port 8000, so simply fire up your browser and point it to:</p>
+
+<pre><code>http://localhost:8000/
+</code></pre>
+
+<p>and that&rsquo;s it!  You can run multiple instances, install it alongside Apache, and have it run a webdir serving multiple repositories.  It&rsquo;s very powerful and useful.</p>
+
+<h1>Closing</h1>
+
+<p>I hope this is a useful set of tips.  Thanks again to Andy for the original <code>git</code> document.  Please leave a comment or drop me an email if you have any suggestions or improvements for the above.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Gavin Baker</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-04-07T23:58:00+10:00" pubdate data-updated="true">2010-04-07</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.antonym.org//blog/2010/04/07/25-tips-for-intermediate-mercurial-users/" data-via="gavinb" data-counturl="http://www.antonym.org//blog/2010/04/07/25-tips-for-intermediate-mercurial-users/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2010/01/01/threading-with-boost-part-ii-threading-challenges/" title="Previous Post: Threading with Boost - Part II: Threading Challenges">&laquo; Threading with Boost - Part II: Threading Challenges</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2011/03/09/good-code-gardening/" title="Next Post: Good Code Gardening">Good Code Gardening &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/10/08/what-is-rust/">What is Rust?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/03/09/good-code-gardening/">Good Code Gardening</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2010/04/07/25-tips-for-intermediate-mercurial-users/">25 Tips for Intermediate Mercurial Users</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2010/01/01/threading-with-boost-part-ii-threading-challenges/">Threading with Boost - Part II: Threading Challenges</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2009/09/16/stl-filtering/">STL: filtering</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Gavin Baker <br/>
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>, customized with <a href="https://github.com/mjhea0/whiterspace">whiterspace</a>.</span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

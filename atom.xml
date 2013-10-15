@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Gavin Baker ~ antonym.org]]></title>
-  <link href="http://www.antonym.org/atom.xml" rel="self"/>
-  <link href="http://www.antonym.org/"/>
-  <updated>2013-10-10T11:08:30+11:00</updated>
-  <id>http://www.antonym.org/</id>
+  <link href="http://www.antonym.org//atom.xml" rel="self"/>
+  <link href="http://www.antonym.org//"/>
+  <updated>2013-10-16T10:49:14+11:00</updated>
+  <id>http://www.antonym.org//</id>
   <author>
     <name><![CDATA[Gavin Baker]]></name>
     
@@ -16,10 +16,10 @@
   <entry>
     
     <title type="html"><![CDATA[What is Rust?]]></title>
-    <link href="http://www.antonym.org/blog/2013/10/08/what-is-rust/"/>
+    <link href="http://www.antonym.org//blog/2013/10/08/what-is-rust/"/>
     
     <updated>2013-10-08T20:50:00+11:00</updated>
-    <id>http://www.antonym.org/blog/2013/10/08/what-is-rust</id>
+    <id>http://www.antonym.org//blog/2013/10/08/what-is-rust</id>
     
     <content type="html"><![CDATA[<p><a href="http://www.rust-lang.org/">Rust</a> is a compiled, hybrid imperative/object-
 oriented/functional language. It appeals directly to any C++ developer who has
@@ -122,6 +122,1796 @@ see here is the garbage collection, which makes real-time systems impractical.</
 progress. There is a vibrant, friendly and smart community behind it, and a
 growing number of third-party libraries are supported. I am very optimistic
 about the future of Rust, and look forward to contributing.</p>
+]]></content>
+    
+  </entry>
+  
+  <entry>
+    
+    <title type="html"><![CDATA[Good Code Gardening]]></title>
+    <link href="http://www.antonym.org//blog/2011/03/09/good-code-gardening/"/>
+    
+    <updated>2011-03-09T12:09:00+11:00</updated>
+    <id>http://www.antonym.org//blog/2011/03/09/good-code-gardening</id>
+    
+    <content type="html"><![CDATA[<p>During a code review at work recently, we had an interesting discussion about code maintenance.  You could say that coding is a bit like gardening: while you are planting new seedlings, do you weed nearby areas as you go, or save up all the weeding for the next sunny weekend?  Should code maintenance be a continual, gradual process, or does it warrant being scheduled as a task in its own right?</p>
+
+<!--more-->
+
+
+<p>First, let us define &ldquo;code maintenance&rdquo; as editing source code to make <em>non-functional changes</em>, such as:</p>
+
+<ul>
+<li>fixing formatting</li>
+<li>fixing whitespace</li>
+<li>improving consistency</li>
+<li>correcting typos</li>
+<li>commenting</li>
+<li>minor refactoring</li>
+<li>removing dead code</li>
+</ul>
+
+
+<p>In general, these sorts of changes are improving code hygiene, tasks which are not normally scheduled or allocated.</p>
+
+<p>Now, the problem is this: imagine you are working on a large codebase, which has been around for quite some time, and has had a variety of authors modifying it.  As you are working on a new feature, you are adding new code, and refactoring existing code to enable the new code to work.  Suppose you come across some old, dead code. Should you remove it right now?  You see an obvious typo in an unrelated comment.  Should you correct it here?  You notice some inconsistently formatted code.  Should you update its layout before moving on with your main task?</p>
+
+<p>There are only two answers to this seemingly simple question, but there are many important issues that surround it.  Either you fix it now (garden as you go), or save it for later (do it all on Weeding Day).</p>
+
+<h2>Garden as you Go</h2>
+
+<p>Why should do tidy your code as you go?</p>
+
+<ul>
+<li>You may forget to come back and do it later</li>
+<li>You might run out of time to do later, as another bug or feature will take priority</li>
+<li>A patch with a few extra whitespace changes or comment edits is trivial and takes hardly any time to review</li>
+<li>As the code gradually expands, it is incrementally and constantly improved</li>
+<li>Code hygiene improves code quality</li>
+</ul>
+
+
+<h2>Weeding Day</h2>
+
+<p>Why should you do your weeding separately?</p>
+
+<ul>
+<li>Mixing code maintenance in with new code in a single patch obscures the actual intent, and the patch is no longer one discrete piece of work</li>
+<li>Unrelated changes may make it more difficult to merge</li>
+<li>Reviewing code for unrelated changes can waste reviewers&#8217; time</li>
+<li>Maintenance is important, and should be scheduled as a discrete work item</li>
+<li>Maintenance needs to make the code more consistent, so it should be done in one hit</li>
+</ul>
+
+
+<h2>The Verdict</h2>
+
+<p>The conclusion I came to is a kind of compromise, but ultimately driven by the notion that the sanctity of the patch is the most important factor.  One patch should always be a discrete piece of work, so mixing new features and gardening/maintenance into one patch is a bad idea.</p>
+
+<p><strong>But</strong> the argument that it is very hard to <em>schedule</em> maintenance time is a compelling one, as there is invariably a huge backlog of bug fixes or new features waiting which take priority.  With all the best intentions in the world, most managers will rather have you working on new features and bug fixes than touching code that already works.  So maintenance doesn&rsquo;t get scheduled.</p>
+
+<p>So if you don&rsquo;t perform code maintenance as you go, when do you do it?  You do it as you go!  Let me explain&hellip;</p>
+
+<p>You perform your code gardening/maintenance as you go, but you <strong>commit your maintenance changes separately</strong>.  Feature work goes into one patch (or changeset or commit), bug fixes go into their own patch (maybe with a regression test), and maintenance goes in its own patch.  That way, each patch can be reviewed without any distractions, merges are simpler, and you still get continual improvement.</p>
+
+<h2>Howto: In Depth</h2>
+
+<p>A good craftsperson has good tools, and my proposed solution requires good tool support to be truly effective.  Ideally, You will be using a powerful version control system (VCS) such as <a href="http://mercurial.selenic.com/">Mercurial</a> or <a href="http://git.kernel.org/">git</a> (unfortunately <a href="http://subversion.tigris.org/">Subversion</a> does not really do what we need, though it can be wrangled with some effort).  Both these tools allow you to check in changes not only at the level of an individual file, but at the level of changed <em>hunks within a file</em>.  This lets you more easily manage a <em>subset</em> of the current outstanding changes in your source tree.  So the idea is that you can go ahead and do maintenance all over the place, knowing your patch will end up nice and clean and separate from the maintenance work.</p>
+
+<p>So how do you this?  Imagine you have a tool with the following files:</p>
+
+<pre><code>fileio.c
+fileio.h
+parser.c
+parser.h
+main.c
+utils.c
+utils.h
+</code></pre>
+
+<p>You need to modify the file loading support to fix a bug with handling metadata in the headers.  So you modify <code>fileio.c</code> and <code>fileio.h</code>.  Along the way, you need to modify <code>render.c</code>, and along the way add some debug code to the rendering code.  This last change is of course throwaway test code that you will never check in.  And while you&rsquo;re hacking away adding tracing statements, you notice some dodgy comments, which don&rsquo;t match with the code.  So you fix those, and keep going &ndash; only to find someone managed to insert some hard tabs in there by mistake (after all, who would do that on <em>purpose</em>?).  So you use the Emacs <code>untabify</code> function to clean up that region too.  The renderer code uses some functions in the <code>utils</code> module, and you notice the docstring is missing an explanation of the parameters, so you add some <code>@param</code> statements while you&rsquo;re there.  Now your VCS will give you the following status (Mercurial output):</p>
+
+<pre><code>M fileio.c
+M fileio.h
+M render.c
+  render.h
+  main.c
+  utils.c
+M utils.h
+</code></pre>
+
+<p>And if you looked at the overall diff, it would mix in a bunch of unrelated changes in with your file loading fix.  You&rsquo;re two degrees removed from the original problem by the time you get to <code>utils</code>.  But all these changes are worthwhile, and improve the code.  You don&rsquo;t want to lose them.</p>
+
+<p>So you simply don&rsquo;t check in <code>utils.h</code> at all.  That&rsquo;s easy (and even <code>svn</code> can cope with that).  And you commit all of the changes to <code>fileio</code>, as those make up the fix you were working on in the first place.  But what about <code>render.c</code>?  You&rsquo;ve got no less than <em>three</em> types of changes in there:</p>
+
+<ul>
+<li>temporary debug code (that will be removed later)</li>
+<li>maintenance changes (to fix up the comments and whitespace)</li>
+<li>bug fix changes (part of the file I/O fix)</li>
+</ul>
+
+
+<p>If you&rsquo;re using Mercurial (my DVCS of choice), you can use the <code>record</code> command (a built-in extension)
+to easily check in individual hunks (sub-parts of diffs).  You use <code>record</code> much like commit, except instead of committing all your outstanding changes, it will interactively prompt you on a per-file and then a per-hunk basis.  You can nominate to include all of a file&rsquo;s changes, skip it entirely, or choose hunks.  This way, you can add both the <code>fileio</code> files, skip <code>utils</code> and choose only the bug fix changes that ended up in <code>render.c</code>.</p>
+
+<pre><code>$ hg record -m "Bug fix for #123, validate metadata type and length before loading"
+</code></pre>
+
+<p>You will end up with the changes <em>just</em> for the bugfix in this one commit, making it nice and easy to send off to review.  And then you have the other changes remaining:</p>
+
+<pre><code>  fileio.c
+  fileio.h
+M render.c
+  render.h
+  main.c
+  utils.c
+M utils.h
+</code></pre>
+
+<p>which you can then selectively commit at your leisure.</p>
+
+<p>The following animation shows this process for a single file:</p>
+
+<p><img alt="Gardening.gif" src="http://antonym.org/Gardening.gif" width="393" height="385" class="mt-image-none" style="" /></p>
+
+<p>If you&rsquo;re using <code>git</code>, there is a command that performs essentially the same thing.  You need first to add your desired changes to the &ldquo;index&rdquo; (or staging area).  You can even stage changes as you go, which is a very powerful (though potentially confusing) model.  This is performed with:</p>
+
+<pre><code>$ git add --interactive
+</code></pre>
+
+<p>Once you have chosen the hunks that make up the desired patch, you can commit what is in the staging area and the diff for that changeset will be nice and clean.</p>
+
+<p>Fortunately, there&rsquo;s also GUI support for these operations.  For example, the most excellent <a href="http://gitx.frim.nl/">GitX tool</a> allows you to not only select individual hunks for commit, you can even split up hunks and control which individual lines are committed (or staged).</p>
+
+<p>This discussion highlights the need for good tools to support your workflows (rather than have your tool dictate your workflow).  Stay tuned for an upcoming article on &ldquo;Coding vs Patching&rdquo;, exploring the idea that the practice of coding is very much about shepherding clean patches from inception through to review and final merging.</p>
+
+<p>So &ndash; go be a Good Gardener&hellip;</p>
+]]></content>
+    
+  </entry>
+  
+  <entry>
+    
+    <title type="html"><![CDATA[25 Tips for Intermediate Mercurial Users]]></title>
+    <link href="http://www.antonym.org//blog/2010/04/07/25-tips-for-intermediate-mercurial-users/"/>
+    
+    <updated>2010-04-07T23:58:00+10:00</updated>
+    <id>http://www.antonym.org//blog/2010/04/07/25-tips-for-intermediate-mercurial-users</id>
+    
+    <content type="html"><![CDATA[<p>I recently read an interesting article by Andy Jeffries entitled <a href="http://andyjeffries.co.uk/articles/25-tips-for-intermediate-git-users">25 Tips for Intermediate Git Users</a> (linked to via <a href="http://www.reddit.com/r/programming/">proggit</a>) .  It had lots of useful information condensed into bite-sized task-oriented chunks.</p>
+
+<p>I&rsquo;ve been using <a href="http://mercurial.selenic.com/">Mercurial</a> for a while now, so I thought I would write a similar set of tips by translating from <code>git</code> to the equivalent <code>hg</code> commands.  Thanks to Andy for blessing this translation work.  There may well be some mistakes herein &ndash; please leave a comment if you have any improvements or fixes to suggest.</p>
+
+<!--more-->
+
+
+<h1>Basic Tips</h1>
+
+<h2>1. First Steps After Install</h2>
+
+<p>Once you have <a href="http://www.selenic.com/mercurial/download/">installed Mercurial</a>, you should create the <code>.hgrc</code> file in your home directory which contains your default user configuration.  This is where you can customize options and load additional <a href="http://www.selenic.com/mercurial/wiki/Extensions">extensions</a>.  The absolute minimum is to specify your name and email address, which is recorded in every commit you make:</p>
+
+<pre><code>[ui]
+username = Joe Coder &lt;joe@example.com&gt;
+</code></pre>
+
+<p>To enable extensions, add a section called <code>[extensions]</code> and list the names.  I would recommend the following extensions, which are incredibly useful.  Just add another section to your config file:</p>
+
+<pre><code>[extensions]
+graphlog=
+pager=
+color=
+fetch=
+record=
+bookmarks=
+</code></pre>
+
+<p>To configure an extension, add a section with its name, and the options within.  For example, to configure the <code>pager</code> extension, you should configure it to not interfere with certain interactive commands.  Something like this:</p>
+
+<pre><code>[pager]
+pager = LESS='FSRX' less
+ignore = version, help, update, serve, record
+</code></pre>
+
+<p>For complete information about this file, see:</p>
+
+<pre><code>$ hg help config
+</code></pre>
+
+<h2>2. Mercurial is tree-based</h2>
+
+<p>Mercurial stores its repository in the &ldquo;revlog&rdquo; format.  This is a tree of commits and their metadata, with each commit being uniquely identified by its the SHA-1 hash.</p>
+
+<p><span class="mt-enclosure mt-enclosure-image" style="display: inline;"><img alt="MercurialRevisionTreeExample.png" src="http://antonym.org/hg25/MercurialRevisionTreeExample.png" width="703" height="221" class="mt-image-none" style="" /></span></p>
+
+<p>When you see a changeset in this format:</p>
+
+<pre><code>4225:cf1a9b1f9bee
+</code></pre>
+
+<p>this is showing the simple revision number, <code>4225</code>, and the revision hash, <code>cf1a9b1f9bee</code>.  Either can be used to refer to a revision, and usually the first four characters of the hash are sufficient to uniquely identify a revision.</p>
+
+<p>The simple revision number (akin to the sequentially numbered revisions in <code>svn</code>) is unique to a repository, but not necessarily across repository clones.</p>
+
+<p>Tags are simply labels associated with a revision.  Named branches are stored in the changeset metadata, while bookmarks are much like local tags that move with each commit.</p>
+
+<p>There is always one named branch in existence: <code>default</code>.  This is normally where mainline development occurs, and is equivalent to <code>trunk</code> in Subversion, or <code>master</code> in git.</p>
+
+<h2>3. Two parents &ndash; of course!</h2>
+
+<p>The <code>hg log</code> command lets you view the details of your commit history.  Normally each commit has one parent, which is the path up the tree.  But when you perform a <code>merge</code> operation, you are combining two branches of the tree together.  This is known as a &ldquo;merge commit&rdquo;, and the changeset is recorded as having two parents, referring to the two branches that were merged.</p>
+
+<p>For example, here is a commit from one of my repos showing r32 merging with r30, to produce r33:</p>
+
+<pre><code>.
+.
+|
+|
+o    changeset:   33:9710bef2500e
+|\   parent:      30:ad3a51b8aa18
+| |  parent:      32:a3f98e81c19c
+| |  user:        Gavin Baker &lt;gavinb@...&gt;
+| |  date:        Mon Nov 09 07:47:15 2009 +1100
+| |  summary:     Merged udp log work from deadlock branch
+| |
+| o  changeset:   32:a3f98e81c19c
+| |  branch:      deadlock_gb
+| |  user:        Gavin Baker &lt;gavinb@...&gt;
+| |  date:        Mon Nov 09 07:43:51 2009 +1100
+| |  summary:     Started adding udp logging
+| |
+. .
+. .
+</code></pre>
+
+<h2>4. Merge conflicts</h2>
+
+<p>Mercurial can be configured to use an external tool to process three-way merges.  For example, to use the popular <code>kdiff3</code> tool, add the following section to your <code>.hgrc</code>:</p>
+
+<pre><code>[merge-tools]
+# Override stock tool location
+kdiff3.executable = ~/bin/kdiff3
+# Specify command line
+kdiff3.args = $base $local $other -o $output
+# Give higher priority
+kdiff3.priority = 1
+</code></pre>
+
+<p>If you don&rsquo;t have an external merging tool, mercurial will save the left and right versions of the files, and place conflict markers (&ldquo;&lt;&lt;&lt;&lt;&rdquo;, &ldquo;&mdash;&ndash;&rdquo;, &ldquo;>>>>&rdquo;) in the working copy.  It is up to you to then edit the file, resolve the conflict, and then resolve or commit your changes.  To mark a conflicted file as resolved:</p>
+
+<pre><code>$ hg resolve -m main.c
+</code></pre>
+
+<p>To check the status of files involved in the merge:</p>
+
+<pre><code>$ hg resolve -l
+</code></pre>
+
+<h1>Servers, Branching and Tagging</h1>
+
+<h2>5. Remote servers</h2>
+
+<p>In Mercurial, every repository is self-contained and includes the full history of the project.  When you <code>clone</code> a repository, the URI of the original is stored in the repository&rsquo;s own <code>hgrc</code> file (stored in the <code>.hg</code> directory at the root of the repository).  In the section labelled <code>paths</code>, an entry is created called <code>default</code>, which points to the original repo.  This way, you do not have to specify a URI for certain commands that involve remote repositories.</p>
+
+<p>To see which changes have been made in the default remote repository since you last updated:</p>
+
+<pre><code>hg incoming
+</code></pre>
+
+<p>To see which changes you have locally that have not yet been pushed to the default remote repository:</p>
+
+<pre><code>hg outgoing
+</code></pre>
+
+<p>You can always add more entries to the remote server list by editing the <code>.hg/hgrc</code> file.  These are simply aliases for the full URI, which you can use along with commands that need a repository path.  For example, given the following entries in the <code>.hg/hgrc</code> of a given repo:</p>
+
+<pre><code>[paths]
+goog = http://code.google.com/p/golang/
+exp = https://bitbucket.org/gavinb/golang-exp/
+</code></pre>
+
+<p>the following sets of commands are equivalent:</p>
+
+<pre><code>$ hg incoming http://code.google.com/p/golang/
+$ hg incoming goog
+
+$ hg outgoing https://bitbucket.org/gavinb/golang-exp/
+$ hg outgoing exp
+</code></pre>
+
+<p>Open questions:</p>
+
+<ul>
+<li>Is there an extension equivalent to <code>git remote</code> for managing paths?</li>
+<li>How do you compare just a local and a remote branch (not the full set of changesets)?</li>
+</ul>
+
+
+<h2>6. Tagging</h2>
+
+<p>In Mercurial, there are two types of tags: regular tags and local tags.  Regular tags are stored in the <code>.hgtags</code> file in the root of the repository, and are versioned just like any other file.  These tags are also therefore propagated to any remote servers.  You can list all the current tags with:</p>
+
+<pre><code>$ hg tags
+</code></pre>
+
+<p>To add a regular tag to the current revision, you simply give it a name:</p>
+
+<pre><code>$ hg tag version_1_3
+</code></pre>
+
+<p>To associate a tag with a specific revision, you use the <code>-r</code> option:</p>
+
+<pre><code>$ hg tag -r 4a93 version_1_2_1
+</code></pre>
+
+<p><span class="mt-enclosure mt-enclosure-image" style="display: inline;"><img alt="MercurialTaggingExample.png" src="http://antonym.org/hg25/MercurialTaggingExample.png" width="702" height="248" class="mt-image-none" style="" /></span></p>
+
+<p>Once you have created a tag, you can use its name virtually anywhere you would normally specify a revision.  So after the above two operations, <code>hg tags</code> would show:</p>
+
+<pre><code>tip                 152:01ae0a9083c3
+version_1_3          79;08a49fb329a1
+version_1_2_1        22:4a93c0e1aa0b
+</code></pre>
+
+<p>A local tag works in almost the same way, except local tags do not get copied between repositories when running a <code>push</code> or <code>pull</code>.  You create a local tag by specifying the <code>-l</code> flag:</p>
+
+<pre><code>$ hg tag -l experimental
+</code></pre>
+
+<p>The <code>bookmarks</code> extension also provides a form of local tags, which move with the latest commit.  (Bookmarks are very much like git&rsquo;s cheap local branches, and a topic worth its own article.)</p>
+
+<h2>7. Creating Branches</h2>
+
+<p>Creating a named branch in Mercurial is a matter of simply specifying a branch name, which will be saved in the metadata of the next commit:</p>
+
+<pre><code>$ hg branch bug_fix_5948
+</code></pre>
+
+<p>To switch between branches, use the <code>update</code> command with the branch name:</p>
+
+<pre><code>$ hg update gui_changes_experimental
+</code></pre>
+
+<p>To display all the current branches, simply issue:</p>
+
+<pre><code>$ hg branches
+</code></pre>
+
+<p>The following example shows a feature branch for the GUI, and another for the database layer.  These branches are periodically merged with default, where releases are made:</p>
+
+<p><span class="mt-enclosure mt-enclosure-image" style="display: inline;"><img alt="MercurialBranchingExample.png" src="http://antonym.org/hg25/MercurialBranchingExample.png" width="904" height="291" class="mt-image-none" style="" /></span></p>
+
+<p>There are other types of branches too.  The simplest is an &ldquo;anonymous&rdquo; branch, which you can create simply by updating to an earlier revision, making some changes, and committing a new child revision.  This will result in a commit with two children &ndash; ie. a branch.  Steve Losh has written <a href="http://stevelosh.com/blog/2009/08/a-guide-to-branching-in-mercurial/">an excellent article on branching</a> which explains this in more detail.</p>
+
+<h2>8. Merging Branches</h2>
+
+<p>Once the work on your branch is complete, you will want to merge it back to the mainline of development (which is usually <code>default</code>).  To close the branch before you merge, use:</p>
+
+<pre><code># on branch gui_changes_experimental
+$ hg commit --close-branch -m "Experimental branch was a success"
+</code></pre>
+
+<p>Then you switch back to the target branch into which you want to merge your changes.</p>
+
+<pre><code>$ hg update default
+</code></pre>
+
+<p>And then specify the name of the branch to merge, like this:</p>
+
+<pre><code>$ hg merge gui_changes_experimental
+</code></pre>
+
+<p>Mercurial will then attempt to automatically merge all the changes, and notify you if there are any conflicts that require manual resolution.  At this point it can also launch a custom merging utility. (See tip #4 above.)</p>
+
+<p>If you would like to see which changesets would be merged from a branch, you can preview the merge using:</p>
+
+<pre><code>$ hg merge -P gui_changes_experimental
+</code></pre>
+
+<p>You can see a list of open branches using:</p>
+
+<pre><code>$ hg branches
+</code></pre>
+
+<p>And you can see which changes have yet to be merged by doing a diff with the branch name:</p>
+
+<pre><code># on branch default
+hg diff gui_changes_experimental
+</code></pre>
+
+<h2>9. Remote branches</h2>
+
+<p>By default, when you <code>push</code> your changes to a remote server, you push all commits made since the last update.  To push only a single branch, you can specify its name (or a given revision):</p>
+
+<pre><code>$ hg push -r gui_changes_experimental
+</code></pre>
+
+<p>This will push all the changesets starting from the head of the branch, and all its ancestors that do not appear in the remote repository.</p>
+
+<p>As far as I know, there is no direct equivalent to git&rsquo;s tracking branches in Mercurial.</p>
+
+<h1>Storing Content in stashes, etc</h1>
+
+<h2>10. Stashing</h2>
+
+<p>If you are in the middle of a set of changes, and you need to perform an operation on the repository without first committing all of your local changes, you can &ldquo;stash&rdquo; them away and set them aside using the <a href="http://mercurial.selenic.com/wiki/ShelveExtension">shelve</a> extension.  This puts your current set of changes into a temporary storage area, from which you can restore them later.</p>
+
+<p>To save your changes, run:</p>
+
+<pre><code>$ hg shelve
+</code></pre>
+
+<p>You can interactively specify which changes to shelve at the granularity level of individual hunks, or simply stash entire files.  To bring your changes back into the working directory, simply use:</p>
+
+<pre><code>$ hg unshelve
+</code></pre>
+
+<h2>11. Adding Interactively</h2>
+
+<p>Ideally every commit should be a discrete patch that applies one cohesive change.  But for various real-world reasons, you often find yourself with a working directory that contains modified files containing multiple unrelated changes.  Sometimes it is individual files, sometimes even within the one file.  It would be great to be able to commit a subset of your patches, and choose individual hunks or files to commit.  The <code>record</code> extension does exactly that.  Running:</p>
+
+<pre><code>$ hg record
+</code></pre>
+
+<p>interactively shows you each file, and lets you inspect each hunk that has changed, one by one.  You can accept individual hunks to commit, accept or ignore an entire file, and so on.  Any changes you do not commit will remain in your working copy to deal with later.  This is a great way to keep your commits clean and separate.</p>
+
+<h2>12. Handling Large Files</h2>
+
+<p>(There is no direct equivalent to the original list&rsquo;s item #12, &ldquo;Storing/Retrieving from the Filesystem&rdquo;.)</p>
+
+<p>Some projects (games are an excellent example) feature large binary resources, which do not lend themselves well to management under a VCS.  Examples include images, movies, sound files, level data, and so on.  You don&rsquo;t want to keep multiple versions of these files around if you can help it, and performance can suffer for files over about 10MB.</p>
+
+<p>The <a href="http://mercurial.selenic.com/wiki/BigfilesExtension"><code>bigfile</code> extension</a> aims to solve this problem by storing large binary files (Binary Large Objects, or BLOBs) in a separate location, while still allowing you to manage the files using Mercurial.  A sample session looks like this:</p>
+
+<p>*** TODO Insert bigfile example</p>
+
+<h1>Logging and What Changed</h1>
+
+<h2>13. Viewing a Log</h2>
+
+<p>To review the details of your commit history, you use the <code>log</code> command.  A brief one-line summary is displayed with:</p>
+
+<pre><code>$ hg log
+</code></pre>
+
+<p>To see the logs for a specific revision, range, tag or branch, use the <code>-r</code> switch:</p>
+
+<pre><code>$ hg log -r9584
+$ hg log -r release_1.3
+</code></pre>
+
+<p>To show all the details of the metadata, and the full commit message, use the verbose <code>-v</code> switch.</p>
+
+<p>If you want to view the patch itself, use:</p>
+
+<pre><code>$ hg log -p
+</code></pre>
+
+<p>If you enabled the <code>glog</code> extension (distributed with Mercurial), you can see a graphical representation (in ASCII art) of the commit tree, showing branches and merges using:</p>
+
+<pre><code>$ hg glog
+</code></pre>
+
+<h2>14. Searching the Log</h2>
+
+<p>To display only those changesets which have been committed by a given author, use the following command:</p>
+
+<pre><code>$ hg log -u joe
+</code></pre>
+
+<p>You can search for a username, real name or in fact any substring in the &lsquo;author&rsquo; field.</p>
+
+<p>To search for a keyword that appears in the commit message, use:</p>
+
+<pre><code>$ hg log -k regression
+</code></pre>
+
+<p>To search for commits that changed certain filenames, you can include or exclude patterns:</p>
+
+<pre><code>$ hg log -I "**/Makefile"
+$ hg log -X "*.xml"
+</code></pre>
+
+<p>To view all commits made since a given date:</p>
+
+<pre><code>$ hg log -d "&gt;2009-11-1"
+</code></pre>
+
+<p>There are many more date options &ndash; see <code>hg help dates</code> for the full list.</p>
+
+<p>The <code>log</code> command can also display the log output using a user-defined template, which can be very useful for scripting and custom reporting.  This example can be used to derive summary statistics of changed files by user:</p>
+
+<pre><code>$ hg log --template "{date}|{user}|{diffstat}" -d "&gt;2009-11-20"
+</code></pre>
+
+<p>See <code>hg help templating</code> for the complete syntax.</p>
+
+<h2>15. Selecting Revisions</h2>
+
+<p>There are many ways of specifying a revision when using commands such as <code>log</code>, <code>merge</code>, and so on.</p>
+
+<pre><code>$ hg log -r 4281               # By short revision number
+$ hg log -r d1b75410b793       # By full revision number (SHA-1 hash)
+$ hg log -r feature_213        # By branch name (refers to head of branch)
+$ hg log -r release_1_31       # By tag name
+$ hg log -r refactor_engine    # By bookmark name
+</code></pre>
+
+<p>If you install the <a href="http://mercurial.selenic.com/wiki/ParentrevspecExtension"><code>parentrevspec</code> extension</a>, you can also use git-style relative revisions, such as <code>foo^^</code> for the second parent of revision <code>foo</code>.</p>
+
+<h2>16. Selecting a range</h2>
+
+<p>To specify a range of revisions to a command taking a <code>-r</code> revision range, use the syntax <code>[BEGIN]:[END]</code>.  If <code>BEGIN</code> is not specified, it defaults to revision 0, and if <code>END</code> is not specified, the <code>tip</code> revision is used.  A single <code>:</code> by itself refers to all history.  You can even specify the revisions in reverse order, if <code>END</code> is less than <code>BEGIN</code>.  Again, a revision can be specified using any style as per tip #15 above.</p>
+
+<h1>Rewinding Time and Fixing Mistakes</h1>
+
+<h2>17. Resetting changes</h2>
+
+<p>If you have modified a file in your working directory, but you wish to discard the changes and not commit them, you can use:</p>
+
+<pre><code>$ hg revert parser.c
+</code></pre>
+
+<p>If you just committed a change that you didn&rsquo;t intend, you can back out that change.  (Note that this will only work if the commit was the very last transaction you applied.)  You run:</p>
+
+<pre><code>$ hg rollback
+</code></pre>
+
+<p>The working copy will be back to where it was before the commit, and the commit will be deleted from the repository.</p>
+
+<p>If you want to delete an entire branch, you can do so (provided you have the <code>mq</code> extension enabled) using:</p>
+
+<pre><code>$ hg strip -r 432
+</code></pre>
+
+<p>This will remove revision 432 <em>and all its descendants</em> from the repository.  So it is just like pruning a branch from a tree.  Note that this is a very destructive operation!  For your safety, Mercurial will store the stripped changesets into a bundle, so you can reapply the bundle if you made a mistake.</p>
+
+<p>The preferred way of undoing the effect of an older commit is to use:</p>
+
+<pre><code>$ hg backout -r 9684
+</code></pre>
+
+<p>This will create a new changeset that reverses the effect of the specified revision.  It may create a new head (depending on the working directory&rsquo;s parent), in which case you can merge the new head into default.</p>
+
+<h2>18. Committing to the wrong Branch</h2>
+
+<p>If you&rsquo;ve made a bunch of changes, then committed them to the wrong branch in multiple versions, all is not lost.  While <code>hg rollback</code> will undo the last transaction (ie. commit), it cannot reverse more.</p>
+
+<p>If you want to undo the changes in one changeset, use:</p>
+
+<pre><code>$ hg backout
+</code></pre>
+
+<p>which will create a new changeset that reverses the effect of the specified revision.  This will normally create a new head, so you will need to merge this into <code>tip</code>.</p>
+
+<p>If you have committed a series of changesets, you could also run <code>hg strip</code> from the errant revision to remove it from the tree.  Then switch to the correct branch, take the bundle file that <code>strip</code> saves for you, and apply the bundle.</p>
+
+<h2>19. Interactive Rebasing</h2>
+
+<p>The <a href="http://mercurial.selenic.com/wiki/HisteditExtension"><code>histedit</code> extension</a> provides similar functionality to git&rsquo;s powerful <code>rebase --interactive</code> command.  It allows you to take a series of changesets, and commit, fold into a previous commit, edit or drop each revision.  It will then reorder and reapply the changesets in the specified manner.</p>
+
+<p>This can be useful for cleaning up a feature branch before merging, for example.  Note that this does involve modifying existing changesets, so be careful to do it before pushing the changes to another repo.</p>
+
+<h2>20. Cleaning up</h2>
+
+<p>To clean up your working directory and remove files not under version control, you can display a list of untracked files (<code>-u</code>) without displaying the status (<code>-n</code>), then pipe the results to a command to delete them:</p>
+
+<pre><code>$ hg st -nu | xargs rm
+</code></pre>
+
+<p>If you want to clear away all the files in your working directory (but otherwise leave your repository intact) use:</p>
+
+<pre><code>$ hg checkout null
+</code></pre>
+
+<p>All tracked files will be removed, leaving your working copy empty (but of course the repository still intact).  This can be useful on servers, in clones, and to save space in older projects.</p>
+
+<h1>Miscellaneous Tips</h1>
+
+<h2>21. Previous References You&rsquo;ve Viewed</h2>
+
+<p>(This doesn&rsquo;t apply to hg.)</p>
+
+<h2>22. Branch Naming</h2>
+
+<p>Branch names can contain the usual characters, such as a-z, A-Z and numeric characters.  But you can also use other punctuation characters, so you can create a psueo-namespace:</p>
+
+<pre><code>$ hg branch experimental/parsing_performance
+</code></pre>
+
+<h2>23. Finding Who Dunnit</h2>
+
+<p>It can be very useful to see who made a particular change in a file.  The <code>annotate</code> command will display a file, and annotate each line with the revision and author of the last modification.  (This command is often known as the <code>blame</code> command, as you probably want to know who broke the build.)</p>
+
+<h2>24. Repository Maintenance</h2>
+
+<p>The Mercurial repository format (&ldquo;reflog&rdquo;) is designed to be reliable and efficient.  Unlike the git storage format, it does not require ongoing maintenance (such as garbage collection).</p>
+
+<p>Since file systems and hard drives are fallible, it is possible that an error could corrupt a repository.  To verify the integrity of the repository, run:</p>
+
+<pre><code>$ hg verify
+</code></pre>
+
+<p>This will perform an extensive series of tests, and report the results.</p>
+
+<h2>25. Ignore files by pattern</h2>
+
+<p>Your working directory can often become cluttered with generated or intermediate files that you do not want to check in to your repository.  You can add a list of files to ignore, either for all repos (by adding it to your <code>~/.hgrc</code>) or selectively for a given repository (by editing <code>.hgignore</code> in the root of your repo).  You can use either a simple globbing form, or a full regexp specification.  Here&rsquo;s an example:</p>
+
+<pre><code>syntax:glob
+*.o
+*.a
+*.dylib
+*.pyc
+*.res
+*~
+</code></pre>
+
+<p>This tells Mercurial to simply ignore these files.  If you are using Xcode, you will want to exclude the build product tree entirely, and also the per-user project settings (which change frequently and don&rsquo;t really need to be under version control):</p>
+
+<pre><code>build/*
+MyProject.xcodeproj/*.pbxuser
+MyProject.xcodeproj/*.mode1v3
+</code></pre>
+
+<h2>26. Bonus: Built-in Web Server</h2>
+
+<p>Thanks to its Python foundation, Mercurial features a built-in web server.  You can browse the revision history, review metadata, display a graphical timeline view, list tags and branches, and view file lists and contents.  It is fully configurable, with different styles and templates.  But to get up and running very quickly, simply run the following command:</p>
+
+<pre><code>$ hg serve -d -n myproject
+</code></pre>
+
+<p>The <code>-d</code> will daemonise the server, which will run it in the background.  By default, the server listens on port 8000, so simply fire up your browser and point it to:</p>
+
+<pre><code>http://localhost:8000/
+</code></pre>
+
+<p>and that&rsquo;s it!  You can run multiple instances, install it alongside Apache, and have it run a webdir serving multiple repositories.  It&rsquo;s very powerful and useful.</p>
+
+<h1>Closing</h1>
+
+<p>I hope this is a useful set of tips.  Thanks again to Andy for the original <code>git</code> document.  Please leave a comment or drop me an email if you have any suggestions or improvements for the above.</p>
+]]></content>
+    
+  </entry>
+  
+  <entry>
+    
+    <title type="html"><![CDATA[Threading with Boost - Part II: Threading Challenges]]></title>
+    <link href="http://www.antonym.org//blog/2010/01/01/threading-with-boost-part-ii-threading-challenges/"/>
+    
+    <updated>2010-01-01T21:15:00+11:00</updated>
+    <id>http://www.antonym.org//blog/2010/01/01/threading-with-boost-part-ii-threading-challenges</id>
+    
+    <content type="html"><![CDATA[<p>In <a href="http://antonym.org/">Part I</a> of this series on <a href="http://boost.org/">Boost</a>, we looked at the basics of how to create and run threads using the Boost libraries.  But once you have more than one thread running in a process, you have to deal with the problems and challenges that threads can introduce.  So, before delving into the mechanics of how to use mutexes and other threading constructs, we look at what can go wrong &ndash; and how to avoid it.</p>
+
+<!--more-->
+
+
+<h2>Shared State</h2>
+
+<p>There is a simple solution to most major threading problems: have no shared state.  By shared state, I mean any data or resource (such as file handle, socket, graphics context, queue, buffer, etc) that is used by more than one thread at the same time.  If two threads are truly independent, they can safely run concurrently without care or consideration.  We wouldn&rsquo;t need sophisticated mechanisms for synchronisation if there&rsquo;s nothing to sync over.  Unfortunately, this restriction is not at all practical or realistic.  And as soon as you introduce shared state, you have to worry about atomicity, consistency, race conditions, and all sorts of issues.</p>
+
+<p>So one of the first design considerations for concurrent systems is to try to minimise the amount of shared state between threads.  The less shared state, the less complexity there is to manage, and the less overhead imposed. Locks that protect shared resources can harm performance: each lock is a region that enforces sequential access, and thus reduces the opportunities for concurrent scheduling.</p>
+
+<p>Simply put, any resource shared between more than one thread needs to be protected by a mutex, such that access is serialised.</p>
+
+<p>When considering scalability, the theoretical maximum speedup of N cores is always less than N times, due to scheduling and synchronisation overheads.  Thus the most efficient algorithm designs consider these issues up front.</p>
+
+<h2>Problem: Atomicity</h2>
+
+<p>An operation is <em>atomic</em> if the operation completes without interruption.  It is never partially complete, which may leave the system or data in an inconsistent or invalid state.  Atomic operations come up all over the place, and even things that we might <em>think</em> are atomic (ie. a single line in your source) probably isn&rsquo;t.  In databases, we use SQL transactions to ensure operations are atomic, such that a related set of changes are never partially applied.</p>
+
+<p>The classic example of an atomic operation in a database is a bank transfer.  You decide to pay your landlord by direct deposit, and transfer $1200 to their account.  The normal sequence of operations is:</p>
+
+<ol>
+<li>Ensure you have sufficient funds</li>
+<li>Ensure the receiving account number is valid</li>
+<li>Withdraw the $1200 in funds from your account</li>
+<li>Deposit the $1200 in the landlord&rsquo;s account</li>
+</ol>
+
+
+<p>Now the first two steps are really preconditions, and while they are necessary for the entire operation&rsquo;s success, if the operation was cancelled after step 1 or step 2, there would be no harm done, and nothing changed.  But once the money comes out of your account after step 3, you absolutely want step 4 to complete, otherwise you are $1200 out of pocket and you <em>still</em> owe the rent!  So steps 3 and 4 <em>must</em> either both happen successfully, or not at all.  If the network goes down between steps 3 and 4 such that the deposit cannot complete, you want to undo the withdrawal and try again later.  Steps 3 and 4 must be performed atomically.</p>
+
+<p>While this example traditionally applies to database operations (and is thus resolved on-disk), the same concept applies to in-memory operations that must be atomic.  A <em>mutex</em> (for &ldquo;mutual exclusion&rdquo;) or <em>critical section</em> can be used to serialise access to resources within a region of code that must run as an atomic operation. We would lock the mutex before the transaction, and unlock it afterwards.</p>
+
+<h2>Problem: Race Conditions</h2>
+
+<p>A <em>race condition</em> is a general term for a class of problems, whereby the result of an operation is at the mercy of the timing of concurrent events (typically unknown or effectively random).  This is bad because your program becomes non-deterministic &ndash; it may not always produce the correct result!  They represent one of the most subtle and difficult to debug problems in software development, which is one of the main reasons why multi-threaded programming is considered difficult.</p>
+
+<h3>Example: A Counter</h3>
+
+<p>Even a simple increment operation, which is only a single operation in C++, may actually be the source of a race condition.  Consider the seemingly innocent:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">m_SequenceNumber</span><span class="o">++</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>which actually translates (on the x86 architecture) to something like:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='gas'><span class='line'><span class="nf">movl</span>    <span class="p">-</span><span class="mi">12</span><span class="p">(</span><span class="nv">%ebp</span><span class="p">),</span> <span class="nv">%eax</span>
+</span><span class='line'><span class="nf">incl</span>    <span class="nv">%eax</span>
+</span><span class='line'><span class="nf">movl</span>    <span class="nv">%eax</span><span class="p">,</span> <span class="p">-</span><span class="mi">12</span><span class="p">(</span><span class="nv">%ebp</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>which is a load, increment, then store.  So there are actually <em>two</em> potential points that a race condition could occur &ndash; between the load and the increment, and between the increment and the save.</p>
+
+<p>Now imagine two threads, which are both using a shared object.  If both threads happen to call the method that performs the increment method at the same time, one thread could be preempted in the middle, such that the instructions are interleaved.  So for threads A and B incrementing the sequence number, thus:</p>
+
+<table width="100%">
+  <thead>
+    <th>Thread</th>
+    <th>Instruction</th>
+    <th>m_SequenceNumber</th>
+    <th>Register</th>
+  </thead>
+  <tbody>
+    <tr><td>A</td><td><tt>LOAD m_SequenceNumber, R0</tt></td><td>234</td><td>234</td></tr>
+    <tr><td>A</td><td><tt>INCR R0</tt></td><td> 234 </td><td> 235</td></tr>
+    <tr><td>B</td><td><tt>LOAD m_SequenceNumber, R1</tt></td><td>234</td><td>234</td></tr>
+    <tr><td>B</td><td><tt>INCR R1</tt></td><td> 234 </td><td> 235</td></tr>
+    <tr><td>B</td><td><tt>STORE R1, m_SequenceNumber</tt></td><td>235</td><td>235</td></tr>
+    <tr><td>A</td><td><tt>STORE R0, m_SequenceNumber</tt></td><td>235</td><td>235</td></tr>
+  </tbody>
+</table>
+
+
+<p>So, instead of the sequence number being incremented twice, and being 236 as we would expect, the sequence number is only 235.  This is a subtle, nasty and rare bug and could be very difficult to track down for the unprepared.</p>
+
+<p>Fortunately, there is a nice, simple solution to this particular problem.  Operating systems provide atomic functions for safely performing an increment (with a minimum of overhead), as well as a few other common operations.  Under Windows, you would use the <a href="http://msdn.microsoft.com/en-us/library/ms683614(VS.85).aspx">InterlockedIncrement()</a>, while under Mac OS X you would call <a href="http://developer.apple.com/mac/library/DOCUMENTATION/Darwin/Reference/ManPages/man3/OSAtomicIncrement32.3.html">OSAtomicIncrement32()</a>.  Under Linux, gcc provides <a href="http://gcc.gnu.org/onlinedocs/gcc-4.1.2/gcc/Atomic-Builtins.html">__sync_fetch_and_add()</a> and friends.</p>
+
+<h3>Example: Accessing a Queue</h3>
+
+<p>An illustration of a race condition is where multiple threads are removing work items from a queue.  Imagine some code that looks something like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="kt">void</span> <span class="n">unsafeWorkerThread</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">while</span> <span class="p">(</span> <span class="n">unsafeWorkerThreadRunning</span> <span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// Warning: this is not thread-safe!</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="n">queue</span><span class="p">.</span><span class="n">isEmpty</span><span class="p">()</span> <span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="n">work_t</span> <span class="n">item</span> <span class="o">=</span> <span class="n">queue</span><span class="p">.</span><span class="n">pop</span><span class="p">();</span>
+</span><span class='line'>            <span class="n">process</span><span class="p">(</span><span class="n">item</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This is not thread-safe!  Even if we assume that the queue operations themselves are atomic (which is usually <em>not</em> the case for most container classes!), there is a race condition waiting to trigger a failure.  Can you spot it?</p>
+
+<p>Imagine there are two threads running, and there is one work item in the queue.  When <code>thread_A</code> calls <code>queue.isEmpty()</code>, it goes into the <code>if</code> block, as there is more data to process.  But then the thread is pre-empted, and <code>thread_B</code> gets a chance to run.  This time, it removes the work item and processes it.  But now the queue is empty, and <code>thread_A</code> thinks it isn&rsquo;t!  When <code>thread_A</code> resumes, it will call <code>queue.pop()</code> and trigger a stack underflow exception.  (And here, without a <code>try-catch</code> block, an exception would also cause the thread to exit without notice.) Now this code could run perfectly well for thousands of iterations, and never trigger these particular failure conditions.  But every so often, the timing will be just right (or rather wrong!) and your application will mysteriously fail.  You can see why many people say threading should be avoided at all costs!  The code is valid, usually works but every so often it fails in an unusual way.</p>
+
+<p>The simplest solution is to protect the queue with a mutex, and lock it around the inner block.  (There&rsquo;s another improvement we can make after we discuss exceptions.)</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="kt">void</span> <span class="n">workerThread</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">while</span> <span class="p">(</span> <span class="n">workerThreadRunning</span> <span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">queueMutex</span><span class="p">.</span><span class="n">lock</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="n">queue</span><span class="p">.</span><span class="n">isEmpty</span><span class="p">()</span> <span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="n">work_t</span> <span class="n">item</span> <span class="o">=</span> <span class="n">queue</span><span class="p">.</span><span class="n">pop</span><span class="p">();</span>
+</span><span class='line'>            <span class="n">process</span><span class="p">(</span><span class="n">item</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">queueMutex</span><span class="p">.</span><span class="n">unlock</span><span class="p">();</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>(There are more esoteric solutions to this problem, such as lock-free data structures, but those are beyond the scope of this series.)</p>
+
+<h2>Problem: Deadlocks</h2>
+
+<p>In a non-trivial application, there may be several threads and numerous mutexes.  When more than one thread locks more than one mutex, there arises the potential for a condition known as a <em>deadlock</em>.  This is where one thread is holding a lock while waiting for another to become available, while a second thread is holding the second lock and waiting for the first lock to become available.  Since they are both waiting for each other to finish, neither can run.  This deadlocked situation can be more involved, whereby several threads form a ring of holding and waiting for locks.  This is illustrated as follows, first in code then as a diagram:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="kt">void</span> <span class="n">threadA</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">while</span> <span class="p">(</span><span class="n">running</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">mutexOne</span><span class="p">.</span><span class="n">lock</span><span class="p">();</span>
+</span><span class='line'>        <span class="n">mutexTwo</span><span class="p">.</span><span class="n">lock</span><span class="p">();</span>
+</span><span class='line'>        <span class="n">processStuff</span><span class="p">();</span>
+</span><span class='line'>        <span class="n">mutexOne</span><span class="p">.</span><span class="n">unlock</span><span class="p">();</span>
+</span><span class='line'>        <span class="n">mutexTwo</span><span class="p">.</span><span class="n">unlock</span><span class="p">();</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="kt">void</span> <span class="n">threadB</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">while</span> <span class="p">(</span><span class="n">running</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">mutexTwo</span><span class="p">.</span><span class="n">lock</span><span class="p">();</span>
+</span><span class='line'>        <span class="n">mutexOne</span><span class="p">.</span><span class="n">lock</span><span class="p">();</span>
+</span><span class='line'>        <span class="n">processStuff</span><span class="p">();</span>
+</span><span class='line'>        <span class="n">mutexTwo</span><span class="p">.</span><span class="n">unlock</span><span class="p">();</span>
+</span><span class='line'>        <span class="n">mutexOne</span><span class="p">.</span><span class="n">unlock</span><span class="p">();</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="http://antonym.org/boost/DeadlockAnimation.gif" alt="DeadlockAnimation.gif" border="0" width="561" height="249" /></p>
+
+<p>Fortunately, the problem of deadlocks can largely be avoided by consistently locking mutexes in the same order, and unlocking them in reverse order.</p>
+
+<h2>Problem: Exceptions</h2>
+
+<p>Exceptions in C++ can be a very effective mechanism for error handling.  However, like many C++ features, care must be taken, especially in threads.  Because a thread is destroyed when the thread function returns, an uncaught exception can cause the entire thread to exit, without warning or notice.  So if you have a thread that mysteriously disappears, an uncaught exception is a likely culprit.</p>
+
+<p>As with non-threaded code, you should always catch the most specific exception type that you are able to handle.  But if you wish to avoid your thread being killed, you should add a top-level <code>try-catch</code> block.  At this point, depending on the application, you may simply log the uncaught exception then exit, or you may resume thread processing (but only if safe to do so!).</p>
+
+<p>A skeleton thread function might look something like:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="kt">void</span> <span class="n">processThread</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">while</span><span class="p">(</span><span class="n">keepProcessing</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">try</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="c1">// Do actual work</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="c1">// Catch more specific exceptions first if you can</span>
+</span><span class='line'>        <span class="k">catch</span> <span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">exception</span><span class="o">&amp;</span> <span class="n">exc</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="n">log</span><span class="p">(</span><span class="s">&quot;Uncaught exception: &quot;</span> <span class="o">+</span> <span class="n">exc</span><span class="p">.</span><span class="n">what</span><span class="p">());</span>
+</span><span class='line'>            <span class="c1">// Maybe return here?</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Just as an errant exception can cause havoc with threads running, they can also cause problems with mutexes.  The next article shows how to use a <em>lock guard</em> to ensure mutexes are unlocked, even if an exception is thrown.</p>
+
+<h2>Other Problems</h2>
+
+<p>Just to reinforce the idea that multithreaded programming is not a trivial undertaking, there are even more traps for the unwary, for which there is not sufficient time to delve into here.  Issues such as <a href="http://en.wikipedia.org/wiki/Resource_starvation">starvation</a>, <a href="http://en.wikipedia.org/wiki/Priority_inversion">priority inversion</a>, and high scheduling latency are all considerations for <a href="http://en.wikipedia.org/wiki/Concurrent_programming">concurrent programming</a>.  It is definitely worth consulting a good book or three.</p>
+
+<h2>Closing thoughts</h2>
+
+<p>Fortunately, there are well-known solutions to multi-threaded design issues, so it is entirely possible to write robust threaded code, provided one is careful and thoughtful.  Much of it starts with:</p>
+
+<ul>
+<li><strong>Minimise shared state</strong></li>
+</ul>
+
+
+<p>In days gone by, a multi-threaded system would often still only be running on a single core.  Certain classes of concurrency bugs were far less likely to happen.  But now multicore systems are standard, and we have truly concurrent execution, which brings into the fray problems such as memory consistency, cache latency, write-throughs, and so on.</p>
+
+<p>Especially now that multicore systems are shipping as standard on desktops and laptops, concurrent programming is required to take advantage of the available processing resources.  So a thorough understanding of multithreading is increasingly important.</p>
+
+<p>Some takeaway points to remember:</p>
+
+<ul>
+<li>Minimise shared state</li>
+<li>Program defensively</li>
+<li>Assume your threading code can be preempted at <em>any</em> time</li>
+<li>Identify shared resources and protect them with mutexes</li>
+<li>Identify algorithms that need to be atomic</li>
+<li>Identify code with dependent results that needs to be atomic</li>
+<li>Minimise the number of resources shared between threads</li>
+<li>Minimise the duration of locks</li>
+<li>Ensure exceptions cannot disrupt synchronisation flow</li>
+<li>Always acquire and release mutexes in the same order</li>
+</ul>
+
+
+<p>The next article looks at the types of mutexes, and how to use them.</p>
+
+<h2>Archived Comments</h2>
+
+<p>AUTHOR: Peter Sivak
+DATE: 01/24/2010 09:42:21 AM
+Great article!</p>
+
+<p>I have just started learning Boost-Threads and this article very clearly explains the use of multithreading features in Boost.</p>
+
+<p>I am giving this post a &ldquo;5-star rating&rdquo; and looking forward to the next article about &ldquo;mutexes&rdquo;.</p>
+
+<p>Keep on.</p>
+
+<p>COMMENT:
+AUTHOR: lacau
+DATE: 01/27/2010 09:23:36 PM
+Nice one, keep up teaching mate ;)
+Thumbs up!</p>
+]]></content>
+    
+  </entry>
+  
+  <entry>
+    
+    <title type="html"><![CDATA[STL: filtering]]></title>
+    <link href="http://www.antonym.org//blog/2009/09/16/stl-filtering/"/>
+    
+    <updated>2009-09-16T11:51:00+10:00</updated>
+    <id>http://www.antonym.org//blog/2009/09/16/stl-filtering</id>
+    
+    <content type="html"><![CDATA[<p>The STL makes it easy to create lists, iterate over lists, and apply a function to each member of a list.  So how do you filter a vector according to some criteria?  It&rsquo;s not hard, but the obvious solution isn&rsquo;t <em>quite</em> enough.  Here&rsquo;s how.</p>
+
+<!---more-->
+
+
+<p>Say you have a vector of values, and you want to apply a filter to the list.  That is,  remove elements that satisfy some criteria.  It&rsquo;s quite a common requirement, so you&rsquo;d think there would be an obvious and simple way to do it.  If you go searching for the word &ldquo;filter&rdquo; in the STL documentation, you may not find much relevant in the <code>std::vector</code> method reference.  If you browse around in STL algorithms, eventually you&rsquo;ll come across a method called <code>remove_if</code>.  It takes two iterators to specify the range (first and last) of the operation, and a predicate function.  Sounds perfect!</p>
+
+<p>Let&rsquo;s use it to filter a list of numbers, removing even numbers.  Given the following input:</p>
+
+<pre><code>1 2 3 4 5 6 7 8 9
+</code></pre>
+
+<p>we expect to see the result:</p>
+
+<pre><code>1 3 5 7 9
+</code></pre>
+
+<p>A predicate function is essentially a test for a property, and returns whether or not the parameter has this property.  So our predicate function will take an integer value (matching the element type of our vector) and return a boolean, denoting whether or not to remove the given element.  So we&rsquo;d have:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="kt">bool</span> <span class="n">is_even</span><span class="p">(</span><span class="kt">int</span> <span class="n">N</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">N</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Easy!  Now, to store our numbers, we would start with a simple vector of integers, thus:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="k">typedef</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">vector_t</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">vector_t</span>    <span class="n">numbers</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We read in the numbers in a loop and save them in the array:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="k">while</span> <span class="p">(</span><span class="kc">true</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">n</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">std</span><span class="o">::</span><span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">n</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">std</span><span class="o">::</span><span class="n">cin</span><span class="p">.</span><span class="n">good</span><span class="p">())</span>
+</span><span class='line'>        <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">numbers</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This will take care of reading in the data, as it will stop as soon as it reads something that isn&rsquo;t an integer, or reaches the end of file.  Now we just apply the filter, and then print the result:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">remove_if</span><span class="p">(</span><span class="n">numbers</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">numbers</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span> <span class="n">is_even</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">vector_t</span><span class="o">::</span><span class="n">iterator</span> <span class="n">it</span><span class="p">;</span>
+</span><span class='line'><span class="k">for</span> <span class="p">(</span><span class="n">it</span> <span class="o">=</span> <span class="n">numbers</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span> <span class="n">it</span> <span class="o">!=</span> <span class="n">numbers</span><span class="p">.</span><span class="n">end</span><span class="p">();</span> <span class="o">++</span><span class="n">it</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="o">*</span><span class="n">it</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>There, we&rsquo;re done!  Now, we just run the completed program, and give it some test data:</p>
+
+<pre><code>$ ./filter 
+1 2 3 4 5 6 7 8 9 -
+</code></pre>
+
+<p>But wait, the output we see is wrong!</p>
+
+<pre><code>1
+3
+5
+7
+9
+6
+7
+8
+9
+</code></pre>
+
+<p>Oh, no!  There must be a bug in the libraries!  Curses, foiled again!</p>
+
+<p>Actually, no &ndash; the sky isn&rsquo;t falling, and there is no bug.  Now is when we probably should be doing a bit of RTFMing.  Let&rsquo;s check the docs and see what&rsquo;s going on.  According to the <a href="http://gcc.gnu.org/onlinedocs/libstdc++/latest-doxygen/">g++ library documentation</a>:</p>
+
+<blockquote><p>&ldquo;Elements between the end of the resulting sequence and &lsquo;last&rsquo; are still present, but their value is unspecified.&rdquo;</p></blockquote>
+
+<p>Er, ok&hellip; that&rsquo;s handy &ndash; not.  Looking back at the output, we do notice that the first 5 values are correct, but there&rsquo;s some junk after them.  And sure enough, that&rsquo;s the documented behaviour &ndash; we are just seeing the &ldquo;unspecified&rdquo; values left behind.</p>
+
+<p>It is worth pointing out right about now that the fine folk who designed the STL were fairly obsessed with efficiency, and the STL is designed to be low-level, powerful and fast, sometimes at the expense of user friendliness.  It is more efficient to implement filtering as a generic algorithm that can be applied to any container.  And sure enough, that is the intent, as we see in the docs:</p>
+
+<blockquote><p>&ldquo;@return   An iterator designating the end of the resulting sequence.&rdquo;</p></blockquote>
+
+<p>Ah, we were actually supposed to do something with the return value!  The implementation of <code>remove_if</code> moves (or actually copies) the values to be kept to the head of the list, and returns an iterator pointing to the start of the &ldquo;junk&rdquo; (just after the filtered list), in preparation for this tail to be snipped off.  So, let&rsquo;s use the <code>erase</code> method to do just that:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">numbers</span><span class="p">.</span><span class="n">erase</span><span class="p">(</span><span class="n">remove_if</span><span class="p">(</span><span class="n">numbers</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">numbers</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span> <span class="n">is_even</span><span class="p">),</span> <span class="n">numbers</span><span class="p">.</span><span class="n">end</span><span class="p">());</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now, running the test application again, we get the output:</p>
+
+<pre><code>1
+3
+5
+7
+9
+</code></pre>
+
+<p>Huzzah!  It is really a matter of getting a feel for the design patterns behind the STL, and the very low-level API that it provides.</p>
+
+<p>This process can be visualised thus:</p>
+
+<p><span class="mt-enclosure mt-enclosure-image" style="display: inline;"><img alt="STL Filtering Example" src="http://antonym.org/images/STLFilteringExample.png" width="532" height="670" class="mt-image-none" style="" /></span></p>
+
+<p>It is also worth mentioning at this point that if you are doing a lot of adding and removing of  elements, a <code>std::list</code> is probably a better choice, as inserting and deleting elements in vectors is very expensive.</p>
+
+<p>Now, you&rsquo;re probably wondering why <code>remove_if</code> is a function in the STL <code>algorithms</code> collection, rather than a method in <code>std::vector</code> itself.  Well, the folks who designed the STL are very, very clever.  The obvious thing would be to put a <code>remove_if</code> method in every single container class.  But the implementation would be <em>almost</em> the same, right?  Well, they reasoned, what if all container classes provided a common, minimal interface, we could implement <code>remove_if</code> just once, and it could apply to almost any container!  It&rsquo;s even more generic that way.  So there are a whole series of algorithms that apply to a wide variety of different containers, and use informal interfaces to decouple things.</p>
+
+<p>The (platform-neutral) sample code is available below&hellip;</p>
+
+<ul>
+<li>Sample C++ code: <span class="mt-enclosure mt-enclosure-file" style="display: inline;"><a href="http://antonym.org/files/stl_filter.zip">stl_filter.zip</a></span> (4.5kB zip)</li>
+</ul>
+
+]]></content>
+    
+  </entry>
+  
+  <entry>
+    
+    <title type="html"><![CDATA[Threading with Boost - Part I: Creating Threads]]></title>
+    <link href="http://www.antonym.org//blog/2009/09/13/threading-with-boost-part-i-creating-threads/"/>
+    
+    <updated>2009-09-13T22:16:00+10:00</updated>
+    <id>http://www.antonym.org//blog/2009/09/13/threading-with-boost-part-i-creating-threads</id>
+    
+    <content type="html"><![CDATA[<p><a href="http://www.boost.org/">Boost</a> is an incredibly powerful collection of portable class libraries for C++.  There are classes for such tasks as date/time manipulation, filesystem interfaces, networking, numerical programming, interprocess communication and <a href="http://www.boost.org/doc/libs">much more</a>.</p>
+
+<p>The Boost documentation is substantial, but can still be daunting to new users.  So this article is the first of a series on using Boost, starting with basic threading.  It aims to provide an accessible introduction, with complete working examples.</p>
+
+<!--more-->
+
+
+<p>First, this article assumes you know about general threading concepts and the basics of how to use them on your platform.  (For a refresher, see the Wikipedia article on <a href="http://en.wikipedia.org/wiki/Thread_(computer_science">Threads</a>).)  Here I focus specifically on how to use <a href="http://www.boost.org/doc/libs/1_39_0/doc/html/thread.html">Boost threads</a> in a practical setting, starting from the basics.  I also assume you have Boost installed and ready to use (see the Boost <a href="http://www.boost.org/doc/libs/1_39_0/more/getting_started/index.html">Getting Started Guide</a> for details).</p>
+
+<p>This article looks specifically at the different ways to <em>create</em> threads.  There are many other techniques necessary for real multi-threaded systems, such as synchronisation and mutual exclusion, which will be covered in a future article.</p>
+
+<h2>Overview</h2>
+
+<p>A <code>boost::thread</code> object represents a single thread of execution, as you would normally create and manage using your operating system specific interfaces.  For example: on POSIX systems, a Boost thread uses the <code>Pthreads</code> API, and on Win32 it uses the native <code>CreateThread</code> and related calls.  Because Boost abstracts away all the platform-specific code, you can easily write sophisticated and portable code that runs across all major platforms.  A thread object can be set to a special state of not-a-thread, in which case it is inactive (or hasn&rsquo;t been given a thread function to run yet).</p>
+
+<p>A <code>boost::thread</code> object is normally constructed by passing the threading function or method it is to run.  There are actually a number of different ways to do so.  I cover the main thread creation approaches below.</p>
+
+<h2>Code Examples</h2>
+
+<p>All the code examples are provided in a single download below, which you can use for any purpose, no strings attached.  (The usual disclaimer is that no warranties apply!)  And just as Boost runs on many platforms (ie. Windows, Unix/Linux, Mac OS X and others) the example code should be similarly portable.</p>
+
+<ul>
+<li>Download <span class="mt-enclosure mt-enclosure-file" style="display: inline;"><a href="http://antonym.org/boost/boost_threads_eg1.zip"><code>boost_threads_eg1.zip</code></a> (4kB)</span></li>
+</ul>
+
+
+<p>There is a separate example program for each section below, and a common Bjam script to build them all (<code>Jamroot</code>).  <a href="http://www.boost.org/boost-build2/doc/html/index.html">Bjam</a> is the Boost build system, a very powerful (but notoriously difficult to learn, and worthy of a whole series of articles).</p>
+
+<p>Having said that, you are certainly not obliged to use Bjam.  It is still worth knowing how to build applications manually before relying on scripts, so here is an example command line for manual compilation on my system (Mac OS X with Boost installed from MacPorts):</p>
+
+<pre><code>g++ -I/opt/local/include -L/opt/local/lib -lboost_thread-mt -o t1 t1.cpp
+</code></pre>
+
+<p>All this does is add an include path (with the <code>-I</code> option) pointing to the root of the boost headers, add the library search path (with the <code>-L</code> option) and link in the threading library (<code>boost_thread-mt</code>).  You can use the above as the basis for writing our own Makefile if you prefer, or creating build rules in your IDE of choice.</p>
+
+<h2>Doing &lsquo;Real&rsquo; Work</h2>
+
+<p>And before we dive in, a quick note on doing &ldquo;real work&rdquo;&hellip; In the examples below, a simple sleep call is used to simulate performing actual work in the threads.  This is simply to avoid cluttering up the examples with code that would take some finite time to execute but would otherwise be irrelevant.</p>
+
+<p>The simplest way to sleep for a given duration using Boost is to first create a time duration object, and then pass this to the <code>sleep</code> method of the special <code>boost::this_thread</code> class.  The <code>this_thread</code> class gives us a convenient way to refer to the currently running thread, when we otherwise may not be able to access it directly (ie. within an arbitrary function).  Here&rsquo;s how to sleep for a few seconds:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="c1">// Three seconds of pure, hard work!</span>
+</span><span class='line'><span class="n">boost</span><span class="o">::</span><span class="n">posix_time</span><span class="o">::</span><span class="n">seconds</span> <span class="n">workTime</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+</span><span class='line'><span class="n">boost</span><span class="o">::</span><span class="n">this_thread</span><span class="o">::</span><span class="n">sleep</span><span class="p">(</span><span class="n">workTime</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In the <code>main()</code> function, we then wait for the worker thread to complete using the <code>join()</code> method.  This will cause the main thread to sleep until the worker thread completes (successfully or otherwise).</p>
+
+<p>The observant reader will wonder then what the advantage is in spawning a thread, only to wait for it to complete?  Surely that serialises the execution path and places us firmly back in sequential world?  What is the point of spawning a thread?  Well, until we figure out how to use the synchronisation mechanisms, this is the most straightforward approach to illustrate thread creation.  And knowing ow to &lsquo;join&rsquo; threads is also very important.  To synchronise the completion of a thread, we wait for it to finish by calling <code>workerThread.join()</code>.</p>
+
+<p>The general structure of the examples below is shown in the following sequence diagram:</p>
+
+<p><span class="mt-enclosure mt-enclosure-image" style="display: inline;"><img alt="BoostThreadExample.png" src="http://antonym.org/boost/BoostThreadExample.png" width="410" height="462" class="mt-image-center" style="text-align: center; display: block; margin: 0 auto 20px;" /></span></p>
+
+<p>The application starts, and the main thread runs at (a).  Then at (b), the main thread spawns the worker thread by constructing a thread object with the worker function.  Right after, at &copy;, the main thread calls <code>join</code> on the thread, which means it will go to sleep (and not consume any CPU time) until the worker thread has completed.  As soon as the worker thread is created at (b), it will start execution.  At some point later at (d), the worker completes.  Since the main thread was joining on its completion, main wakes up and continues running.  It finishes at (e) and the process terminates.  Each of the examples below follow this general scheme &ndash; the difference lies in how the threads are created.</p>
+
+<h2>Type 1: A Thread Function</h2>
+
+<p>The simplest threading scenario is where you have a simple (C-style) function that you want to run as a separate thread.  You just pass the function to the <code>boost::thread</code> constructor, and it will start running.  You can then wait for the thread to complete by calling <code>join()</code>, as shown above.</p>
+
+<p>The following example shows how.  First, we include the correct Boost thread header, create the thread object and pass in our worker function.  The main thread in the process will then wait for the thread to complete.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="cp">#include &lt;iostream&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;boost/thread.hpp&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;boost/date_time.hpp&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">void</span> <span class="n">workerFunc</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">boost</span><span class="o">::</span><span class="n">posix_time</span><span class="o">::</span><span class="n">seconds</span> <span class="n">workTime</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Worker: running&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// Pretend to do something useful...</span>
+</span><span class='line'>    <span class="n">boost</span><span class="o">::</span><span class="n">this_thread</span><span class="o">::</span><span class="n">sleep</span><span class="p">(</span><span class="n">workTime</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Worker: finished&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">*</span> <span class="n">argv</span><span class="p">[])</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;main: startup&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">boost</span><span class="o">::</span><span class="kr">thread</span> <span class="n">workerThread</span><span class="p">(</span><span class="n">workerFunc</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;main: waiting for thread&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">workerThread</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;main: done&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>When you run the program, you should see output similar to the following:</p>
+
+<pre><code>% ./t1
+main: startup
+main: waiting for thread
+Worker: running
+Worker: finished
+main: done
+</code></pre>
+
+<p>It&rsquo;s as simple as that!  This created a thread and ran it, and you would have seen a pause while the worker thread was running (ok, busy sleeping!).  Later on, we&rsquo;ll do something a bit more substantial.  But this example shows the absolute minimum code required to start a simple thread.  Simply pass your function to the <code>boost::thread</code> constructor.</p>
+
+<h2>Type 2: Function with Arguments</h2>
+
+<p>So the above function wasn&rsquo;t terribly useful by itself.  We really want to be able to pass in arguments to the thread function.  And fortunately, it&rsquo;s very easy &ndash; you simply add parameters to the thread object&rsquo;s constructor, and those arguments are automagically bound and passed in to the thread function.</p>
+
+<p>Let&rsquo;s say your thread function had the following signature:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="kt">void</span> <span class="n">workerFunc</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">msg</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="n">delaySecs</span><span class="p">)</span> <span class="c1">//...</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You simply pass the arguments to the thread constructor after the name of the thread function, thus:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">boost</span><span class="o">::</span><span class="kr">thread</span> <span class="n">workerThread</span><span class="p">(</span><span class="n">workerFunc</span><span class="p">,</span> <span class="s">&quot;Hello, boost!&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This example is called &lsquo;t2&rsquo; in the source examples.</p>
+
+<h2>Type 3: Functor</h2>
+
+<p>A functor is a fancy name for an object that can be called just like a function.  The class defines a special method by overloading the <code>operator()</code> which will be invoked when the functor is called.  In this way, the functor can encapsulate the thread&rsquo;s context and still behave like a thread function.  (Functors are not specific to threads, they are simply very convenient.)</p>
+
+<p>This is what our functor looks like:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="k">class</span> <span class="nc">Worker</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'><span class="k">public</span><span class="o">:</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">Worker</span><span class="p">(</span><span class="kt">unsigned</span> <span class="n">N</span><span class="p">,</span> <span class="kt">float</span> <span class="n">guess</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="n">iter</span><span class="p">)</span>
+</span><span class='line'>            <span class="o">:</span> <span class="n">m_Number</span><span class="p">(</span><span class="n">N</span><span class="p">),</span>
+</span><span class='line'>              <span class="n">m_Guess</span><span class="p">(</span><span class="n">guess</span><span class="p">),</span>
+</span><span class='line'>              <span class="n">m_Iterations</span><span class="p">(</span><span class="n">iter</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kt">void</span> <span class="k">operator</span><span class="p">()()</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Worker: calculating sqrt(&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">m_Number</span>
+</span><span class='line'>                  <span class="o">&lt;&lt;</span> <span class="s">&quot;), itertations = &quot;</span>
+</span><span class='line'>                  <span class="o">&lt;&lt;</span> <span class="n">m_Iterations</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// Use Newton&#39;s Method</span>
+</span><span class='line'>        <span class="kt">float</span>   <span class="n">x</span><span class="p">;</span>
+</span><span class='line'>        <span class="kt">float</span>   <span class="n">x_last</span> <span class="o">=</span> <span class="n">m_Guess</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">for</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">m_Iterations</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="n">x</span> <span class="o">=</span> <span class="n">x_last</span> <span class="o">-</span> <span class="p">(</span><span class="n">x_last</span><span class="o">*</span><span class="n">x_last</span><span class="err">\</span><span class="o">-</span><span class="n">m_Number</span><span class="p">)</span><span class="o">/</span>
+</span><span class='line'>                    <span class="p">(</span><span class="mi">2</span><span class="err">\</span><span class="o">*</span><span class="n">x_last</span><span class="p">);</span>
+</span><span class='line'>            <span class="n">x_last</span> <span class="o">=</span> <span class="n">x</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Iter &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; = &quot;</span>
+</span><span class='line'>                  <span class="o">&lt;&lt;</span> <span class="n">x</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Worker: Answer = &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">x</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">private</span><span class="o">:</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kt">unsigned</span>    <span class="n">m_Number</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">float</span>       <span class="n">m_Guess</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">unsigned</span>    <span class="n">m_Iterations</span><span class="p">;</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This worker functor calculates a square root of a number using <a href="http://en.wikipedia.org/wiki/Newton%27s_method">Newton-Rhapson&rsquo;s method</a>, just for fun (ok, I got bored putting sleep in all the threads).  The number, a rough guess and the number of iterations is passed to the constructor.  The calculation (which is in fact extremely fast) is performed in the thread itself, when the <code>operator()()</code> gets called.</p>
+
+<p>So in the main code, first we create our callable object, constructing it with any necessary arguments as normal.  Then you pass the instance to the <code>boost::thread</code> constructor, which will invoke the <code>operator()()</code> method on your functor.  This becomes the new thread, and runs just like any other thread, with the added benefit that it has access to the object&rsquo;s context and other methods.  This approach has the benefit of wrapping up a thread into a convenient bundle.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">*</span> <span class="n">argv</span><span class="p">[])</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;main: startup&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">Worker</span> <span class="n">w</span><span class="p">(</span><span class="mi">612</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">boost</span><span class="o">::</span><span class="kr">thread</span> <span class="n">workerThread</span><span class="p">(</span><span class="n">w</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;main: waiting for thread&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">workerThread</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;main: done&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Note: A very important consideration when using functors with boost threads is that the thread constructor takes the functor parameter <em>by value</em>, and thus makes a <em>copy</em> of the functor object.  Depending on the design of your functor object, this may have unintended side-effects.  Take care when writing functor objects to ensure that they can be safely copied.</p>
+
+<h2>Type 4: Object method I</h2>
+
+<p>It is frequently convenient to define an object with an instance method that runs on its own thread.  After all, we&rsquo;re coding C++ here, not C!  With Boost&rsquo;s <code>thread</code> object, this only slightly more work than making a regular function into a thread.  First, we have to specify the method using its class qualifier, as you would expect, and we use the <code>&amp;</code> operator to pass the address of the method.</p>
+
+<p>Because methods in C++ always have an implicit <code>this</code> pointer passed in as the first parameter, we need to make sure we call the object&rsquo;s method using the same convention.  So we will pass the object pointer (or <code>this</code> depending on whether we are inside the object or not) as the first parameter, along with any other actual parameters we might have after that, thus:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">Worker</span> <span class="n">w</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+</span><span class='line'><span class="n">boost</span><span class="o">::</span><span class="kr">thread</span> <span class="n">workerThread</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Worker</span><span class="o">::</span><span class="n">processQueue</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">w</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>As an aside, take care in your own code that you don&rsquo;t accidentally allocate an object on the stack in one place, spawn a thread, then have the object go out of scope and be destroyed before the thread has completed!  This could be the source of many tricky bugs.</p>
+
+<p>The full listing is essentially the same.  To pass additional parameters to the method, simply add them in the constructor to the thread object after the object pointer.</p>
+
+<h2>Type 5: Object method II</h2>
+
+<p>You may want to create a bunch of objects that manage their own threads, and can be created and run in a more flexible manner than keeping around a bunch of objects along with their associated threads in the caller.  (I think they call this encapsulation.)</p>
+
+<p>So our final example places the thread instance within the object itself, and provides methods to manage them.  Since the thread object exists as an instance member (as opposed to a pointer), what happens in the constructor?  In particular, what if we don&rsquo;t want to run the thread at the same time as we create our object?  Fortunately, the default constructor for the thread creates it in an &ldquo;invalid&rdquo; state, called <code>not-a-thread</code>, which will do nothing until you assign a real one to it (in our <code>start</code> method, for example).</p>
+
+<p>So now our class declaration has the following data member added:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="c1">//...</span>
+</span><span class='line'><span class="k">private</span><span class="o">:</span>
+</span><span class='line'>    <span class="n">boost</span><span class="o">::</span><span class="kr">thread</span>    <span class="n">m_Thread</span><span class="p">;</span>
+</span><span class='line'><span class="c1">//...</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The <code>Worker::start()</code> method spawns the thread which will run the <code>processQueue</code> method.  Notice how we pass in <code>this</code> as the first bound parameter?  Because we are using an instance method (and not a class method or regular function), we must ensure the first parameter is the instance pointer.  The <code>N</code> parameter is the first actual parameter for the thread function, as can be seen in its signature.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="kt">void</span> <span class="n">start</span><span class="p">(</span><span class="kt">int</span> <span class="n">N</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">m_Thread</span> <span class="o">=</span> <span class="n">boost</span><span class="o">::</span><span class="kr">thread</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Worker</span><span class="o">::</span><span class="n">processQueue</span><span class="p">,</span> <span class="k">this</span><span class="p">,</span> <span class="n">N</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The join method is very simply:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="kt">void</span> <span class="n">join</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">m_Thread</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>which means our main function becomes no more than:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">Worker</span> <span class="n">worker</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">worker</span><span class="p">.</span><span class="n">start</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">worker</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This encapsulation of the threading can be very useful, especially when combined with patterns such as the Singleton (which we will look at in a future article).</p>
+
+<h2>Conclusion</h2>
+
+<p>We have seen a variety of techniques for creating threads using the Boost threading library.  From simple C functions to instance methods with parameters, the thread class permits a great deal of flexibility in how you structure your application.</p>
+
+<h2>Future Articles</h2>
+
+<p>In later installments, we will look at synchronisation methods, mutexes, and all sorts of other interesting techniques.</p>
+
+<p>Please leave a comment below, with any questions or feedback you may have.  Too long?  Too brief?  More details required?  Something confusing?  Let me know.</p>
+
+<h2>Archived Comments</h2>
+
+<p>AUTHOR: saesh
+DATE: 06/10/2009 11:32:39 PM
+nice article. helped me to get into thread. thank you.</p>
+
+<p>looking forward for an article about synchronization though.</p>
+
+<p>AUTHOR: tflmike
+DATE: 06/23/2009 02:45:13 PM
+A good tutorial with a clear explaination for beginning to work with boost threads, your article cleared it up for me, thank you.</p>
+
+<p>AUTHOR: paolo
+DATE: 08/01/2009 02:02:33 AM
+great, thanks a lot.
+it saved me one hour of hopeless searching over the internet&hellip;</p>
+
+<p>AUTHOR: Zach
+DATE: 08/08/2009 02:57:34 AM
+OMG, Thank you so much for taking your time to do this. I  have learn much and take much from this please continue</p>
+
+<p>AUTHOR: Zach
+DATE: 08/08/2009 04:12:02 AM
+Can you please do tutorial on multithreading with Boost C++ :)</p>
+
+<p>AUTHOR: Leandro
+DATE: 08/31/2009 03:25:08 AM
+Very nice article!!! It&rsquo;s hard to find good articles like this about the Boost Thread library. Please, write about synchronization and the correlated stuffs.</p>
+
+<p>Good work!!! Thanks!!!</p>
+
+<p>AUTHOR: Marian
+DATE: 09/04/2009 07:43:29 PM
+Superb!
+I&rsquo;m only beginer in c++ and this way of explanation is really useful for me.
+Thank you and don&rsquo;t forget to continue :&ndash;)</p>
+
+<p>AUTHOR: Yuriy
+DATE: 09/18/2009 10:20:18 PM
+Easy to understand. Very helpful! Thanks a lot!</p>
+
+<p>AUTHOR: Raby Whyte
+DATE: 09/29/2009 02:07:59 AM
+Very helpful indeed. Thanks :) Keep &lsquo;em coming</p>
+
+<p>AUTHOR: sk
+DATE: 10/07/2009 02:40:56 AM
+Quite good article.
+Hope you can have a time for your future ones about boost thread</p>
+
+<p>AUTHOR: murli Dhar
+DATE: 10/26/2009 02:56:09 AM</p>
+
+<p>Wow! That was a GR8 piece of article. Extremely well written. It is unbelieveable that there are people like you out there,you can put some good work out there for the community without expecting anything back.</p>
+
+<p>Keep it up!</p>
+
+<p>Murli</p>
+
+<p>AUTHOR: Alan Orcharton
+DATE: 10/30/2009 08:30:57 AM
+Thanks &ndash; a great summary!!  to help me with everythng I needed get started using boost threads</p>
+
+<p>AUTHOR: Cuong Bui
+DATE: 04/16/2010 03:37:30 PM
+Very excellent article. From this, I get more knowlegde into threading with Boost.</p>
+
+<p>Many thanks,
+Cuong Bui</p>
+]]></content>
+    
+  </entry>
+  
+  <entry>
+    
+    <title type="html"><![CDATA[Emacs Myths]]></title>
+    <link href="http://www.antonym.org//blog/2002/01/12/emacs-myths/"/>
+    
+    <updated>2002-01-12T02:46:00+11:00</updated>
+    <id>http://www.antonym.org//blog/2002/01/12/emacs-myths</id>
+    
+    <content type="html"><![CDATA[<p>A recent <a href="http://www.newsforge.com/">article</a> on NewsForge brought up
+one of the oldest rwars on the planet (almost as old as the operating system
+rwars), asking which editor is best: vi or Emacs?  I was inspired to write my
+own thoughts, findings and opinions after reading this article.  Especially
+since most of the arguments I read were trolls sprouting opinions and
+regurgitating fallacies, rather than any informed sort of debate.  So here I am,
+with my own 2 cents.</p>
+
+<!--more-->
+
+
+<h2>History</h2>
+
+<p>First, a few words on my history with editors.  I am an Emacs user, and have
+been for around 4 years.  Over the years, I have used a wide variety of editors
+on a number of platforms platforms.  Some of my favourites were Brief (small,
+fast, powerful), E/PM (powerful, intuitive) and Visual SlickEdit (very much like
+Emacs, but with crap default keybindings).  And yes, for a number of years,
+whenever I used Unix I used vi.  I found the modal editing system to be arcane,
+the keybindings obscure, and the functionality limited.  But I still used it for
+a long time,  and knew it reasonably well.</p>
+
+<p>One day I was reading the newsgroups, when a discussion (which quickly descended
+into a flamewar) on the relative merits of vi and Emacs broke out. Based on what
+people were saying, I thought this thing called Emacs sounded interesting, and I
+decided to check it out.  It was  installed on one of the Unix machines at Uni,
+so I tried it out and went through the tutorial.  I found the keys a bit weird,
+and felt a bit lost.  Unfortunately, this was around the time I was working on a
+major project, and it was pretty poor timing to consider changing editors.  I
+forgot about it, until around 6 months later.  I was working on a project over
+summer, and I thought it was time to try this new editor again.  I was intrigued
+by what I had read, as it sounded very powerful.  So I fired up the tutorial,
+and learned the very basic editing keys.  Then I started to actually use it
+while working on a compiler I was writing.  I found that once I knew the basics,
+I could get by.  And once I discovered how to take advantage of the help system,
+I could just look things up whenever I needed to do something but didn&rsquo;t know
+the keys. After a while, I started seeing the patterns in things.  There is,
+believe it or not, a system to the key mappings, which starts to make sense once
+you know enough of them.  But by the time I had moved past the &lsquo;novice&rsquo; user
+stage, I noticed three striking things.</p>
+
+<p>First, I was rapidly discovering that Emacs was much more than an editor. It was
+an incredibly powerful text processing system with a Lisp interpreter at its
+core, which could be extended in any way imaginable.  Second, I found that I
+could learn things incrementally.  Whenever I needed to do something new, such
+as run a spell check on a document, I would just look up the help system and
+there it was.  Which leads me to the third thing &ndash; after you use Emacs for a
+while, you realise that every time you need to do something, somebody has
+thought of it already, and it&rsquo;s there.  You can tell just by using it that it
+was designed by programmers for programmers.  So there are some of the reasons
+why I now call myself an Emacs user.  I&rsquo;ve just about tried them all, and I&rsquo;ve
+chosen the one I believe is the best, for many reasons.</p>
+
+<h2>Fact or opinion?</h2>
+
+<p>I went looking for pages advocating vi over Emacs, and found very little
+substance.  Most of the stuff around seems to be opinionated trolls spouting the
+usual &ldquo;Emacs sux&rdquo; lines, with no substantive arguments to back it up.  I have
+actually been the target of active ridicule by fellow  programmers who use vi.
+The interesting thing was that they all said the same two things: Emacs is big,
+and Emacs is slow.  But beyond that, they actually knew very little about what
+Emacs could do.  So let&rsquo;s dispell a few myths.</p>
+
+<h2>Emacs is big</h2>
+
+<p>Yes, it is &ndash; the latest version of Emacs (v21) takes up around 40Mb on my
+machine.  For comparison, the latest version of Vim takes up around 12Mb. But
+really, so what?  There is an enormous amount of functionality in the full
+package &ndash; you really do get a lot of bang-for-buck. Besides, these days, hard
+drives are so cheap that the difference here is meaningless &ndash; a few cents.  If
+you are really concerned about size, it is pretty easy to make a minimalist
+distribution of Emacs of only a few Meg.  And there are alternatives such as
+microEmacs which may suit too (this is is what Linus Torvalds, creator of Linux
+uses).</p>
+
+<h2>Emacs is slow</h2>
+
+<p>Slower to load perhaps, but certainly not slow to run.  Compared to vi, an Emacs
+system configured with a bunch of packages usually takes longer to load; this is
+true.  But once loaded, Emacs is extremely fast with just about every operation.
+And a fundamental distinction must be made here &ndash; unlike most vi users, Emacs
+users tend to open a session at the start of the day and leave it running,
+opening and closing multiple buffers.  This is a very different work style to
+the typical vi user, who will open and close vi many times.  In this case,
+startup time is obviously important, but the extra second or two for Emacs is
+irrelevant.  For text processing, that is where the speed counts, and even for
+multi-megabyte files Emacs is very fast.</p>
+
+<h2>Emacs is bloated</h2>
+
+<p>Many people think that Emacs is bloated, in that it has built in web browsing,
+mail reading, kitchen sink, news reading, etc. etc. Some people see this as an
+advantage, some think it sucks. Much of it comes down to personal perference,
+but don&rsquo;t forget you only use what you need. The extra functionality is there if
+you want it.  You can always use a minimalist installation with just what you
+need. People don&rsquo;t complain that Debian is bloated because it has over 4000
+packages, because people can just install the packages they want.</p>
+
+<h2>vim can do anything Emacs can</h2>
+
+<p>Crap. There are a zillion things Emacs can do that vi can&rsquo;t. The vast majority
+of vim users wouldn&rsquo;t have a clue just what functionality is available in Emacs,
+and anyone still wanting to argue this point should go reread point #3 above.</p>
+
+<h2>Modal editors are cool</h2>
+
+<p>Ok, I used to use vi. But the modality really bugged me. Now if you ask any
+knowledgable person in HCI, they will tell you that modal apps are bad design.
+They should know. Now I happen to prefer Emacs because it is not modal. But if
+you seriously prefer vim because it is modal, or you like the keystrokes, then
+fine &ndash; that is your opinion. It&rsquo;s about the only decent reason I&rsquo;ve heard for
+anyone using it.  So if you like that, great &ndash; enjoy it, I say. I won&rsquo;t argue
+with your preference.  But don&rsquo;t start preaching about how it is somehow
+inherently better &ndash; plenty of experts will disagree, and rightly so IMHO.</p>
+
+<p>&ldquo;People don&rsquo;t know that vi was written for a world that doesn&rsquo;t exist anymore.&rdquo;</p>
+
+<p>Who said that? Bill Joy, creator of vi. You have to remember that vi was
+designed for low-speed character terminals. But the world has moved on, as Bill
+notes. Obviously vi is stuck in the dark ages &ndash; vim might be an improvement on
+vi, but the fundamental design of modal editing no longer has a rationale.</p>
+
+<h2>Empirical Comparisons</h2>
+
+<p>Instead of making wild pronouncements, I decided to do some empirical testing.
+So I fired up both the console and the GUI versions of Emacs and Vim.  Here are
+the results (according to &lsquo;top&rsquo;):</p>
+
+<pre><code>  Program
+  Size
+
+
+  gvim
+  emacs
+  vim
+  emacs
+
+
+  8560K
+  10M   
+  8152K 
+  8544K 
+</code></pre>
+
+<p>So yes, Emacs is bigger, but not by very much.  And I would argue that for that
+size, you get a lot more functionality.  So for the sake of a few hundred
+kilobytes, I don&rsquo;t think those who argue that Emacs is huge compared to vi have
+much ground to stand on in light of these figures.</p>
+
+<p>Now comes the speed tests.  We want to test startup time only, so I ran the same
+test on each editor 5 times, then averaged the results.  I had already loaded
+both prior to the tests to prime the cache. Each editor was passed a command
+line which would make it quit straight away.  This was about the best comparison
+for startup time I could come up with.  If anyone has a better idea, I will
+listen.</p>
+
+<pre><code>  Program
+  Emacs
+  Vim
+
+
+  Size
+  0.348s
+  0.428s
+
+
+  Command Line
+  emacs -q -nw --execute (kill-emacs)
+  vim -c q
+</code></pre>
+
+<p>Now this was a big surprise &ndash; Emacs actually came out faster in startup time!  I
+was certainly not expecting this.  I know that it can slow down if you preload
+lots of packages in your customisation file (which is why you should use
+autoload) but I wasn&rsquo;t expecting this.</p>
+
+<h2>Conclusion</h2>
+
+<p>Well, what can we say?  Emacs is much bigger in terms of disk space, but it has
+lots more functionality out of the box.  It is a little bigger in terms of
+memory footprint, with no extras loaded.  And it can even load as quickly as vim
+if you want it to.</p>
+
+<p>Now I am not trying to convert vi users to Emacs, so don&rsquo;t get me wrong.  I just
+wanted to set the record straight about those ignorant vi users who deride Emacs
+out of an ill-deserved sense of superiority.  Now if you prefer vi, then great &ndash;
+use it! I&rsquo;m happy for you!  But don&rsquo;t turn around and try to argue that it is
+somehow intrinsically better than Emacs unless you have some facts and cogent
+arguments to back up your words.</p>
 ]]></content>
     
   </entry>

@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: software | Gavin Baker ~ antonym.org]]></title>
-  <link href="http://www.antonym.org/blog/categories/software/atom.xml" rel="self"/>
-  <link href="http://www.antonym.org/"/>
-  <updated>2013-10-10T11:08:30+11:00</updated>
-  <id>http://www.antonym.org/</id>
+  <link href="http://www.antonym.org//blog/categories/software/atom.xml" rel="self"/>
+  <link href="http://www.antonym.org//"/>
+  <updated>2013-10-16T10:49:14+11:00</updated>
+  <id>http://www.antonym.org//</id>
   <author>
     <name><![CDATA[Gavin Baker]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[What is Rust?]]></title>
-    <link href="http://www.antonym.org/blog/2013/10/08/what-is-rust/"/>
+    <link href="http://www.antonym.org//blog/2013/10/08/what-is-rust/"/>
     <updated>2013-10-08T20:50:00+11:00</updated>
-    <id>http://www.antonym.org/blog/2013/10/08/what-is-rust</id>
+    <id>http://www.antonym.org//blog/2013/10/08/what-is-rust</id>
     <content type="html"><![CDATA[<p><a href="http://www.rust-lang.org/">Rust</a> is a compiled, hybrid imperative/object-
 oriented/functional language. It appeals directly to any C++ developer who has
 battled with memory management, and Python developers who long for faster code.</p>

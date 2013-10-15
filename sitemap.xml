@@ -1,23 +1,57 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
-        <loc>http://www.antonym.org/blog/2013/10/08/what-is-rust/</loc>
+        <loc>http://www.antonym.org//blog/2002/01/12/emacs-myths/</loc>
+        <lastmod>2013-10-11T09:06:22+11:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://www.antonym.org//blog/2009/09/13/threading-with-boost-part-i-creating-threads/
+        </loc>
+        <lastmod>2013-10-16T09:00:04+11:00</lastmod>
+    </url>
+    <url>
+        <loc>http://www.antonym.org//blog/2009/09/16/stl-filtering/</loc>
+        <lastmod>2013-10-16T08:49:03+11:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://www.antonym.org//blog/2010/01/01/threading-with-boost-part-ii-threading-challenges/
+        </loc>
+        <lastmod>2013-10-16T08:37:42+11:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://www.antonym.org//blog/2010/04/07/25-tips-for-intermediate-mercurial-users/
+        </loc>
+        <lastmod>2013-10-15T20:05:08+11:00</lastmod>
+    </url>
+    <url>
+        <loc>http://www.antonym.org//blog/2011/03/09/good-code-gardening/</loc>
+        <lastmod>2013-10-15T19:58:24+11:00</lastmod>
+    </url>
+    <url>
+        <loc>http://www.antonym.org//blog/2013/10/08/what-is-rust/</loc>
         <lastmod>2013-10-10T09:12:37+11:00</lastmod>
     </url>
     <url>
-        <loc>http://www.antonym.org/about/</loc>
+        <loc>http://www.antonym.org//about/</loc>
         <lastmod>2013-10-10T08:40:00+11:00</lastmod>
     </url>
     <url>
-        <loc>http://www.antonym.org/blog/archives/</loc>
-        <lastmod>2013-10-10T09:12:37+11:00</lastmod>
+        <loc>http://www.antonym.org//blog/archives/</loc>
+        <lastmod>2013-10-16T09:00:04+11:00</lastmod>
     </url>
     <url>
-        <loc>http://www.antonym.org/</loc>
-        <lastmod>2013-10-10T09:12:37+11:00</lastmod>
+        <loc>http://www.antonym.org//</loc>
+        <lastmod>2013-10-16T09:00:04+11:00</lastmod>
     </url>
     <url>
-        <loc>http://www.antonym.org/robots.txt</loc>
+        <loc>http://www.antonym.org//libfg/</loc>
+        <lastmod>2013-10-15T10:08:52+11:00</lastmod>
+    </url>
+    <url>
+        <loc>http://www.antonym.org//robots.txt</loc>
         <lastmod>2013-10-08T21:06:37+11:00</lastmod>
     </url>
 </urlset>

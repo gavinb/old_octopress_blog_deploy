@@ -1,0 +1,690 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>libfg - video4linux framegrabber library - Gavin Baker ~ antonym.org</title>
+  <meta name="author" content="Gavin Baker">
+
+  
+  <meta name="description" content="Libfg - Video4linux Framegrabber Library 2003-01-13 New! &ndash; the latest version supports USB cameras,
+and features a sample app for live video &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.antonym.org//libfg">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Gavin Baker ~ antonym.org" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
+  
+
+</head>
+
+<body   class="collapse-sidebar sidebar-footer" >
+  <header role="banner">
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:www.antonym.org/" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article role="article">
+  
+  <header>
+    <h1 class="entry-title">Libfg - Video4linux Framegrabber Library</h1>
+    <p class="meta">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2003-01-13T11:23:00+11:00" pubdate data-updated="true">2003-01-13</time></p>
+  </header>
+  
+  <ul>
+<li><span style="color:red">New!</span> &ndash; the latest version supports USB cameras,
+and features a sample app for live video display!</li>
+</ul>
+
+
+<h2>Introduction</h2>
+
+<p>The <strong>libfg</strong> library provides a simple high-level C API for controlling
+Video4Linux devices, including analog video cameras, TV and webcams.</p>
+
+<h2>Overview</h2>
+
+<p>Linux has support for TV tuners and frame grabbers. This is provided by the Video4Linux API, which has been around since roughly kernel 2.2. V4L is actually an interface implemented by a number of different drivers or kernel modules that support the different types of hardware. Since it is a kernel level interface, it is driven entirely by ioctl() calls, and is not particularly friendly to use. It is also not particularly well documented.</p>
+
+<p>The purpose of libfg is to provide a simple, high level interface for controlling TV tuners and frame grabbers. This insulates the developer from having to fiddle around with the low-level details. An example below shows how easy it is to use. It is hoped that this will enable developers to write more applications that exploit this hardware, and create some interesting programs.</p>
+
+<h2>Features</h2>
+
+<p>The current version of libfg supports most of the major features provided by the Video4Linux API (Version 1). This includes:</p>
+
+<ul>
+<li>Double-buffered capturing (depending on driver)</li>
+<li>Setting a capture window (cropping)</li>
+<li>Set brightness, contrast, etc (in percent)</li>
+<li>Control TV tuner (in MHz)</li>
+<li>Supports multiple norms (PAL, NTSC, Secam, etc)</li>
+<li>Supports different frame formats (eg. RGB32, RGB24, YUV)</li>
+<li>Can save frames to disk (pgm)</li>
+</ul>
+
+
+<h2>Hardware Support</h2>
+
+<p>Any V4L device supported by the kernel will work with <strong>libfg</strong>. This includes
+capture cards, TV tuners and webcams.  The most common type of hardware is
+probably cards based on the BT848/BT878 chipset, although plenty of others will
+also work. These days, TV tuner/capture cards are surprisingly affordable too.
+Get yours today! For more details on particular cards, consult the documentation
+that comes with your kernel.</p>
+
+<p>We have tested libfg on the following hardware:</p>
+
+<ul>
+<li>Picolo (BT878)</li>
+<li>FlyVideo 98 / Chronos Video Shuttle II (BT878)</li>
+<li>Logitech Webcam Express</li>
+</ul>
+
+
+<p><strong>Note on Firewire/1394 devices:</strong> it should be possible to use a Firewire camera with the loopback driver.</p>
+
+<h2>Kernel Support</h2>
+
+<p>You may need to build your own kernel (Shock! Horror!) if your distro doesn&rsquo;t already come with the Video4Linux modules. Debian doesn&rsquo;t by default, while Mandrake does. You will need to enable at least Video4Linux, I2C (for the tuner), and the right module for your card.</p>
+
+<h2>License</h2>
+
+<p>The libfg code has been released under the <a href="http://www.gnu.org/copyleft/lgpl.html">Lesser GNU Public License
+(LGPL)</a>. This is to ensure that the code
+can be used in as many applications as possible (even proprietary or closed-
+source projects if you really must), while ensuring that improvements to the
+library itself get sent back to the community. Please read the license in its
+entirety and understand it before using the software &ndash; a copy is included in the
+source in the file LGPL.</p>
+
+<h2>Projects</h2>
+
+<p>Currently libfg is used in the following projects:</p>
+
+<ul>
+<li><a href="http://www.cs.mu.oz.au/robocup">The University of Melbourne RoboCup Initiative</a></li>
+<li><a href="http://playerstage.sourceforge.net/">Player/Stage</a></li>
+<li>Mezzanine</li>
+</ul>
+
+
+<p>Its main application thus far has been in frame-rate (~40ms) image processing
+for robotics applications.</p>
+
+<p>If you use libfg in your project, please let me know so I can add you to the
+list.</p>
+
+<h2>Download</h2>
+
+<p>For now, you can just download the source tarball (using the link below):</p>
+
+<ul>
+<li><a href="/files/libfg-0.3.1.tar.gz">libfg-0.3.1.tar.gz</a>(Source tarball, 122kB)</li>
+</ul>
+
+
+<h2>Documentation</h2>
+
+<p>API reference documentation is provided in the above tarball, in both HTML and
+PDF formats (thanks to <a href="http://www.doxygen.org/">Doxygen</a>).  The included
+samples show how to use it; it is fairly straightforward. The device is always
+initialised to sensible defaults, so after <code>fg_open()</code> returns, you can start
+grabbing right away.</p>
+
+<h2>Examples</h2>
+
+<p>There are two example progams included &ndash; test-capture, which exercises a number
+of different calls in the library, and <strong>camview</strong>.  The <strong>camview</strong>
+program uses <a href="http://www.libsdl.org/">libsdl</a> to perform live
+streaming of video images into a window.</p>
+
+<h2>Building</h2>
+
+<p>Just running make will give you a static library (.a) to link with. For now,
+that will have to do until I sort out dynamic linking of shared libraries and
+versioning and all that it entails. The README has info on how to build the
+Python bindings, which is pretty simple.</p>
+
+<h2>Sample User Code</h2>
+
+<p>Here is an example of how easy it is to use libfg to control your frame grabber in C:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#define TV_ABC 64.250f</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">void</span> <span class="nf">test</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="n">FRAMEGRABBER</span><span class="o">*</span> <span class="n">fg</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">FRAME</span><span class="o">*</span> <span class="n">fr</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">// Open the default device</span>
+</span><span class='line'>  <span class="n">fg</span> <span class="o">=</span> <span class="n">fg_open</span><span class="p">(</span> <span class="nb">NULL</span> <span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">// Capture from our VCR</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">fg_set_source</span><span class="p">(</span> <span class="n">fg</span><span class="p">,</span> <span class="n">FG_SOURCE_COMPOSITE</span> <span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">// Take a snap</span>
+</span><span class='line'>  <span class="n">fr</span> <span class="o">=</span> <span class="n">fg_grab</span><span class="p">(</span> <span class="n">fg</span> <span class="p">);</span>
+</span><span class='line'>  <span class="n">frame_save</span><span class="p">(</span> <span class="n">fr</span><span class="p">,</span> <span class="s">&quot;vcr.pgm&quot;</span> <span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">// Now get ABC TV</span>
+</span><span class='line'>  <span class="n">fg_set_source</span><span class="p">(</span> <span class="n">fg</span><span class="p">,</span> <span class="n">FG_SOURCE_TV</span> <span class="p">);</span>
+</span><span class='line'>  <span class="n">fg_set_tuner</span><span class="p">(</span> <span class="n">fg</span><span class="p">,</span> <span class="n">TV_ABC</span> <span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">// Take a snap</span>
+</span><span class='line'>  <span class="n">fg_grab_frame</span><span class="p">(</span> <span class="n">fg</span><span class="p">,</span> <span class="n">frame</span> <span class="p">);</span>
+</span><span class='line'>  <span class="n">frame_save</span><span class="p">(</span> <span class="n">fr</span><span class="p">,</span> <span class="s">&quot;ABC.pgm&quot;</span> <span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">frame_release</span><span class="p">(</span> <span class="n">fr</span> <span class="p">);</span>
+</span><span class='line'>  <span class="n">fg_close</span><span class="p">(</span> <span class="n">fg</span> <span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And here is an example of the preliminary Python support.  This script
+was used to create the image at the top of this page.  (Gimp was used
+to convert the file from PGM to JPG and scale it down a little.)</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c">#!/usr/bin/env python</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">fg</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">g</span> <span class="o">=</span> <span class="n">fg</span><span class="o">.</span><span class="n">Grabber</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">g</span><span class="o">.</span><span class="n">set_channel</span><span class="p">(</span><span class="mf">182.250</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">g</span><span class="o">.</span><span class="n">save_frame</span><span class="p">(</span><span class="s">&#39;sample.pgm&#39;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">del</span> <span class="n">g</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Useful Links</h2>
+
+<p>Here are some links that may be useful:</p>
+
+<ul>
+<li><a href="http://www.tldp.org/HOWTO/mini/BTTV.html">BTTV Mini-HOWTO (LinuxDoc.org)</a></li>
+<li><a href="http://bytesex.org/v4l/">Video 4 Linux HQ</a></li>
+<li><a href="http://www.thedirks.org/v4l2/v4l2.htm">Video 4 Linux Version 2</a></li>
+</ul>
+
+
+<h2>Archived Comments</h2>
+
+<p>COMMENT:
+AUTHOR: None
+DATE: 08/11/2004 01:33:02 AM
+python extension library
+Well, your library seems to be very usefull however I don&rsquo;t succeed building the extension. Where can I found fgmodule.c?</p>
+
+<p>Thanks</p>
+
+<h2>Guillaume</h2>
+
+<p>COMMENT:
+AUTHOR: Anonymous
+DATE: 01/29/2005 10:48:10 AM
+Grabbing a greyscale (8 bit) frame
+Hi,</p>
+
+<p>I&rsquo;m starting to do basic machine vision for my robot project and I was very happy to find your library as most other ones are too big are complicated for running on a small embedded ARM linux robot.</p>
+
+<p>I was wondering how I could capture a single 8-bit greyscale frame using libfg as I don&rsquo;t need colour at this point and would prefer to reduce the complexity of my CV code by using simple 8-bit pixel data.</p>
+
+<p>Thanks for your great lib.</p>
+
+<p>Stephane Gauthier</p>
+
+<h2><a href="http://robotics.no-ip.org"><a href="http://robotics.no-ip.org">http://robotics.no-ip.org</a></a></h2>
+
+<p>COMMENT:
+AUTHOR: Anonymous
+DATE: 02/16/2005 02:20:52 AM
+Grabbing a greyscale frame
+I found an easy solution.</p>
+
+<p>If using the ov511 driver just load the module with option force_palette=1 for grey.</p>
+
+<p>Or simply use VIDEO_PALETTE_GREY when initializign V4L.</p>
+
+<h2>Take care,</h2>
+
+<p>COMMENT:
+AUTHOR: Anonymous
+DATE: 03/03/2005 06:52:44 AM
+python extension library
+I have the same problem. Â¿where is that file?</p>
+
+<p>Tankyou.</p>
+
+<h2>Knolan.</h2>
+
+<p>COMMENT:
+AUTHOR: gavinb
+DATE: 05/16/2005 11:10:43 PM
+Finally &ndash; an update</p>
+
+<h2>The download attached to this article contains a refreshed copy of the source, including the missing fgmodule.c.</h2>
+
+<p>COMMENT:
+AUTHOR: Anonymous
+DATE: 05/31/2005 02:32:23 AM
+64-bit support
+There are a few minor changes I&rsquo;d suggest, so that it compiles properly under 64 bits:</p>
+
+<pre>
+capture.c, line 164:
+    if ( (int)fg->mb_map mb_map fbuffer.base );
+change to:
+    printf( "  fbuffer.base         = 0x%08lx\n", (long)fg->fbuffer.base );
+
+catpure.c, line 648:
+    printf( "  mb_map      = 0x%08x\n", (int)(fg->mb_map) );
+change to:
+    printf( "  mb_map      = 0x%08lx\n", (long)(fg->mb_map) );
+</pre>
+
+
+<hr />
+
+<p>COMMENT:
+AUTHOR: David
+DATE: 08/15/2005 10:42:34 PM
+&ldquo;Inappropriate ioctl for device&rdquo; error returned
+Hello,</p>
+
+<p>I have tried the grabber library with my USB Logitech Quickcam Pro 4000 webcam but when I ran the sample camview, it returned the error &ldquo;Inappropriate ioctl for device&rdquo; followed by a segfaut. The driver for the cam is pwc and is working fine. I can still use GnomeMeeting to see video from the cam. Do you have any ideas on this problem.
+Thanks you very much in advance.</p>
+
+<p>Kind regards,</p>
+
+<h2>David</h2>
+
+<p>COMMENT:
+AUTHOR: yaayaa
+DATE: 03/31/2006 06:23:41 AM
+Hello and congratulation for
+Hello and congratulation for your library.
+I use the python API but I don&rsquo;t find the grab_frame() method.
+I would like to access the frame without using frame_save(), and then to process it with PIL.</p>
+
+<p>Does this method exist (I could not find it using python introspection) ?
+If not when do you plan to add this method to the python API ?
+Thanks by advance.</p>
+
+<h2>yaayaa</h2>
+
+<p>COMMENT:
+AUTHOR: Ken Larson
+DATE: 06/19/2007 12:50:12 AM
+Missing munmap in fg_close
+You can&rsquo;t open the same video device twice without this change:</p>
+
+<pre><code>int res = munmap(fg-&gt;mb_map, fg-&gt;mbuf.size);
+if (res != 0)
+    perror( "fg_close(): munmap failed" );
+</code></pre>
+
+<p>at the beginning of fg_close</p>
+
+<p>These folks have discovered it too:</p>
+
+<h2><a href="http://playerstage.cs.umn.edu/bzr/player.marsupial/server/drivers/camera/v4l/v4lcapture.c"><a href="http://playerstage.cs.umn.edu/bzr/player.marsupial/server/drivers/camera/v4l/v4lcapture.c">http://playerstage.cs.umn.edu/bzr/player.marsupial/server/drivers/camera/v4l/v4lcapture.c</a></a></h2>
+
+<p>COMMENT:
+AUTHOR: remaxim
+DATE: 07/21/2007 09:54:09 PM
+Hi,
+Hi,
+I&rsquo;ve downloaded your libs and wanted to build the python building&hellip;
+Unfortunatly the only thing I get is this:
+$ python setup.py build
+running build
+running build_ext
+building &lsquo;fg&rsquo; extension
+gcc -pthread -shared -Wl,-O1 build/temp.linux-i686-2.5/fgmodule.o -L. -lfg -o build/lib.linux-i686-2.5/fg.so
+/usr/bin/ld: cannot find -lfg
+collect2: ld gab 1 als Ende-Status zurÃ¼ck
+error: command &lsquo;gcc&rsquo; failed with exit status 1</p>
+
+<p>Do you know how to solve this?
+thanks</p>
+
+<h2>Maxim</h2>
+
+<p>COMMENT:
+AUTHOR: das6745
+DATE: 09/19/2007 08:20:49 PM
+SDL.h
+Actually i have an error while making:
+gcc -g3 -Wall -I. -lm -o camview camview.c \</p>
+
+<pre><code>                    libfg.a -lSDL -lpthread
+</code></pre>
+
+<p>camview.c:17:21: error: SDL/SDL.h: No such file or directory</p>
+
+<h2>so what is SDL.h? i have libsdl already install, have its soutces but dunno what must to be an SDL.h =). So if somebody knows how to repare it pls help</h2>
+
+<p>COMMENT:
+AUTHOR: Anonymous
+DATE: 10/16/2007 10:08:30 AM
+Problem with libfg
+Hi, I downloaded your library and was able to compile it,but have problems executing the samples. None of them run ok, camview nor test_capture. I got following error:</p>
+
+<p>fg_open(): mmap buffer: Invalid argument
+Fallo de segmentación (core dumped)</p>
+
+<p>I have tried it with two cameras, one connected to a capture card (Kworld TV Terminator: saa7134), and the other a USB camera using driver spca5xx. I know saa7134 is a driver for V4L2, but the USB camera uses a V4L driver, so could you please help me? I compile the library, copied the libfg.a file to /usr/lib, and ran ldconfig. What can the problem be? Im using Ubuntu 6.10&hellip;</p>
+
+<h2>Thanks in advance for your help&hellip;.</h2>
+
+<p>COMMENT:
+AUTHOR: Adalbert Prokop
+DATE: 01/19/2008 04:18:55 AM
+Patch for RGB565/555 file formats
+When I was exploring this beatiful small library I encountered some problems with saved frames which were grabbed in RGB565 mode. The file format was invalid. The saving routine for RGB565/555 is wrong. I&rsquo;ve generated a patch file. After patching files grabbed in RGB565 are shown correctly.
+I&rsquo;d like to send you the patch, but how can I contact you? I could not find an e-mail here&hellip; I&rsquo;ll post a link here ASAP &ndash; right now my webspace is down.</p>
+
+<h2>BTW: I like your lib very much. It saved me a lot of time and sped up learning V4L. Thanx!</h2>
+
+<p>COMMENT:
+AUTHOR: Adalbert Prokop
+DATE: 01/22/2008 02:00:22 AM
+Patch for saving RGB565 and RGB555 format
+Here is the patch I mentioned in my last post.</p>
+
+<h2><a href="http://www-student.informatik.uni-bonn.de/~prokop/rgb565and555.patch">patch for rgb565 and rgb555</a></h2>
+
+<p>COMMENT:
+AUTHOR: echoline
+DATE: 05/01/2008 05:47:00 PM
+mmapfix.patch
+Anonymous:  you probably never checked back here.  if anyone else has this problem just type patch in the libfg-0.3.1/ directory and paste this patch, pressing ctrl+d after pasting to signal EOF to patch program.</p>
+
+<pre>
+--- capture.c.orig      2008-05-01 00:26:15.000000000 -0700
++++ capture.c   2008-05-01 00:31:52.000000000 -0700
+@@ -532,6 +532,9 @@
+ 
+ FRAME* fg_new_compatible_frame( FRAMEGRABBER* fg )
+ {
++    if ( fg == NULL )
++        return NULL;
++
+     return frame_new( fg-&lt;window.width,
+                       fg-&lt;window.height,
+                       fg-&lt;picture.palette );
+</pre>
+
+
+<h2>good job on the library, dudes who wrote it!</h2>
+
+<p>COMMENT:
+AUTHOR: echoline
+DATE: 05/01/2008 05:57:33 PM
+mmapfix.patch
+also, make line 165 of capture.c look like this:</p>
+
+<pre>
+    if ( fg->mb_map == MAP_FAILED )
+</pre>
+
+
+<hr />
+
+<p>COMMENT:
+AUTHOR: Anonymous
+EMAIL: <a href="&#x6d;&#97;&#x69;&#x6c;&#x74;&#111;&#x3a;&#x54;&#104;&#x65;&#95;&#x49;&#x72;&#x6f;&#110;&#114;&#97;&#x76;&#101;&#x72;&#x40;&#x77;&#101;&#x62;&#x2e;&#x64;&#x65;">&#x54;&#104;&#x65;&#x5f;&#73;&#x72;&#111;&#x6e;&#x72;&#97;&#118;&#101;&#x72;&#x40;&#x77;&#101;&#98;&#46;&#100;&#x65;</a>
+IP: 213.95.68.8
+URL:
+DATE: 06/11/2008 10:21:07 PM
+Where can I find this patch?
+I&rsquo;ve got the same problem, so where can I find your patch?</p>
+
+<h2>Thanx!</h2>
+
+<p>COMMENT:
+AUTHOR: admin
+DATE: 06/16/2008 06:08:20 PM
+Patch submission
+Hello, please email your patch to gavinb at this domain.  If it is straightforward and builds cleanly, I will incorporate it into an update.</p>
+
+<p>Please note that I no longer have any V4L hardware, and so I am unable to test the library. That is also why it has been so long since it has been updated (apart from being incredibly busy!).</p>
+
+<h2>Thanks &ndash; Gavin</h2>
+
+<p>COMMENT:
+AUTHOR: freespace
+DATE: 07/15/2008 07:28:24 PM
+I don&rsquo;t see how that helps.</p>
+
+<h2>I don&rsquo;t see how that helps. The error occurs because the mmap call fails. I am having the same problem, it and appears libfg is asking for 17039360 bytes and mmap is unhappy about it. I am still trying to get it running :/</h2>
+
+<p>COMMENT:
+AUTHOR: freespace
+DATE: 07/15/2008 10:16:04 PM
+Patch and unoffical repository for libfg
+I have a <a href="http://git.pictorii.com/?p=libfg-unoffical.git;a=blob_plain;f=libfg-0.3.1-unoffical.patch;hb=17ccbf6fb0f5e04dc8e87353eef8d9d375ac1057">patch for libfg 0.3.1</a> which allows it to compile and run under kunbuntu hardy using bttv drivers, without the mmap &ldquo;invalid argument&rdquo; error.</p>
+
+<p>The patch integrates the work of Adalbert Prokop and other fixes along with my own (excluding however the 64bit fixes since I can&rsquo;t test them myself). I have setup a &ldquo;maintenance&rdquo; repository to handle integrating these and possibly future patches. It is my hope gavinb will have some free time in the future, and make my efforts redundant.</p>
+
+<p>Many thanks for gavinb for sharing libfg with us all. Now that I have it working, time to get coding :&ndash;)</p>
+
+<p>Cheers,</p>
+
+<h2>Steve</h2>
+
+<p>COMMENT:
+AUTHOR: freespace
+DATE: 07/16/2008 01:13:31 AM
+Swig generated python interface
+Since gavinb is busy, I have taken the liberty of creating a very un-pythonic interface to libfg using swig. You can find the required files in my <a href="http://git.pictorii.com/?p=libfg-unoffical.git;a=summary">unofficial libfg git repository</a>. Specifically you need the .patch, the .i and the Makefile. test_capture.py can be used to test the python module once it is built &ndash; it is a straight port of the C code on this page.</p>
+
+<p>Cheers,</p>
+
+<h2>Steve</h2>
+
+<p>COMMENT:
+AUTHOR: woodstock
+DATE: 09/13/2008 08:04:23 PM
+Hi, I came across the same
+Hi, I came across the same error and found the following solution.
+Download and install libsdl1.2-dev.</p>
+
+<h2>I&rsquo;m running Ubuntu and got the library package with the according headers through Administration &ndash;> synaptic package manager.</h2>
+
+  
+    <footer>
+      <p class="meta">
+        
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2003-01-13T11:23:00+11:00" pubdate data-updated="true">2003-01-13</time>
+        
+      </p>
+      
+        <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.antonym.org//libfg/index.html" data-via="gavinb" data-counturl="http://www.antonym.org//libfg/index.html" >Tweet</a>
+  
+  
+  
+</div>
+
+      
+    </footer>
+  
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/10/08/what-is-rust/">What is Rust?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/03/09/good-code-gardening/">Good Code Gardening</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2010/04/07/25-tips-for-intermediate-mercurial-users/">25 Tips for Intermediate Mercurial Users</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2010/01/01/threading-with-boost-part-ii-threading-challenges/">Threading with Boost - Part II: Threading Challenges</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2009/09/16/stl-filtering/">STL: filtering</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Gavin Baker <br/>
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>, customized with <a href="https://github.com/mjhea0/whiterspace">whiterspace</a>.</span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
