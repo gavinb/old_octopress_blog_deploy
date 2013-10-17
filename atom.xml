@@ -4,7 +4,7 @@
   <title><![CDATA[Gavin Baker ~ antonym.org]]></title>
   <link href="http://www.antonym.org//atom.xml" rel="self"/>
   <link href="http://www.antonym.org//"/>
-  <updated>2013-10-17T11:02:40+11:00</updated>
+  <updated>2013-10-18T10:17:16+11:00</updated>
   <id>http://www.antonym.org//</id>
   <author>
     <name><![CDATA[Gavin Baker]]></name>
@@ -12,6 +12,19 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    
+    <title type="html"><![CDATA[Bug of the Year - 2011]]></title>
+    <link href="http://www.antonym.org//blog/2013/10/17/bug-of-the-year-2011/"/>
+    
+    <updated>2013-10-17T18:24:00+11:00</updated>
+    <id>http://www.antonym.org//blog/2013/10/17/bug-of-the-year-2011</id>
+    
+    <content type="html"><![CDATA[
+]]></content>
+    
+  </entry>
   
   <entry>
     
@@ -1783,6 +1796,736 @@ DATE: 05/14/2009 06:35:35 PM</p>
 <p>So important, in fact, that many people nowadays use &ldquo;continuous integration&rdquo; servers to do exactly this. The idea is to have a build server that can automatically build your software and run a suite of tests, ideally every time someone commits to version control. This should be established as early as possible in the development cycle (i.e. pretty much from day one).</p>
 
 <p>Products such as <a href="http://www.vmware.com/products/labmanager/">Lab Manager</a>, in conjunction with a build server, even allow you to build and test your software on all sorts of disparate target platforms and configurations.</p>
+]]></content>
+    
+  </entry>
+  
+  <entry>
+    
+    <title type="html"><![CDATA[Improve your C++: const-correctness]]></title>
+    <link href="http://www.antonym.org//blog/2008/11/22/improve-your-c-plus-plus-const-correctness/"/>
+    
+    <updated>2008-11-22T15:18:00+11:00</updated>
+    <id>http://www.antonym.org//blog/2008/11/22/improve-your-c-plus-plus-const-correctness</id>
+    
+    <content type="html"><![CDATA[<p>Writing &ldquo;const-correct&rdquo; code will improve the quality and maintainability of your code.  It is especially important and useful when writing Object-Oriented code, as objects are often passed around as constant references.  Properly declaring non-mutating methods as <code>const</code> allows you to safely call any <code>const</code> method on such a reference.  It is part of good type-safe practice and good code hygiene. So how do we do it?</p>
+
+<!--more-->
+
+
+<p>First, some definitions:</p>
+
+<ul>
+<li><em>mutating</em>: any function or method that alters the state of an object (ie. makes an assignment to any of its data members) is a &lsquo;mutating&rsquo; operation. For example, calling a &ldquo;setter&rdquo; method is a mutating operation.</li>
+<li><em>non-mutating</em>: any operation that does not modify the object&rsquo;s data members.  For example, calling a &ldquo;getter&rdquo; method, or performing and returning a calculation.</li>
+<li><code>const</code> <em>parameter</em>: if you have a constant reference or pointer to an object, you may not modify it or call any mutating methods on it.</li>
+<li><code>const</code> <em>method</em>: a method declared constant promises not to modify the object when called.</li>
+<li><code>const</code> <em>correct</em>: writing code that consistently declares methods and parameters <code>const</code>, wherever possible.</li>
+</ul>
+
+
+<p>There are two simple rules of thumb to follow:</p>
+
+<ol>
+<li>If a method does not modify the object&rsquo;s state, the method should be declared <code>const</code>.</li>
+<li>If a method or function does not modify a pointer or reference parameter, the parameter should be declared <code>const</code>.</li>
+</ol>
+
+
+<p>Together, these two rules ensures that objects are <code>const</code> as often as possible.  Why is this a good thing?  It gives the compiler more type information, which can catch potential bugs, and even give opportunities for optimization.</p>
+
+<p>How do you declare a method to be <code>const</code>?  Just add the <code>const</code> keyword after the normal method declaration, thus:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="k">class</span> <span class="nc">A</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'><span class="k">public</span><span class="o">:</span>
+</span><span class='line'>    <span class="c1">// ...</span>
+</span><span class='line'>    <span class="kt">unsigned</span> <span class="n">calculateSum</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">// ...</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You declare a function or method parameter <code>const</code> in the usual way.  Note that in C++, references are usually preferred over pointers wherever possible (unless the parameter is optional, so could be <code>NULL</code>).</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="kt">unsigned</span> <span class="n">processTree</span><span class="p">(</span><span class="k">const</span> <span class="n">node</span><span class="o">&amp;</span> <span class="n">root</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// ...</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Less Good Example</h2>
+
+<p>Let&rsquo;s use a simple Customer class as an example.  This is valid, but not really const-correct code:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="k">class</span> <span class="nc">Customer</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span><span class="o">:</span>
+</span><span class='line'>        <span class="n">Customer</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">name</span><span class="p">)</span> <span class="o">:</span>
+</span><span class='line'>            <span class="n">_name</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">getName</span><span class="p">()</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="n">_name</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>       <span class="kt">void</span> <span class="n">setName</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">aName</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="n">_name</span> <span class="o">=</span> <span class="n">aName</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="c1">// ...</span>
+</span><span class='line'>    <span class="k">private</span><span class="o">:</span>
+</span><span class='line'>        <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">_name</span><span class="p">;</span>
+</span><span class='line'>        <span class="c1">// ...</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// ...and elsewhere...</span>
+</span><span class='line'><span class="kt">unsigned</span> <span class="n">Invoice</span><span class="o">::</span><span class="n">addCustomer</span><span class="p">(</span><span class="n">Customer</span><span class="o">&amp;</span> <span class="n">cust</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// ...call any methods</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="c1">//</span>
+</span><span class='line'><span class="kt">unsigned</span> <span class="n">Invoice</span><span class="o">::</span><span class="n">getInvoiceCountFor</span><span class="p">(</span><span class="n">Customer</span><span class="o">&amp;</span> <span class="n">cust</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// ...call any methods</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>There are several opportunities here to add <code>const</code> qualifiers to the code.  The accessor method for <code>name</code> does not modify the object state, so it can be made into a <code>const</code> method by adding the keyword at the end of the method signature.  The initial value for <code>name</code> in the constructor, along with the new name in the mutator can both take <code>const</code> references to strings (instead of passing by-value, which is less efficient).</p>
+
+<h2>Improved Example</h2>
+
+<p>So the above code becomes:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="k">class</span> <span class="nc">Customer</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span><span class="o">:</span>
+</span><span class='line'>        <span class="n">Customer</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">name</span><span class="p">)</span> <span class="o">:</span>
+</span><span class='line'>            <span class="n">_name</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">getName</span><span class="p">()</span> <span class="k">const</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="n">_name</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>       <span class="kt">void</span> <span class="n">setName</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">aName</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="n">_name</span> <span class="o">=</span> <span class="n">aName</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="c1">// ...</span>
+</span><span class='line'>    <span class="k">private</span><span class="o">:</span>
+</span><span class='line'>        <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">_name</span><span class="p">;</span>
+</span><span class='line'>        <span class="c1">// ...</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// ...and elsewhere...</span>
+</span><span class='line'><span class="kt">unsigned</span> <span class="n">Invoice</span><span class="o">::</span><span class="n">addCustomer</span><span class="p">(</span><span class="k">const</span> <span class="n">Customer</span><span class="o">&amp;</span> <span class="n">cust</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// ...call any const methods</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="c1">//</span>
+</span><span class='line'><span class="kt">unsigned</span> <span class="n">Invoice</span><span class="o">::</span><span class="n">getInvoiceCountFor</span><span class="p">(</span><span class="k">const</span> <span class="n">Customer</span><span class="o">&amp;</span> <span class="n">cust</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// ...call any const methods</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Once you have a <code>const</code> reference to an object (such as the <code>cust</code> parameter above in <code>getInvoiceCountFor()</code>, you can only call <code>const</code> methods on that object.  For example, the compiler will flag it as an error if you try to call <code>setName()</code>, as it is a mutating method.</p>
+
+<h2>Advantages</h2>
+
+<p>So why go to the extra effort?  Doesn&rsquo;t it mean you can do <em>less</em> with the objects if you go around declaring things <code>const</code>?  Potentially, yes.  But there are a number of benefits:</p>
+
+<ul>
+<li>giving the compiler more type information can help catch potential bugs</li>
+<li>establishes a &ldquo;contract&rdquo;, so you know that certain methods or functions will not modify your objects</li>
+<li>acts as a form of documentation, by declaring the behaviour of methods and treatment of parameters</li>
+<li>provides opportunities for optimization by the compiler</li>
+</ul>
+
+
+<h2>Summary</h2>
+
+<p>By following the two simple rules above, you can write tighter, safer code that is easier to manage.</p>
+
+<h2>Archived Comments</h2>
+
+<p>Author: ChuckD
+Date: 07/09/2009 03:26:30 PM</p>
+
+<p>Thanks!  Well written and very helpful.</p>
+]]></content>
+    
+  </entry>
+  
+  <entry>
+    
+    <title type="html"><![CDATA[Tiger isn't really for the users]]></title>
+    <link href="http://www.antonym.org//blog/2008/05/18/tiger-isnt-really-for-the-users/"/>
+    
+    <updated>2008-05-18T10:55:00+10:00</updated>
+    <id>http://www.antonym.org//blog/2008/05/18/tiger-isnt-really-for-the-users</id>
+    
+    <content type="html"><![CDATA[<p>Sure, <a href="http://www.apple.com/macosx">Tiger</a> &ndash; the latest release of Apple&rsquo;s Mac OS X &ndash; has a huge array of new features.  Sure, the Spotlight search features alone are compelling enough to make you want to upgrade. Automator enables workflow and user-level scripting.  And Dashboard is a whole new dimension in desktop widgets.</p>
+
+<p>But for all the 200 new features and usability enhancements, that&rsquo;s not what the <em>secret sauce</em> is all about.</p>
+
+<!--more-->
+
+
+<p>Because the killer feature of Tiger is that all of this technology is in the hands of developers.  It didn&rsquo;t really click at first, because I was so focused on the new features as a user.  For example, in my research I have a huge collection of PDF files.  For years I have been waiting for a useable full-text searching facility, to no avail.  But now Tiger has it built in, and I can&rsquo;t imagine going back now I have it.  (It&rsquo;s a bit like the transition from using a dial-up modem to having broadband at home.)</p>
+
+<p>But now that the dust has settled, I see things from a slightly different perspective.  And it is obvious now that Tiger provides by far the richest development platform available today, bar none.  Because virtually everything cool Apple have done in userspace, they have exposed to developers.</p>
+
+<p>CoreImage gives me a GPU-accelerated image processing architecture.  CoreData gives me object persistence with no drudgery.  Dashboard lets me easily write widgets in HTML+JavaScript.  I can easily add my own file formats to Spotlight for indexing.  I can write Automator plugins.  And QuickTime is the most sophisticated multimedia framework available (even though most people think it&rsquo;s just a media player).  And the list goes on.</p>
+
+<p>And in many places, Apple have used published standards (eg. H.264 for video, OpenGL shading language for CoreImage kernels) and open source technology (eg. Jabber for instant messaging, SQLite for database).  There are many more examples of this.</p>
+
+<p>So as a developer, I look at OS X and positively salivate at the potential of such a rich platform.  I don&rsquo;t care if another platform has a monopoly-sized market share, as there is less competition and there is abundant fertile ground on the Mac for true innovation.</p>
+]]></content>
+    
+  </entry>
+  
+  <entry>
+    
+    <title type="html"><![CDATA[Unexpected side-effect]]></title>
+    <link href="http://www.antonym.org//blog/2005/12/19/unexpected-side-effect/"/>
+    
+    <updated>2005-12-19T18:54:00+11:00</updated>
+    <id>http://www.antonym.org//blog/2005/12/19/unexpected-side-effect</id>
+    
+    <content type="html"><![CDATA[<p>I discovered a strange bug in my Python code recently.  It took me a few minutes worth of digging to uncover something somewhat surprising, a side-effect to do with default parameters that is not obvious at first blush.</p>
+
+<!--more-->
+
+
+<p>Consider the following code:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">sys</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">Group</span><span class="p">:</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">questions</span><span class="o">=</span><span class="p">[]):</span>
+</span><span class='line'>      <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+</span><span class='line'>      <span class="bp">self</span><span class="o">.</span><span class="n">desc</span> <span class="o">=</span> <span class="n">desc</span>
+</span><span class='line'>      <span class="bp">self</span><span class="o">.</span><span class="n">questions</span> <span class="o">=</span> <span class="n">questions</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">def__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">return</span><span class="s">&#39;&#39;&#39;Group:</span>
+</span><span class='line'><span class="s">        Name:        </span><span class="si">%s</span><span class="s"></span>
+</span><span class='line'><span class="s">        Description: </span><span class="si">%s</span><span class="s"></span>
+</span><span class='line'><span class="s">        Questions:   </span><span class="si">%s</span><span class="s"></span>
+</span><span class='line'><span class="s">        &#39;&#39;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">desc</span><span class="p">,</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">questions</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">deftest</span><span class="p">():</span>
+</span><span class='line'>    <span class="n">g1</span> <span class="o">=</span> <span class="n">Group</span><span class="p">(</span><span class="s">&#39;foo&#39;</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">g2</span> <span class="o">=</span> <span class="n">Group</span><span class="p">(</span><span class="s">&#39;baz&#39;</span><span class="p">,</span> <span class="s">&#39;a really bazzy group&#39;</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">g3</span> <span class="o">=</span> <span class="n">Group</span><span class="p">(</span><span class="s">&#39;bar&#39;</span><span class="p">,</span> <span class="s">&#39;some barry groups&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;first q&#39;</span><span class="p">,</span> <span class="s">&#39;secundo&#39;</span><span class="p">,</span> <span class="s">&#39;tri&#39;</span><span class="p">])</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">g4</span> <span class="o">=</span> <span class="n">Group</span><span class="p">(</span><span class="s">&#39;vroom&#39;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+</span><span class='line'>        <span class="n">g4</span><span class="o">.</span><span class="n">questions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;This is not a question&#39;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">print</span> <span class="n">g1</span>
+</span><span class='line'>    <span class="k">print</span> <span class="n">g2</span>
+</span><span class='line'>    <span class="k">print</span> <span class="n">g3</span>
+</span><span class='line'>    <span class="k">print</span> <span class="n">g4</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+</span><span class='line'>    <span class="n">test</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>If run with no parameters, it appears to have the expected and desired behaviour.  Give it a parameter, and the line that appends a question will cause <em>all</em> instances to have the same question added.  Obviously a bug, but why?</p>
+
+<p>What&rsquo;s happening is the default value for the <code>question</code> parameter is evaluated at compile time to be an instance of an empty list.  All instances then refer to this same empty list, so when one gets something appended, they all appear to get it.  The solution is of course to have it default to <code>None</code> and then construct a list when required.</p>
+
+<p>Even when the default parameter is a function, it is still evaluated only the once, so its return value becomes a constant default value.  It turns out that this is clearly documented (thanks Fred!) in the <a href="http://www.python.org/doc/2.4.2/ref/function.html">Python Language Reference: Section 7.5 Function definitions.</p>
+
+<p>For someone used to doing funky stuff in C++ constructors (like yours truly), this might be a subtle gotcha.</p>
+]]></content>
+    
+  </entry>
+  
+  <entry>
+    
+    <title type="html"><![CDATA[Who really cares about usability?]]></title>
+    <link href="http://www.antonym.org//blog/2005/05/31/who-really-cares-about-usability/"/>
+    
+    <updated>2005-05-31T14:03:00+10:00</updated>
+    <id>http://www.antonym.org//blog/2005/05/31/who-really-cares-about-usability</id>
+    
+    <content type="html"><![CDATA[<p>Users, that&rsquo;s who.  They just don&rsquo;t realise it until the computer gets in the way of them doing what they want.</p>
+
+<p>I&rsquo;ve been ranting for years about usability, task-centered design, blah, blah.  I know just how hard it is to get right too.  But both FLOSS and proprietary software are generally abysmal at this sort of thing.</p>
+
+<p><a href="http://nat.org/2005/may/#30-May-2005-10:23-CEST">Nat</a> seems to be catching on to what usability is really all about:</p>
+
+<blockquote><p>&ldquo;It was interesting to watch this video and instantly realize that the &lsquo;Send /
+Receive&rsquo; button is all about <em>how Evolution works</em> and not about <em>what
+the user wants to do</em>. I&rsquo;ve been staring at that button for five years,
+and never realized it was wrong until I saw that video.&rdquo;</p></blockquote>
+
+<p>So I just hope more people make this intellectual leap.  Everywhere, you see examples of the <em>inside-out</em> design, where the implementation is exposed &ndash; warts and all! &ndash; all the way up to the interface.  This is one of the most pervasive errors in design, and it is only getting worse, with more features crammed into every new release.</p>
+
+<p>Imagine: you are designing a VCR remote control.  Does the user really care that it is reading an analog signal from a helical scan magnetic head, with the tape running at 2.1cm/sec?  Do you have a separate button to engage the heads?  A dial to adjust the variable speed motor?  Another dial to adjust the helical rotation speed to match the tape?  Do the users really care how it works inside?  Do they need to know in order to use the player?</p>
+
+<p>Or do they just want to &ldquo;watch the movie&rdquo;?</p>
+]]></content>
+    
+  </entry>
+  
+  <entry>
+    
+    <title type="html"><![CDATA[Bug of the Year]]></title>
+    <link href="http://www.antonym.org//blog/2005/04/21/bug-of-the-year/"/>
+    
+    <updated>2005-04-21T10:14:00+10:00</updated>
+    <id>http://www.antonym.org//blog/2005/04/21/bug-of-the-year</id>
+    
+    <content type="html"><![CDATA[<p>I discovered the weirdest bug the other day&hellip;</p>
+
+<p>I had built a new version of the imaging system, tested it and was ready to deploy it.  It was working great on the development box, and it seemed ready to go.  I downloaded the new version on the target machine, and fired it up, expecting to have only a few minutes downtime. And then&hellip;</p>
+
+<!--more-->
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Floating point exception</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Oops.</p>
+
+<p>But it wasn&rsquo;t my fault, honest!  Actually my first inclination was to blame one of the new packages I had installed.  One of the new features was to plot some statistics, and I was ready to put it down to a conflict or some weirdness with the new plotting package.  I checked everything three ways, and it was the right version, had all the right dependencies&hellip;  It had to be in my code &ndash; but where?</p>
+
+<p>I cranked up the debug level in all modules (and was very glad at this point that I had decided to use the logging framework liberally, and with some granularity, and leave it in the production system).  I re-ran it and it <em>seemed</em> like the code was failing in a drawing routine for a custom widget.  This was extra weird, as I hadn&rsquo;t changed that module for a while, so it was the same as was running perfectly before.</p>
+
+<p>I then went in and resorted to the age-old technique of adding <code>print</code> commands at various stages of the code, to see how far it was getting.  Sure enough, in the middle of the <code>on_draw()</code> method, in amongst some OpenGL calls, it was raising the <code>SIGFPE</code>.  I should mention at this point that this module was coded in Python, so any floating point errors would raise a real Python exception and display a nice stack trace showing me precisely where my error occured.  The fact that the error was the most generic message, obviously coming from the C runtime (and calling <code>abort()</code> rather rudely) made me wonder&hellip;</p>
+
+<p>I stuck a premature <code>return</code> in the drawing code, and everything worked fine from then on.  But certain other widgets, also using OpenGL, could be made to trigger the error under certain circumstances.  Weirdness.  Time to fire up <code>gdb</code>.</p>
+
+<p>I ran Python under the debugger, and ran the program (which also includes a bunch of custom Pyrex modules, which were not above suspicion).  The first thing that happens is a dump from a SIGFPE, but this was in the <code>i830_dri.so</code> module, in some <code>__driCreateScreen()</code> call.  I had actually noticed this once or twice before, but it had never caused a problem and so I had blissfully ignored it.  But now some alarm bells were going off.</p>
+
+<p>I reverted the production machine to the previous release (thank goodness for Subversion and half-decent configuration management!) and went back to the office to track the problem down in detail on the test rig (which is identical to the production machine).</p>
+
+<p>It turns out that the i830 video driver raises some floating point exceptions under certain OpenGL operations.  AFAICT this is a bug, but it hadn&rsquo;t caused a problem before, and hadn&rsquo;t been a problem on the dev box (which, as it turns out, uses the i810 driver which is why I hadn&rsquo;t noticed it before).  But why was it failing now and not before?  The plotting library <code>matplotlib</code> I had installed needs a linear algrabra package to run, and it can use either <code>Numeric</code> or <code>numarray</code>.  I chose the latter because it was newer.  It seems that numarray actually installs an FP signal handler, so when I added it to the mix, it was picking up on the driver FPEs as well.</p>
+
+<p>After much binary partitioning (and a lot of hackery) I narrowed down the problem to the essentials, then wrote the most basic code that demonstrates the problem.  It is just a simple OpenGL program that displays a triangle, but if you so much as <code>import</code> the numarray module, you get a FPE in the drawing code.  Now I have to figure out where to report the bug!  (I suspect it is squarely the fault of the X i830 driver&hellip;)</p>
+
+<p>The solution for the time being was to use <code>Numeric</code> for the linalg stuff, and I could put the plotting features back in.  This would give me time to chase up the driver bug.</p>
+
+<p>The moral of this story: always test on a test rig that is the <strong>same</strong> as the production machine!</p>
+
+<p>Oh, and also &ndash; logging is your friend!  It is definitely worth the extra few cycles to have granular, detailed logging available at the flick of a switch when things start going wrong.  Use a proper logging framework, not just <code>printf</code>, so you can log to a file, <code>syslog</code>, or whatever.</p>
+]]></content>
+    
+  </entry>
+  
+  <entry>
+    
+    <title type="html"><![CDATA[Optimize this...]]></title>
+    <link href="http://www.antonym.org//blog/2005/04/13/optimize-this-dot-dot-dot/"/>
+    
+    <updated>2005-04-13T10:54:00+10:00</updated>
+    <id>http://www.antonym.org//blog/2005/04/13/optimize-this-dot-dot-dot</id>
+    
+    <content type="html"><![CDATA[<p>I&rsquo;m working on an industrial image processing system, and it&rsquo;s coming together pretty well.  I hadn&rsquo;t tried optimising anything up until now, as I wanted to get all the features implemented and do some profiling.  &ldquo;Premature optimisation is the root of all evil&rdquo;, as they say&hellip;</p>
+
+<p>But as of the last few days, the system has reached the point where most of the key features are working on the imaging unit, certainly enough for meaningful performance tests.  And since it is a near real-time system, performance has always been a key concern.  A good excuse to start some hunting for some optimising opportunities&hellip;</p>
+
+<h2>Classifier</h2>
+
+<p>The target for a full processing cycle is 100-120ms, although I&rsquo;m aiming for more like 90ms.  Without any optimising whatsoever, the processing cycle was taking far too long at something over 200ms.  One stage, the classifier, was taking just over 30ms per frame, which seemed excessive considering its primary role.  I started looking at the main loop, and it became clear that there was a lot of extra code calculating stuff only used during calibration.  Making that optional saved 5ms per frame.</p>
+
+<p>Looking at the guts of the inner loop, there staring at me was the next obvious candidate: a function call, used to retrieve the YUV pixel (or YCbCr CCIR-601 if you prefer) components from the YUV:422 packed frame.  I rewrote the pixel access as a macro, and got it down to 15ms.  Nice, but I&rsquo;m sure can do more.</p>
+
+<p>At this point I realise that I haven&rsquo;t even tried the obvious thing of adding &lsquo;-O3&rsquo; to the compiler flags.  I rectify this oversight, and this gets us down to 10ms.</p>
+
+<p>I restructure the loop some more, and remove even the test for the calibration code from the inner loop, so all it is doing is the lookup table.  I also remove a histogram calculation that I didn&rsquo;t end up needing to refer to, and now get it down to around 4ms.</p>
+
+<p>I was reasonably happy at this point, as the code was still perfectly readable and modular, and I didn&rsquo;t have to resort to assembler, obfuscation or kinky tricks.  There&rsquo;s one more thing I can do that might shave off a few cycles, but I had to move on to the next target.</p>
+
+<h2>Capture</h2>
+
+<p>We are using Firewire cameras, specifically the <a href="http://www.basler.com/">Basler 601fc</a>.  The state of <a href="http://www.linux1394.org/">IEEE 1394</a> support under Linux is somewhat in flux at the moment, and I wrote a layer to abstract away the details of Firewire camera control.  This not only simplified the layers above, it made us insensitive to which particular underlying library we would ultimately use (currently libdc1394).  It also made it nice and easy to write a Python wrapper (using Pyrex of course).</p>
+
+<p>When I first wrote this fwcam layer, I used the simpler of two capture models, and once it was working, left it at that.  But when I added a high resolution timer to profile the image capture code, I discovered that just the capture was taking over 40ms.  This seeemed excessive too, so I went back to re-read the docs and code and see how I could speed things up.  It turns out that there was a DMA version of the capture function, and although it required some extra buffering, it wasn&rsquo;t much effort to change the fwcam layer to take advantage of it.</p>
+
+<p>I was rather shocked to see, once I had rebuilt the library, the capture time was down to under 2ms!  I was expecting a big difference, but even this much was a surprise.  Another nice feature is a non-blocking variant of the DMA capture call that could return immediately if no frame was available.  This would prove useful in the async triggering protocol.</p>
+
+<h2>But wait &ndash; there&rsquo;s more&hellip;</h2>
+
+<p>There are many more opportunities, I&rsquo;m sure.  Through some careful analysis, strategic placement of some high-resolution (microsecond) timers, and restructing and refactoring of the code, I managed to shave around 26ms per frame in the first case, or about 8 times faster.  But the most important thing is that the code is still readable and maintainable, not some mess of macros and funky shortcuts nobody else but me can grok.</p>
+
+<p>Of course, I have been looking at the MMX extensions in GCC recently, so&hellip; :)</p>
+]]></content>
+    
+  </entry>
+  
+  <entry>
+    
+    <title type="html"><![CDATA[A real Python logging example]]></title>
+    <link href="http://www.antonym.org//blog/2005/03/15/a-real-python-logging-example/"/>
+    
+    <updated>2005-03-15T10:56:00+11:00</updated>
+    <id>http://www.antonym.org//blog/2005/03/15/a-real-python-logging-example</id>
+    
+    <content type="html"><![CDATA[<p>For some reason, all the examples of the configuration files for the Python logging framework are artificial ones, with names like <code>handler01, handler02</code> and so on.  This makes it a little difficult to figure out how to apply it to a real world example.  So after a bit of fiddling around, here is a real example of using the Python <code>logging</code> module in a non-trivial application (ie. with multiple hierarchical modules) with an associated configuration file.</p>
+
+<p>The Python logging framework is extremely useful and powerful, but the documentation is somewhat lacking.  It is dead easy to use in its simplest form:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">os</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">math</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">logging</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">frobnicate</span><span class="p">(</span><span class="n">foo</span><span class="p">,</span> <span class="n">baz</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;Processing </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">foo</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">baz</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span class='line'>        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;This could get complex!&#39;</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">baz</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So you really do nothing more than import the module, then make logging calls with the appropriate severity level.  But if you have a project with lots of different modules, and you want more control over how things are handled, what do you do?</p>
+
+<p>The first thing is to get a logger instance for each module.  You can use the same name as the module hierarchy, which gives you a lot of flexibility.  Thus, at the top of each module, we have something like:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">logging</span>
+</span><span class='line'><span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;pi.basil.gui.widgets&#39;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The <code>logging.getLogger()</code> call will return us a logger for just that module, which we can then use throughout.  Thus:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">CalibrationCanvas</span><span class="p">:</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c">#... some stuff</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">_on_draw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;ImageCanvas._on_draw&#39;</span><span class="p">)</span>
+</span><span class='line'>        <span class="c"># do some funky stuff</span>
+</span><span class='line'>        <span class="n">glBegin</span><span class="p">()</span>
+</span><span class='line'>        <span class="c"># ...</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">if</span> <span class="ow">not</span> <span class="n">model</span><span class="p">:</span>
+</span><span class='line'>            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;update: No model specified&#39;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So note the use of the logging instance <code>log</code> instead of <code>logging</code>.  By using a different <code>Logger</code> for each module, we have very fine-grained control.</p>
+
+<p>It is important to use the right severity levels when you write you log calls.  I tend to use <code>INFO</code> for generally useful stuff that I like to see traced while developing, but not at runtime, while I reserve <code>DEBUG</code> for the extra detailed information that is only useful when something is going wrong.  The <code>WARNING</code> and lower I always have on at runtime, and in production are sent to an operator console.</p>
+
+<p>So now we need to set up the logging configuration.  Don&rsquo;t bother trying to do this programmatically (although you could) &ndash; use a configuration file.  This is the part that isn&rsquo;t documented so well.  Here is a snippet from a real file:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="p">[</span><span class="n">formatters</span><span class="p">]</span>
+</span><span class='line'><span class="n">keys</span><span class="p">:</span> <span class="n">detailed</span><span class="p">,</span><span class="n">simple</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">[</span><span class="n">handlers</span><span class="p">]</span>
+</span><span class='line'><span class="n">keys</span><span class="p">:</span> <span class="n">console</span><span class="p">,</span><span class="n">syslog</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">[</span><span class="n">loggers</span><span class="p">]</span>
+</span><span class='line'><span class="n">keys</span><span class="p">:</span> <span class="n">root</span><span class="p">,</span><span class="n">gui</span><span class="p">,</span><span class="n">engine</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">[</span><span class="n">formatter_simple</span><span class="p">]</span>
+</span><span class='line'><span class="n">format</span><span class="p">:</span> <span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="n">s</span><span class="p">:</span><span class="o">%</span><span class="p">(</span><span class="n">levelname</span><span class="p">)</span><span class="n">s</span><span class="p">:</span>  <span class="o">%</span><span class="p">(</span><span class="n">message</span><span class="p">)</span><span class="n">s</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">[</span><span class="n">formatter_detailed</span><span class="p">]</span>
+</span><span class='line'><span class="n">format</span><span class="p">:</span> <span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="n">s</span><span class="p">:</span><span class="o">%</span><span class="p">(</span><span class="n">levelname</span><span class="p">)</span><span class="n">s</span> <span class="o">%</span><span class="p">(</span><span class="n">module</span><span class="p">)</span><span class="n">s</span><span class="p">:</span><span class="o">%</span><span class="p">(</span><span class="n">lineno</span><span class="p">)</span><span class="n">d</span><span class="p">:</span>  <span class="o">%</span><span class="p">(</span><span class="n">message</span><span class="p">)</span><span class="n">s</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">[</span><span class="n">handler_console</span><span class="p">]</span>
+</span><span class='line'><span class="n">class</span><span class="p">:</span> <span class="n">StreamHandler</span>
+</span><span class='line'><span class="n">args</span><span class="p">:</span> <span class="p">[]</span>
+</span><span class='line'><span class="n">formatter</span><span class="p">:</span> <span class="n">simple</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">[</span><span class="n">handler_syslog</span><span class="p">]</span>
+</span><span class='line'><span class="n">class</span><span class="p">:</span> <span class="n">handlers</span><span class="o">.</span><span class="n">SysLogHandler</span>
+</span><span class='line'><span class="n">args</span><span class="p">:</span> <span class="p">[(</span><span class="s">&#39;myhost.mycorp.net&#39;</span><span class="p">,</span> <span class="n">handlers</span><span class="o">.</span><span class="n">SYSLOG_UDP_PORT</span><span class="p">),</span> <span class="n">handlers</span><span class="o">.</span><span class="n">SysLogHandler</span><span class="o">.</span><span class="n">LOG_USER</span><span class="p">]</span>
+</span><span class='line'><span class="n">formatter</span><span class="p">:</span> <span class="n">detailed</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">[</span><span class="n">logger_root</span><span class="p">]</span>
+</span><span class='line'><span class="n">level</span><span class="p">:</span> <span class="n">INFO</span>
+</span><span class='line'><span class="n">handlers</span><span class="p">:</span> <span class="n">syslog</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">[</span><span class="n">logger_gui</span><span class="p">]</span>
+</span><span class='line'><span class="n">level</span><span class="p">:</span> <span class="n">WARNING</span>
+</span><span class='line'><span class="n">qualname</span><span class="p">:</span> <span class="n">pi</span><span class="o">.</span><span class="n">basil</span><span class="o">.</span><span class="n">gui</span>
+</span><span class='line'><span class="n">handlers</span><span class="p">:</span> <span class="n">console</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">[</span><span class="n">logger_engine</span><span class="p">]</span>
+</span><span class='line'><span class="n">level</span><span class="p">:</span> <span class="n">INFO</span>
+</span><span class='line'><span class="n">qualname</span><span class="p">:</span> <span class="n">pi</span><span class="o">.</span><span class="n">basil</span>
+</span><span class='line'><span class="n">handlers</span><span class="p">:</span> <span class="n">console</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>A few notes: First, you must list all of the loggers, formatters and handlers in a section up front.  This is a bit odd, since each has their own section with a unique name anyway, but it appears to be due to a limitation of the <code>ConfigParser</code>.  So if you have formatters called <code>root</code> and <code>engine</code>, you must declare them in a section:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="p">[</span><span class="n">formatters</span><span class="p">]</span>
+</span><span class='line'><span class="n">keys</span><span class="p">:</span> <span class="n">simple</span><span class="p">,</span><span class="n">detailed</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Then the details of each formatter are supplied like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="p">[</span><span class="n">formatter_simple</span><span class="p">]</span>
+</span><span class='line'><span class="n">format</span><span class="p">:</span> <span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="n">s</span><span class="p">:</span><span class="o">%</span><span class="p">(</span><span class="n">levelname</span><span class="p">)</span><span class="n">s</span><span class="p">:</span>  <span class="o">%</span><span class="p">(</span><span class="n">message</span><span class="p">)</span><span class="n">s</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And so on, for each instance of each type.</p>
+
+<p>Second, be careful not to add any spaces in the comma-separated list of keys (I think this is a bug) as you can end up with a Logger with a leading space in the name.  So &lsquo;keys:root,db,gui&rsquo; is not the same as &lsquo;keys:root, db, gui&rsquo;.</p>
+
+<p>Third, I have configured one of the handlers above to send logging information to a separate host using the SysLog facility.  Note that you will need to make sure <code>syslogd</code> is listening for remote calls for this to work, as it does not by default.  Under Debian, this involved adding the &ldquo;-r&rdquo; option to the SYSLOGD settings at the top of <code>/etc/init.d/sysklogd</code>.  Also note there are security implications for doing this, so some careful firewall rules are appropriate here.</p>
+
+<p>The trick is the <code>qualname</code> setting &ndash; this allows us to specify different loggers, and associate the name that we use to get a logger instance with particular settings in the config file.  So the <code>root</code> logger above is the default for the system, but we have separate settings for the engine and GUI components.  This <code>qualname</code> corresponds to the <code>getLogger()</code> call in our code.</p>
+
+<p>The configuration file is loaded at app startup time like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c"># ...</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kn">import</span> <span class="nn">logging.config</span>
+</span><span class='line'>    <span class="n">logging</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">fileConfig</span><span class="p">(</span><span class="s">&#39;logging_basil.conf&#39;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Once you get the hang of it, the logging framework can save you a lot of time and effort, and you will be able to stop the bad habit of adding <code>print</code> statements all over the place, only to forget them or have to come back later and remove them.  The logging calls become a part of the code, you leave them in for production code, and can turn up the level of detail for diagnosing problems.  Fortunately, the performance penalty for leaving the logging code in is <em>very</em> small, and it is definitely worth a few extra cycles for that peace of mind.</p>
+
+<h2>Archived Comments</h2>
+
+<p>AUTHOR: Anonymous
+DATE: 08/02/2005 07:00:29 AM</p>
+
+<p>Typo in config file
+Thanks for clearing up this mistery! I encountered a small typo in the config file. In section
+ [logger_root]
+ level: INFO
+ handlers: root
+the handlers value should be syslog instead of root.</p>
+
+<p>Joost van Lawick
+<a href="&#109;&#x61;&#x69;&#x6c;&#116;&#111;&#58;&#106;&#x6f;&#111;&#115;&#116;&#x40;&#x6c;&#x61;&#119;&#x69;&#99;&#x6b;&#x2e;&#x6e;&#108;">&#x6a;&#x6f;&#x6f;&#115;&#116;&#x40;&#x6c;&#97;&#x77;&#x69;&#99;&#x6b;&#46;&#110;&#x6c;</a></p>
+
+<p>AUTHOR: Chris Lambacher
+DATE: 03/17/2006 09:07:37 AM
+You are missing an closing pre tag
+After the first code block you are missing a closing pre tag.  It makes the article kind of hard to read.</p>
+
+<p>AUTHOR: gavinb
+DATE: 06/07/2006 11:40:57 AM
+d&#8217;oh
+Thanks, fixed!</p>
+
+<p>AUTHOR: Pokerbot
+DATE: 08/21/2007 03:23:32 PM
+it must be difficult being a
+it must be difficult being a python logging &ndash; do they wrap around the logs or swallow them in order to move them?</p>
+
+<p>AUTHOR: Kirk Strauser
+DATE: 12/25/2007 05:17:45 AM
+Reason for listing all the elements
+A few notes: First, you must list all of the loggers, formatters and handlers in a section up front. This is a bit odd, since each has their own section with a unique name anyway, but it appears to be due to a limitation of the ConfigParser.</p>
+
+<p>That&rsquo;s not so odd when you consider larger deployments where many applications are configured from the same config file.  This is the case in my company where a master &ldquo;mycompany.conf&rdquo; holds all settings used throughout our entire codebase.  In theory, you could run every piece of our software on your own system just by tweaking that one file.  With this setup, the logger details will occupy just one tiny corner; it&rsquo;s not as if the whole config file is dedicated to it.</p>
+
+<p>AUTHOR: dramenbejs
+DATE: 05/07/2008 11:07:44 PM</p>
+
+<p>The font configured for the PRE tag in this article is too small: 0.8em.
+It forces me to process the article by hand to read it.
+Why you don&rsquo;t leave it on the default settings, which are at least readable?</p>
 ]]></content>
     
   </entry>

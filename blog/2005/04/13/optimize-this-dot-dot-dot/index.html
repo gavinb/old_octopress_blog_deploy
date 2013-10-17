@@ -1,0 +1,239 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Optimize this... - Gavin Baker ~ antonym.org</title>
+  <meta name="author" content="Gavin Baker">
+
+  
+  <meta name="description" content="I&rsquo;m working on an industrial image processing system, and it&rsquo;s coming together pretty well. I hadn&rsquo;t tried optimising anything up &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.antonym.org//blog/2005/04/13/optimize-this-dot-dot-dot">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Gavin Baker ~ antonym.org" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
+  
+
+</head>
+
+<body   class="collapse-sidebar sidebar-footer" >
+  <header role="banner">
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:www.antonym.org/" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+  
+    
+      <h1 class="entry-title">Optimize This...</h1>
+    
+  
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2005-04-13T10:54:00+10:00" pubdate data-updated="true">2005-04-13</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>I&rsquo;m working on an industrial image processing system, and it&rsquo;s coming together pretty well.  I hadn&rsquo;t tried optimising anything up until now, as I wanted to get all the features implemented and do some profiling.  &ldquo;Premature optimisation is the root of all evil&rdquo;, as they say&hellip;</p>
+
+<p>But as of the last few days, the system has reached the point where most of the key features are working on the imaging unit, certainly enough for meaningful performance tests.  And since it is a near real-time system, performance has always been a key concern.  A good excuse to start some hunting for some optimising opportunities&hellip;</p>
+
+<h2>Classifier</h2>
+
+<p>The target for a full processing cycle is 100-120ms, although I&rsquo;m aiming for more like 90ms.  Without any optimising whatsoever, the processing cycle was taking far too long at something over 200ms.  One stage, the classifier, was taking just over 30ms per frame, which seemed excessive considering its primary role.  I started looking at the main loop, and it became clear that there was a lot of extra code calculating stuff only used during calibration.  Making that optional saved 5ms per frame.</p>
+
+<p>Looking at the guts of the inner loop, there staring at me was the next obvious candidate: a function call, used to retrieve the YUV pixel (or YCbCr CCIR-601 if you prefer) components from the YUV:422 packed frame.  I rewrote the pixel access as a macro, and got it down to 15ms.  Nice, but I&rsquo;m sure can do more.</p>
+
+<p>At this point I realise that I haven&rsquo;t even tried the obvious thing of adding &lsquo;-O3&rsquo; to the compiler flags.  I rectify this oversight, and this gets us down to 10ms.</p>
+
+<p>I restructure the loop some more, and remove even the test for the calibration code from the inner loop, so all it is doing is the lookup table.  I also remove a histogram calculation that I didn&rsquo;t end up needing to refer to, and now get it down to around 4ms.</p>
+
+<p>I was reasonably happy at this point, as the code was still perfectly readable and modular, and I didn&rsquo;t have to resort to assembler, obfuscation or kinky tricks.  There&rsquo;s one more thing I can do that might shave off a few cycles, but I had to move on to the next target.</p>
+
+<h2>Capture</h2>
+
+<p>We are using Firewire cameras, specifically the <a href="http://www.basler.com/">Basler 601fc</a>.  The state of <a href="http://www.linux1394.org/">IEEE 1394</a> support under Linux is somewhat in flux at the moment, and I wrote a layer to abstract away the details of Firewire camera control.  This not only simplified the layers above, it made us insensitive to which particular underlying library we would ultimately use (currently libdc1394).  It also made it nice and easy to write a Python wrapper (using Pyrex of course).</p>
+
+<p>When I first wrote this fwcam layer, I used the simpler of two capture models, and once it was working, left it at that.  But when I added a high resolution timer to profile the image capture code, I discovered that just the capture was taking over 40ms.  This seeemed excessive too, so I went back to re-read the docs and code and see how I could speed things up.  It turns out that there was a DMA version of the capture function, and although it required some extra buffering, it wasn&rsquo;t much effort to change the fwcam layer to take advantage of it.</p>
+
+<p>I was rather shocked to see, once I had rebuilt the library, the capture time was down to under 2ms!  I was expecting a big difference, but even this much was a surprise.  Another nice feature is a non-blocking variant of the DMA capture call that could return immediately if no frame was available.  This would prove useful in the async triggering protocol.</p>
+
+<h2>But wait &ndash; there&rsquo;s more&hellip;</h2>
+
+<p>There are many more opportunities, I&rsquo;m sure.  Through some careful analysis, strategic placement of some high-resolution (microsecond) timers, and restructing and refactoring of the code, I managed to shave around 26ms per frame in the first case, or about 8 times faster.  But the most important thing is that the code is still readable and maintainable, not some mess of macros and funky shortcuts nobody else but me can grok.</p>
+
+<p>Of course, I have been looking at the MMX extensions in GCC recently, so&hellip; :)</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Gavin Baker</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2005-04-13T10:54:00+10:00" pubdate data-updated="true">2005-04-13</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.antonym.org//blog/2005/04/13/optimize-this-dot-dot-dot/" data-via="gavinb" data-counturl="http://www.antonym.org//blog/2005/04/13/optimize-this-dot-dot-dot/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2005/03/15/a-real-python-logging-example/" title="Previous Post: A real Python logging example">&laquo; A real Python logging example</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2005/04/21/bug-of-the-year/" title="Next Post: Bug of the Year">Bug of the Year &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/10/17/bug-of-the-year-2011/">Bug of the Year - 2011</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/10/08/what-is-rust/">What is Rust?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/03/09/good-code-gardening/">Good Code Gardening</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2010/04/07/25-tips-for-intermediate-mercurial-users/">25 Tips for Intermediate Mercurial Users</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2010/01/01/threading-with-boost-part-ii-threading-challenges/">Threading with Boost - Part II: Threading Challenges</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Gavin Baker <br/>
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>, customized with <a href="https://github.com/mjhea0/whiterspace">whiterspace</a>.</span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

@@ -9,9 +9,8 @@
   <meta name="author" content="Gavin Baker">
 
   
-  <meta name="description" content="Rust is a compiled, hybrid imperative/object-
-oriented/functional language. It appeals directly to any C++ developer who has
-battled with memory &hellip;">
+  <meta name="description" content="
+">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -63,6 +62,44 @@ battled with memory &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+  
+    
+      <h1 class="entry-title"><a href="/blog/2013/10/17/bug-of-the-year-2011/">Bug of the Year - 2011</a></h1>
+      
+      
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-10-17T18:24:00+11:00" pubdate data-updated="true">2013-10-17</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content">
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -378,7 +415,7 @@ So why might you be interested in learning Rust?</p>
   <header>
   
     
-      <h1 class="entry-title"><a href="/blog/2005/02/16/pyrex-and-sharing-extension-modules/">Pyrex and Sharing Extension Modules</a></h1>
+      <h1 class="entry-title"><a href="/blog/2008/11/22/improve-your-c-plus-plus-const-correctness/">Improve Your C++: Const-correctness</a></h1>
       
       
     
@@ -395,71 +432,20 @@ So why might you be interested in learning Rust?</p>
   
 
 
-<time datetime="2005-02-16T22:21:00+11:00" pubdate data-updated="true">2005-02-16</time>
+<time datetime="2008-11-22T15:18:00+11:00" pubdate data-updated="true">2008-11-22</time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>I&rsquo;m using <a href="http://www.python.org/">Python</a> and C in one of the rather large projects I&rsquo;m working on, and I&rsquo;m using <a href="http://nz.cosc.canterbury.ac.nz/~greg/python/Pyrex/">Pyrex</a> to provide the bridging code.  Once I got over some of the tricks involved in sharing types between extension modules, it was cooking with gas.</p>
-
-<p>Now I have a <a href="http://www.linux1394.org/">Firewire</a> camera running live in a <a href="http://www.wxpython.org/">wxPython</a> window being displayed using <a href="http://pyopengl.sourceforge.net/">PyOpenGL</a>.  Very cool indeed&hellip;  Now all I have to do is hack in YUV support into <a href="http://gandalf-library.sourceforge.net/">Gandalf</a>, and I&rsquo;ll be set!</p>
-
-<p>Writing extension modules in Pyrex is dead easy, sharing them just takes a little extra know-how.  You have to declare the <tt>cdef</tt> functions along with the data members in your <tt>.pxd</tt> file.  Then the implementation goes into the <tt>.pyx</tt> module, which is compiled.  The trouble I came across was calling <tt>cdef</tt>ed functions between modules that used a common C type defined in another module.  Clear as mud?</p>
-
-<p>The solution was to declare the C <tt>typedef</tt>s in their own <tt>.pxd</tt> and import those into both, thus putting all the C types in their own namespace.  Then two different extension modules can use the same C types from Pyrex code and all&rsquo;s well.</p>
-
-<h2>2013 Update</h2>
-
-<p>These days, you would likely use the <a href="http://www.python.org/lib/ctypes/"><code>ctypes</code> module</a>, which allows you to transparently
-invoke C functions from Python code.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-  
-    
-      <h1 class="entry-title"><a href="/blog/2004/12/13/how-not-to-give-a-talk/">How Not to Give a Talk</a></h1>
-      
-      
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2004-12-13T14:27:00+11:00" pubdate data-updated="true">2004-12-13</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I just got back from the Artificial Intelligence &lsquo;04 conference in Cairns.  It was a great conference, met lots of people, went to some interesting talks, saw some fantastic keynote talks, and generally had a good time.  I even got to go for a swim and soak up some sun on the last day.</p>
-
-<p>But I am writing this particular entry to capture some points I think are worth recording, based on some of what most people would agree were the less successful talks.  If anyone is giving a technical talk, maybe some of the following will be useful&hellip;</p>
+  <div class="entry-content"><p>Writing &ldquo;const-correct&rdquo; code will improve the quality and maintainability of your code.  It is especially important and useful when writing Object-Oriented code, as objects are often passed around as constant references.  Properly declaring non-mutating methods as <code>const</code> allows you to safely call any <code>const</code> method on such a reference.  It is part of good type-safe practice and good code hygiene. So how do we do it?</p>
 
 </div>
   
   
     <footer>
-      <a rel="full-article" href="/blog/2004/12/13/how-not-to-give-a-talk/">Read more &rarr;</a>
+      <a rel="full-article" href="/blog/2008/11/22/improve-your-c-plus-plus-const-correctness/">Read more &rarr;</a>
     </footer>
   
 
@@ -472,7 +458,7 @@ invoke C functions from Python code.</p>
   <header>
   
     
-      <h1 class="entry-title"><a href="/blog/2003/10/08/verisign-vs-the-rest-of-the-world/">VeriSign vs the Rest of the World</a></h1>
+      <h1 class="entry-title"><a href="/blog/2008/05/18/tiger-isnt-really-for-the-users/">Tiger Isn&#8217;t Really for the Users</a></h1>
       
       
     
@@ -489,20 +475,22 @@ invoke C functions from Python code.</p>
   
 
 
-<time datetime="2003-10-08T21:25:00+10:00" pubdate data-updated="true">2003-10-08</time>
+<time datetime="2008-05-18T10:55:00+10:00" pubdate data-updated="true">2008-05-18</time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>On the 15th of September, the top-level Domain Name Service (DNS) for <code>.net</code> and <code>.com</code>, fundamental to the entire Internet, was hijacked &ndash; by the very custodian entrusted with its upkeep.</p>
+  <div class="entry-content"><p>Sure, <a href="http://www.apple.com/macosx">Tiger</a> &ndash; the latest release of Apple&rsquo;s Mac OS X &ndash; has a huge array of new features.  Sure, the Spotlight search features alone are compelling enough to make you want to upgrade. Automator enables workflow and user-level scripting.  And Dashboard is a whole new dimension in desktop widgets.</p>
+
+<p>But for all the 200 new features and usability enhancements, that&rsquo;s not what the <em>secret sauce</em> is all about.</p>
 
 </div>
   
   
     <footer>
-      <a rel="full-article" href="/blog/2003/10/08/verisign-vs-the-rest-of-the-world/">Read more &rarr;</a>
+      <a rel="full-article" href="/blog/2008/05/18/tiger-isnt-really-for-the-users/">Read more &rarr;</a>
     </footer>
   
 
@@ -524,6 +512,10 @@ invoke C functions from Python code.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/10/17/bug-of-the-year-2011/">Bug of the Year - 2011</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/10/08/what-is-rust/">What is Rust?</a>
       </li>
     
@@ -537,10 +529,6 @@ invoke C functions from Python code.</p>
     
       <li class="post">
         <a href="/blog/2010/01/01/threading-with-boost-part-ii-threading-challenges/">Threading with Boost - Part II: Threading Challenges</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2009/09/16/stl-filtering/">STL: filtering</a>
       </li>
     
   </ul>

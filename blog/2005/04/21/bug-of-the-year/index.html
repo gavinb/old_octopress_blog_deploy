@@ -1,0 +1,244 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Bug of the Year - Gavin Baker ~ antonym.org</title>
+  <meta name="author" content="Gavin Baker">
+
+  
+  <meta name="description" content="I discovered the weirdest bug the other day&hellip; I had built a new version of the imaging system, tested it and was ready to deploy it. It was &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.antonym.org//blog/2005/04/21/bug-of-the-year">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Gavin Baker ~ antonym.org" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
+  
+
+</head>
+
+<body   class="collapse-sidebar sidebar-footer" >
+  <header role="banner">
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:www.antonym.org/" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+  
+    
+      <h1 class="entry-title">Bug of the Year</h1>
+    
+  
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2005-04-21T10:14:00+10:00" pubdate data-updated="true">2005-04-21</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>I discovered the weirdest bug the other day&hellip;</p>
+
+<p>I had built a new version of the imaging system, tested it and was ready to deploy it.  It was working great on the development box, and it seemed ready to go.  I downloaded the new version on the target machine, and fired it up, expecting to have only a few minutes downtime. And then&hellip;</p>
+
+<!--more-->
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Floating point exception</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Oops.</p>
+
+<p>But it wasn&rsquo;t my fault, honest!  Actually my first inclination was to blame one of the new packages I had installed.  One of the new features was to plot some statistics, and I was ready to put it down to a conflict or some weirdness with the new plotting package.  I checked everything three ways, and it was the right version, had all the right dependencies&hellip;  It had to be in my code &ndash; but where?</p>
+
+<p>I cranked up the debug level in all modules (and was very glad at this point that I had decided to use the logging framework liberally, and with some granularity, and leave it in the production system).  I re-ran it and it <em>seemed</em> like the code was failing in a drawing routine for a custom widget.  This was extra weird, as I hadn&rsquo;t changed that module for a while, so it was the same as was running perfectly before.</p>
+
+<p>I then went in and resorted to the age-old technique of adding <code>print</code> commands at various stages of the code, to see how far it was getting.  Sure enough, in the middle of the <code>on_draw()</code> method, in amongst some OpenGL calls, it was raising the <code>SIGFPE</code>.  I should mention at this point that this module was coded in Python, so any floating point errors would raise a real Python exception and display a nice stack trace showing me precisely where my error occured.  The fact that the error was the most generic message, obviously coming from the C runtime (and calling <code>abort()</code> rather rudely) made me wonder&hellip;</p>
+
+<p>I stuck a premature <code>return</code> in the drawing code, and everything worked fine from then on.  But certain other widgets, also using OpenGL, could be made to trigger the error under certain circumstances.  Weirdness.  Time to fire up <code>gdb</code>.</p>
+
+<p>I ran Python under the debugger, and ran the program (which also includes a bunch of custom Pyrex modules, which were not above suspicion).  The first thing that happens is a dump from a SIGFPE, but this was in the <code>i830_dri.so</code> module, in some <code>__driCreateScreen()</code> call.  I had actually noticed this once or twice before, but it had never caused a problem and so I had blissfully ignored it.  But now some alarm bells were going off.</p>
+
+<p>I reverted the production machine to the previous release (thank goodness for Subversion and half-decent configuration management!) and went back to the office to track the problem down in detail on the test rig (which is identical to the production machine).</p>
+
+<p>It turns out that the i830 video driver raises some floating point exceptions under certain OpenGL operations.  AFAICT this is a bug, but it hadn&rsquo;t caused a problem before, and hadn&rsquo;t been a problem on the dev box (which, as it turns out, uses the i810 driver which is why I hadn&rsquo;t noticed it before).  But why was it failing now and not before?  The plotting library <code>matplotlib</code> I had installed needs a linear algrabra package to run, and it can use either <code>Numeric</code> or <code>numarray</code>.  I chose the latter because it was newer.  It seems that numarray actually installs an FP signal handler, so when I added it to the mix, it was picking up on the driver FPEs as well.</p>
+
+<p>After much binary partitioning (and a lot of hackery) I narrowed down the problem to the essentials, then wrote the most basic code that demonstrates the problem.  It is just a simple OpenGL program that displays a triangle, but if you so much as <code>import</code> the numarray module, you get a FPE in the drawing code.  Now I have to figure out where to report the bug!  (I suspect it is squarely the fault of the X i830 driver&hellip;)</p>
+
+<p>The solution for the time being was to use <code>Numeric</code> for the linalg stuff, and I could put the plotting features back in.  This would give me time to chase up the driver bug.</p>
+
+<p>The moral of this story: always test on a test rig that is the <strong>same</strong> as the production machine!</p>
+
+<p>Oh, and also &ndash; logging is your friend!  It is definitely worth the extra few cycles to have granular, detailed logging available at the flick of a switch when things start going wrong.  Use a proper logging framework, not just <code>printf</code>, so you can log to a file, <code>syslog</code>, or whatever.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Gavin Baker</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2005-04-21T10:14:00+10:00" pubdate data-updated="true">2005-04-21</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.antonym.org//blog/2005/04/21/bug-of-the-year/" data-via="gavinb" data-counturl="http://www.antonym.org//blog/2005/04/21/bug-of-the-year/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2005/04/13/optimize-this-dot-dot-dot/" title="Previous Post: Optimize this...">&laquo; Optimize this...</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2005/05/31/who-really-cares-about-usability/" title="Next Post: Who really cares about usability?">Who really cares about usability? &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/10/17/bug-of-the-year-2011/">Bug of the Year - 2011</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/10/08/what-is-rust/">What is Rust?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/03/09/good-code-gardening/">Good Code Gardening</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2010/04/07/25-tips-for-intermediate-mercurial-users/">25 Tips for Intermediate Mercurial Users</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2010/01/01/threading-with-boost-part-ii-threading-challenges/">Threading with Boost - Part II: Threading Challenges</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Gavin Baker <br/>
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>, customized with <a href="https://github.com/mjhea0/whiterspace">whiterspace</a>.</span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
