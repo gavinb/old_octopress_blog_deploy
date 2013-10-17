@@ -91,7 +91,7 @@
 
 <div class="entry-content"><p>The STL makes it easy to create lists, iterate over lists, and apply a function to each member of a list.  So how do you filter a vector according to some criteria?  It&rsquo;s not hard, but the obvious solution isn&rsquo;t <em>quite</em> enough.  Here&rsquo;s how.</p>
 
-<!---more-->
+<!--more-->
 
 
 <p>Say you have a vector of values, and you want to apply a filter to the list.  That is,  remove elements that satisfy some criteria.  It&rsquo;s quite a common requirement, so you&rsquo;d think there would be an obvious and simple way to do it.  If you go searching for the word &ldquo;filter&rdquo; in the STL documentation, you may not find much relevant in the <code>std::vector</code> method reference.  If you browse around in STL algorithms, eventually you&rsquo;ll come across a method called <code>remove_if</code>.  It takes two iterators to specify the range (first and last) of the operation, and a predicate function.  Sounds perfect!</p>

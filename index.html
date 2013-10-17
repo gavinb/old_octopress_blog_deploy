@@ -96,107 +96,15 @@ battled with memory &hellip;">
 
   <div class="entry-content"><p><a href="http://www.rust-lang.org/">Rust</a> is a compiled, hybrid imperative/object-
 oriented/functional language. It appeals directly to any C++ developer who has
-battled with memory management, and Python developers who long for faster code.</p>
+battled with memory management, and Python developers who long for faster code.
+So why might you be interested in learning Rust?</p>
 
-<p>It&rsquo;s <strong>compiled</strong>, so it&rsquo;s fast. Rust uses <a href="http://www.llvm.org/">LLVM</a> as the
-compilation engine, and benefits from all its optimisation and native code
-generation support that targets ARM and Intel processors.</p>
-
-<p>Rust uses <strong>type inference</strong>, so you can write cleaner, simpler code while
-retaining the benefits of strong static typing. It also supports <strong>generic</strong> and
-<strong>algebraic types</strong>, which offers a far richer type system than C++.</p>
-
-<p>There are no <code>NULL</code> pointers, thus rendering an entire class of bugs impossible.
-This alone is worth a serious look, as the security and reliability implications
-are huge.</p>
-
-<p>Rust is a brace-oriented like C/C++, so many aspects of the syntax will be
-immediately familiar to existing developers.</p>
-
-<p>Memory ownership semantics are rich, strict and enforced. There are owned
-pointers, shared pointers and <em>optional</em> garbage-collection.</p>
-
-<p>Rust has first-class <strong>concurrency</strong> support, featuring lightweight tasks
-and message passing.</p>
-
-<p>What does it look like? I would describe it as terse &ndash; or rather, minimalist.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='rust'><span class='line'><span class="k">fn</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s">&quot;Hello, world&quot;</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Ok, that&rsquo;s not very useful. How about a naïve Fibonacci function:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='rust'><span class='line'><span class="k">fn</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">:</span> <span class="k">uint</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="k">uint</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">match</span> <span class="n">n</span> <span class="p">{</span>
-</span><span class='line'>        <span class="m">0.</span><span class="p">.</span><span class="m">1</span>    <span class="o">=&gt;</span> <span class="m">1</span><span class="p">,</span>
-</span><span class='line'>        <span class="n">_</span>       <span class="o">=&gt;</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="m">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="m">2</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Yes, Rust has <strong>pattern matching</strong> just like Haskell. Forget about the simple
-<code>switch</code> statement &ndash; <code>match</code> is super-powerful and flexible, supporting ranges,
-options and destructuring fields from <code>struct</code>s.</p>
-
-<p>What about some tasks:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='rust'><span class='line'><span class="k">fn</span> <span class="n">test_tasks</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">println</span><span class="p">(</span><span class="s">&quot;About to spawn...&quot;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">do</span> <span class="n">spawn</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">println</span><span class="p">(</span><span class="s">&quot;Hello from the first subtask!&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">do</span> <span class="n">spawn</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">println</span><span class="p">(</span><span class="s">&quot;Hello from another subtask!&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Despite having spent years working in C++, I have often lamented its
-shortcomings. Yet until recently, no other language seems to have come close to
-competing with C++ as a systems language.</p>
-
-<p>The <a href="http://dlang.org">D programming language</a> looks very interesting, and aims
-to provide a worthy alternative to C++.  However, last time I looked, there was
-a schism over the runtime libraries which made adoption difficult. Uncertainty
-about such a fundamental aspect is not reassuring for potential users.</p>
-
-<p>The <a href="http://www.go-lang.org/">Go programming language</a> from Google is fantastic,
-and I have already used it on a number of small projects. The only shortcoming I
-see here is the garbage collection, which makes real-time systems impractical.</p>
-
-<p>Rust has great promise, and also has both Mozilla and Samsung backing its
-progress. There is a vibrant, friendly and smart community behind it, and a
-growing number of third-party libraries are supported. I am very optimistic
-about the future of Rust, and look forward to contributing.</p>
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/10/08/what-is-rust/">Read more &rarr;</a>
+    </footer>
   
 
 
@@ -365,156 +273,12 @@ about the future of Rust, and look forward to contributing.</p>
 
   <div class="entry-content"><p>The STL makes it easy to create lists, iterate over lists, and apply a function to each member of a list.  So how do you filter a vector according to some criteria?  It&rsquo;s not hard, but the obvious solution isn&rsquo;t <em>quite</em> enough.  Here&rsquo;s how.</p>
 
-<!---more-->
-
-
-<p>Say you have a vector of values, and you want to apply a filter to the list.  That is,  remove elements that satisfy some criteria.  It&rsquo;s quite a common requirement, so you&rsquo;d think there would be an obvious and simple way to do it.  If you go searching for the word &ldquo;filter&rdquo; in the STL documentation, you may not find much relevant in the <code>std::vector</code> method reference.  If you browse around in STL algorithms, eventually you&rsquo;ll come across a method called <code>remove_if</code>.  It takes two iterators to specify the range (first and last) of the operation, and a predicate function.  Sounds perfect!</p>
-
-<p>Let&rsquo;s use it to filter a list of numbers, removing even numbers.  Given the following input:</p>
-
-<pre><code>1 2 3 4 5 6 7 8 9
-</code></pre>
-
-<p>we expect to see the result:</p>
-
-<pre><code>1 3 5 7 9
-</code></pre>
-
-<p>A predicate function is essentially a test for a property, and returns whether or not the parameter has this property.  So our predicate function will take an integer value (matching the element type of our vector) and return a boolean, denoting whether or not to remove the given element.  So we&rsquo;d have:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="kt">bool</span> <span class="n">is_even</span><span class="p">(</span><span class="kt">int</span> <span class="n">N</span><span class="p">)</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">N</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Easy!  Now, to store our numbers, we would start with a simple vector of integers, thus:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="k">typedef</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">vector_t</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">vector_t</span>    <span class="n">numbers</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>We read in the numbers in a loop and save them in the array:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="k">while</span> <span class="p">(</span><span class="kc">true</span><span class="p">)</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="kt">int</span> <span class="n">n</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">std</span><span class="o">::</span><span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">n</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">std</span><span class="o">::</span><span class="n">cin</span><span class="p">.</span><span class="n">good</span><span class="p">())</span>
-</span><span class='line'>        <span class="k">break</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">numbers</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>This will take care of reading in the data, as it will stop as soon as it reads something that isn&rsquo;t an integer, or reaches the end of file.  Now we just apply the filter, and then print the result:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">remove_if</span><span class="p">(</span><span class="n">numbers</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">numbers</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span> <span class="n">is_even</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">vector_t</span><span class="o">::</span><span class="n">iterator</span> <span class="n">it</span><span class="p">;</span>
-</span><span class='line'><span class="k">for</span> <span class="p">(</span><span class="n">it</span> <span class="o">=</span> <span class="n">numbers</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span> <span class="n">it</span> <span class="o">!=</span> <span class="n">numbers</span><span class="p">.</span><span class="n">end</span><span class="p">();</span> <span class="o">++</span><span class="n">it</span><span class="p">)</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="o">*</span><span class="n">it</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>There, we&rsquo;re done!  Now, we just run the completed program, and give it some test data:</p>
-
-<pre><code>$ ./filter 
-1 2 3 4 5 6 7 8 9 -
-</code></pre>
-
-<p>But wait, the output we see is wrong!</p>
-
-<pre><code>1
-3
-5
-7
-9
-6
-7
-8
-9
-</code></pre>
-
-<p>Oh, no!  There must be a bug in the libraries!  Curses, foiled again!</p>
-
-<p>Actually, no &ndash; the sky isn&rsquo;t falling, and there is no bug.  Now is when we probably should be doing a bit of RTFMing.  Let&rsquo;s check the docs and see what&rsquo;s going on.  According to the <a href="http://gcc.gnu.org/onlinedocs/libstdc++/latest-doxygen/">g++ library documentation</a>:</p>
-
-<blockquote><p>&ldquo;Elements between the end of the resulting sequence and &lsquo;last&rsquo; are still present, but their value is unspecified.&rdquo;</p></blockquote>
-
-<p>Er, ok&hellip; that&rsquo;s handy &ndash; not.  Looking back at the output, we do notice that the first 5 values are correct, but there&rsquo;s some junk after them.  And sure enough, that&rsquo;s the documented behaviour &ndash; we are just seeing the &ldquo;unspecified&rdquo; values left behind.</p>
-
-<p>It is worth pointing out right about now that the fine folk who designed the STL were fairly obsessed with efficiency, and the STL is designed to be low-level, powerful and fast, sometimes at the expense of user friendliness.  It is more efficient to implement filtering as a generic algorithm that can be applied to any container.  And sure enough, that is the intent, as we see in the docs:</p>
-
-<blockquote><p>&ldquo;@return   An iterator designating the end of the resulting sequence.&rdquo;</p></blockquote>
-
-<p>Ah, we were actually supposed to do something with the return value!  The implementation of <code>remove_if</code> moves (or actually copies) the values to be kept to the head of the list, and returns an iterator pointing to the start of the &ldquo;junk&rdquo; (just after the filtered list), in preparation for this tail to be snipped off.  So, let&rsquo;s use the <code>erase</code> method to do just that:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">numbers</span><span class="p">.</span><span class="n">erase</span><span class="p">(</span><span class="n">remove_if</span><span class="p">(</span><span class="n">numbers</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">numbers</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span> <span class="n">is_even</span><span class="p">),</span> <span class="n">numbers</span><span class="p">.</span><span class="n">end</span><span class="p">());</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Now, running the test application again, we get the output:</p>
-
-<pre><code>1
-3
-5
-7
-9
-</code></pre>
-
-<p>Huzzah!  It is really a matter of getting a feel for the design patterns behind the STL, and the very low-level API that it provides.</p>
-
-<p>This process can be visualised thus:</p>
-
-<p><span class="mt-enclosure mt-enclosure-image" style="display: inline;"><img alt="STL Filtering Example" src="http://antonym.org/images/STLFilteringExample.png" width="532" height="670" class="mt-image-none" style="" /></span></p>
-
-<p>It is also worth mentioning at this point that if you are doing a lot of adding and removing of  elements, a <code>std::list</code> is probably a better choice, as inserting and deleting elements in vectors is very expensive.</p>
-
-<p>Now, you&rsquo;re probably wondering why <code>remove_if</code> is a function in the STL <code>algorithms</code> collection, rather than a method in <code>std::vector</code> itself.  Well, the folks who designed the STL are very, very clever.  The obvious thing would be to put a <code>remove_if</code> method in every single container class.  But the implementation would be <em>almost</em> the same, right?  Well, they reasoned, what if all container classes provided a common, minimal interface, we could implement <code>remove_if</code> just once, and it could apply to almost any container!  It&rsquo;s even more generic that way.  So there are a whole series of algorithms that apply to a wide variety of different containers, and use informal interfaces to decouple things.</p>
-
-<p>The (platform-neutral) sample code is available below&hellip;</p>
-
-<ul>
-<li>Sample C++ code: <span class="mt-enclosure mt-enclosure-file" style="display: inline;"><a href="http://antonym.org/files/stl_filter.zip">stl_filter.zip</a></span> (4.5kB zip)</li>
-</ul>
-
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2009/09/16/stl-filtering/">Read more &rarr;</a>
+    </footer>
   
 
 
@@ -571,7 +335,7 @@ about the future of Rust, and look forward to contributing.</p>
   <header>
   
     
-      <h1 class="entry-title"><a href="/blog/2002/01/12/emacs-myths/">Emacs Myths</a></h1>
+      <h1 class="entry-title"><a href="/blog/2009/04/30/the-first-user/">The First User</a></h1>
       
       
     
@@ -588,26 +352,157 @@ about the future of Rust, and look forward to contributing.</p>
   
 
 
-<time datetime="2002-01-12T02:46:00+11:00" pubdate data-updated="true">2002-01-12</time>
+<time datetime="2009-04-30T23:26:00+10:00" pubdate data-updated="true">2009-04-30</time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>A recent <a href="http://www.newsforge.com/">article</a> on NewsForge brought up
-one of the oldest rwars on the planet (almost as old as the operating system
-rwars), asking which editor is best: vi or Emacs?  I was inspired to write my
-own thoughts, findings and opinions after reading this article.  Especially
-since most of the arguments I read were trolls sprouting opinions and
-regurgitating fallacies, rather than any informed sort of debate.  So here I am,
-with my own 2 cents.</p>
+  <div class="entry-content"><p>When you are developing a new piece of software, you typically first spend quite some time setting up your development environment.  As you progress, your application becomes a very cozy inhabitant of this environment, a safe happy cocoon that has evolved as you make lots of small changes to the application or your system.  What could possibly go wrong?</p>
 
 </div>
   
   
     <footer>
-      <a rel="full-article" href="/blog/2002/01/12/emacs-myths/">Read more &rarr;</a>
+      <a rel="full-article" href="/blog/2009/04/30/the-first-user/">Read more &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+  
+    
+      <h1 class="entry-title"><a href="/blog/2005/02/16/pyrex-and-sharing-extension-modules/">Pyrex and Sharing Extension Modules</a></h1>
+      
+      
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2005-02-16T22:21:00+11:00" pubdate data-updated="true">2005-02-16</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I&rsquo;m using <a href="http://www.python.org/">Python</a> and C in one of the rather large projects I&rsquo;m working on, and I&rsquo;m using <a href="http://nz.cosc.canterbury.ac.nz/~greg/python/Pyrex/">Pyrex</a> to provide the bridging code.  Once I got over some of the tricks involved in sharing types between extension modules, it was cooking with gas.</p>
+
+<p>Now I have a <a href="http://www.linux1394.org/">Firewire</a> camera running live in a <a href="http://www.wxpython.org/">wxPython</a> window being displayed using <a href="http://pyopengl.sourceforge.net/">PyOpenGL</a>.  Very cool indeed&hellip;  Now all I have to do is hack in YUV support into <a href="http://gandalf-library.sourceforge.net/">Gandalf</a>, and I&rsquo;ll be set!</p>
+
+<p>Writing extension modules in Pyrex is dead easy, sharing them just takes a little extra know-how.  You have to declare the <tt>cdef</tt> functions along with the data members in your <tt>.pxd</tt> file.  Then the implementation goes into the <tt>.pyx</tt> module, which is compiled.  The trouble I came across was calling <tt>cdef</tt>ed functions between modules that used a common C type defined in another module.  Clear as mud?</p>
+
+<p>The solution was to declare the C <tt>typedef</tt>s in their own <tt>.pxd</tt> and import those into both, thus putting all the C types in their own namespace.  Then two different extension modules can use the same C types from Pyrex code and all&rsquo;s well.</p>
+
+<h2>2013 Update</h2>
+
+<p>These days, you would likely use the <a href="http://www.python.org/lib/ctypes/"><code>ctypes</code> module</a>, which allows you to transparently
+invoke C functions from Python code.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+  
+    
+      <h1 class="entry-title"><a href="/blog/2004/12/13/how-not-to-give-a-talk/">How Not to Give a Talk</a></h1>
+      
+      
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2004-12-13T14:27:00+11:00" pubdate data-updated="true">2004-12-13</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I just got back from the Artificial Intelligence &lsquo;04 conference in Cairns.  It was a great conference, met lots of people, went to some interesting talks, saw some fantastic keynote talks, and generally had a good time.  I even got to go for a swim and soak up some sun on the last day.</p>
+
+<p>But I am writing this particular entry to capture some points I think are worth recording, based on some of what most people would agree were the less successful talks.  If anyone is giving a technical talk, maybe some of the following will be useful&hellip;</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2004/12/13/how-not-to-give-a-talk/">Read more &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+  
+    
+      <h1 class="entry-title"><a href="/blog/2003/10/08/verisign-vs-the-rest-of-the-world/">VeriSign vs the Rest of the World</a></h1>
+      
+      
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2003-10-08T21:25:00+10:00" pubdate data-updated="true">2003-10-08</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>On the 15th of September, the top-level Domain Name Service (DNS) for <code>.net</code> and <code>.com</code>, fundamental to the entire Internet, was hijacked &ndash; by the very custodian entrusted with its upkeep.</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2003/10/08/verisign-vs-the-rest-of-the-world/">Read more &rarr;</a>
     </footer>
   
 
@@ -615,6 +510,8 @@ with my own 2 cents.</p>
     </article>
   
   <div class="pagination">
+    
+      <a class="prev" href="/blog/page/2/">&larr; Older</a>
     
     <a href="/blog/archives">Blog Archives</a>
     

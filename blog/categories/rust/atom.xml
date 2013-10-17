@@ -4,7 +4,7 @@
   <title><![CDATA[Category: rust | Gavin Baker ~ antonym.org]]></title>
   <link href="http://www.antonym.org//blog/categories/rust/atom.xml" rel="self"/>
   <link href="http://www.antonym.org//"/>
-  <updated>2013-10-16T10:49:14+11:00</updated>
+  <updated>2013-10-17T11:02:40+11:00</updated>
   <id>http://www.antonym.org//</id>
   <author>
     <name><![CDATA[Gavin Baker]]></name>
@@ -20,7 +20,11 @@
     <id>http://www.antonym.org//blog/2013/10/08/what-is-rust</id>
     <content type="html"><![CDATA[<p><a href="http://www.rust-lang.org/">Rust</a> is a compiled, hybrid imperative/object-
 oriented/functional language. It appeals directly to any C++ developer who has
-battled with memory management, and Python developers who long for faster code.</p>
+battled with memory management, and Python developers who long for faster code.
+So why might you be interested in learning Rust?</p>
+
+<!--more-->
+
 
 <p>It&rsquo;s <strong>compiled</strong>, so it&rsquo;s fast. Rust uses <a href="http://www.llvm.org/">LLVM</a> as the
 compilation engine, and benefits from all its optimisation and native code
