@@ -1,0 +1,271 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>STL warts - when removing isn't - Gavin Baker ~ antonym.org</title>
+  <meta name="author" content="Gavin Baker">
+
+  
+  <meta name="description" content="Pop quiz: what does the remove function provided in the C++ STL algorithm package do? 1
+std::remove(list&lt;T&gt;::iterator begin, list&lt;T&gt;:: &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.antonym.org//2008/01/stl-warts-when-removing-isnt.html">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Gavin Baker ~ antonym.org" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-6131956-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="collapse-sidebar sidebar-footer" >
+  <header role="banner">
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:www.antonym.org/" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+  
+    
+      <h1 class="entry-title">STL Warts - When Removing Isn't</h1>
+    
+  
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2008-01-01T17:33:00+11:00" pubdate data-updated="true">2008-01-01</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Pop quiz: what does the <code>remove</code> function provided in the C++ STL algorithm package do?</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">remove</span><span class="p">(</span><span class="n">list</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;::</span><span class="n">iterator</span> <span class="n">begin</span><span class="p">,</span> <span class="n">list</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;::</span><span class="n">iterator</span> <span class="n">end</span><span class="p">,</span> <span class="n">T</span><span class="o">&amp;</span> <span class="n">t</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Simple question, surely&hellip; Your answer?</p>
+
+<p>If you said &ldquo;it removes the value t from the list between the two iterators&rdquo; then &mdash; bzzzzt, thank you for playing.  It doesn&rsquo;t actually remove anything.  Quoting from the description:</p>
+
+<pre><code>Reorders the range [first,last) to prepare for erasing all elements of equal value.
+</code></pre>
+
+<p>So the way to <i>actually</i> erase something from a <code>std::vector</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">v</span><span class="p">.</span><span class="n">erase</span><span class="p">(</span><span class="n">remove</span><span class="p">(</span><span class="n">v</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">v</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span> <span class="n">item</span><span class="p">));</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So all it does is shuffle the items to be deleted to the end, and return an iterator to them.  Then the <code>erase</code> method from the vector snips them off the end.</p>
+
+<p>The above <code>erase/remove</code> line is a standard idiom for actually removing an item by value from a container.</p>
+
+<p>This is one of several poorly named methods in the STL.  There are other design warts which I&rsquo;ll discuss in future articles.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Gavin Baker</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2008-01-01T17:33:00+11:00" pubdate data-updated="true">2008-01-01</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.antonym.org//2008/01/stl-warts-when-removing-isnt.html" data-via="gavinb" data-counturl="http://www.antonym.org//2008/01/stl-warts-when-removing-isnt.html" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/2008/01/a-subtle-bug-involving-c-plus-plus-temporaries.html" title="Previous Post: A subtle bug involving C++ temporaries">&laquo; A subtle bug involving C++ temporaries</a>
+      
+      
+        <a class="basic-alignment right" href="/2008/02/debugging-nsbezierpath-drawing.html" title="Next Post: Debugging NSBezierPath drawing">Debugging NSBezierPath drawing &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/2013/10/bug-of-the-year-2011.html">Bug of the Year - 2011</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2013/10/what-is-rust.html">What is Rust?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/03/good-code-gardening.html">Good Code Gardening</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2010/04/25-tips-for-intermediate-mercurial-users.html">25 Tips for Intermediate Mercurial Users</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2010/01/threading-with-boost---part-ii-threading-challenges.html">Threading with Boost - Part II: Threading Challenges</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Gavin Baker <br/>
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>, customized with <a href="https://github.com/mjhea0/whiterspace">whiterspace</a>.</span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'antonym';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://www.antonym.org//2008/01/stl-warts-when-removing-isnt.html';
+        var disqus_url = 'http://www.antonym.org//2008/01/stl-warts-when-removing-isnt.html';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

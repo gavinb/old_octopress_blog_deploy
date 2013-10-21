@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Category: rust - Gavin Baker ~ antonym.org</title>
+  <title>Surface plots of image data in GNU R - Gavin Baker ~ antonym.org</title>
   <meta name="author" content="Gavin Baker">
 
   
-  <meta name="description" content="Category: rust">
+  <meta name="description" content="I needed to plot the intensity profile of some test images for my thesis. It&rsquo;s really useful to be able to visualise 2D grayscale image data by &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://www.antonym.org/blog/categories/rust/index.html">
+  <link rel="canonical" href="http://www.antonym.org//2006/02/surface-plots-of-image-data-in-gnu-r.html">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Gavin Baker ~ antonym.org" type="application/atom+xml">
@@ -72,31 +72,131 @@
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Category: Rust</h1>
+  
+    
+      <h1 class="entry-title">Surface Plots of Image Data in GNU R</h1>
+    
+  
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2006-02-07T13:48:00+11:00" pubdate data-updated="true">2006-02-07</time>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives" class="category">
 
 
+<div class="entry-content"><p>I needed to plot the intensity profile of some test images for my thesis.  It&rsquo;s really useful to be able to visualise 2D grayscale image data by treating the intensity as a height-field and displaying it in 3D.  There&rsquo;s a variety of ways to do this, but I wanted something that would produce good printed results, so EPS was the best output option.</p>
 
-  
-  <h2>2013</h2>
+<p>So here&rsquo;s a recipe for using <a href="http://www.r-project.org/">GNU R</a> to produce such a plot.</p>
 
-<article>
-  
-<h1><a href="/2013/10/what-is-rust.html">What is Rust?</a></h1>
-<time datetime="2013-10-08T20:50:00+11:00" pubdate><span class='month'>Oct</span> <span class='day'>08</span> <span class='year'>2013</span></time>
+<p>First, generate your image data and crop it appropriately.  For example, I used <a href="http://www.itk.org/">ITK</a> to generate a Gaussian field.</p>
 
-</article>
+<p>Then convert it to the <code>pgm</code> file format.  The most excellent <a href="http://www.imagemagick.org/">ImageMagick</a> tools make this a snap (note the &lsquo;%&rsquo; is the shell prompt):</p>
 
+<pre><code>% convert -compress none inputfile.tif inputfile.pgm
+</code></pre>
+
+<p>The <code>compress</code> option ensures the PGM file is written in ASCII format, for easy reading in.</p>
+
+<p>Then, fire up R and do the following (note the &lsquo;>&rsquo; character is the default R prompt):</p>
+
+<pre><code>&gt; sz &lt;- scan("gaussian.pgm", what=integer(0), skip=1, comment.char="#", nmax=2)
+Read 2 items
+&gt; g &lt;- scan("gaussian.pgm", what=integer(0), skip=3, comment.char="#")
+Read 65536 items
+&gt; gi &lt;- matrix(g, sz[1], sz[2])
+&gt; rm(g)
+</code></pre>
+
+<p>The first line reads the image size from the PGM header into the variable <tt>sz</tt>, the second reads in the actual data as an array.  The third line creates a matrix from the data, with the appropriate size.  The last line removes the temporary array data.</p>
+
+<p>Now you have a matrix object with your image data in it, you can do all sorts of groovy things.  Such as:</p>
+
+<pre><code>&gt; image(gi)
+&gt; contour(gi, add=TRUE)
+</code></pre>
+
+<p>[img_assist|fid=13|thumb=1|alt=Gaussian 2D Image Contour plot]</p>
+
+<p>will display it as an image, with a scalar mapping function (which you can customize), along with contour lines showing the isolevels.  But more interesting is this:</p>
+
+<pre><code>&gt; persp(gi, theta=25, phi=30)
+</code></pre>
+
+<p>This will produce a 3D contour plot in perspective (the theta and phi parameters rotate the viewing angle).</p>
+
+<p>[img_assist|fid=16|thumb=1|alt=Gaussian 2D Image Perspective plot]</p>
+
+<p>You can also do other handy stuff, like pick out a scanline and do a 2D intensity plot (or a series).</p>
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Gavin Baker</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2006-02-07T13:48:00+11:00" pubdate data-updated="true">2006-02-07</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.antonym.org//2006/02/surface-plots-of-image-data-in-gnu-r.html" data-via="gavinb" data-counturl="http://www.antonym.org//2006/02/surface-plots-of-image-data-in-gnu-r.html" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/2005/12/unexpected-side-effect.html" title="Previous Post: Unexpected side-effect">&laquo; Unexpected side-effect</a>
+      
+      
+        <a class="basic-alignment right" href="/2006/04/what-went-wrong.html" title="Next Post: What went wrong?">What went wrong? &raquo;</a>
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -151,7 +251,10 @@
       var disqus_shortname = 'antonym';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://www.antonym.org//2006/02/surface-plots-of-image-data-in-gnu-r.html';
+        var disqus_url = 'http://www.antonym.org//2006/02/surface-plots-of-image-data-in-gnu-r.html';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

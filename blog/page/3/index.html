@@ -1,0 +1,1096 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Gavin Baker ~ antonym.org</title>
+  <meta name="author" content="Gavin Baker">
+
+  
+  <meta name="description" content="When writing a small Python web application using the lightweight CherryPy framework, I needed the server to run on port 80. Of course running a &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.antonym.org//blog/page/3/index.html">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Gavin Baker ~ antonym.org" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-6131956-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="collapse-sidebar sidebar-footer" >
+  <header role="banner">
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:www.antonym.org/" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+  
+    
+      <h1 class="entry-title"><a href="/2005/12/dropping-privileges-in-python.html">Dropping Privileges in Python</a></h1>
+      
+      
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2005-12-19T18:30:00+11:00" pubdate data-updated="true">2005-12-19</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>When writing a small Python web application using the lightweight <a href="http://www.cherrypy.org/">CherryPy</a> framework, I needed the server to run on port 80.  Of course running a server as <code>root</code> is enough to scare even the hardest sysadmin, so I obviously wanted it to drop privs immediately upon startup, once it had opened the default http port.  I wrote the function below to drop privs and switch to a new user and group (usually <code>nobody/nogroup</code>).  It is self-contained, should work with anything &ndash; there is nothing specific to any system.  If you find it useful of have any suggestions to improve it, please leave a comment.</p>
+
+<p>To use this within Cherrypy, set the port to 80 in the cherrypy config file, then add the following before your server start:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">cpg</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">onStartServerList</span> <span class="o">=</span> <span class="p">[</span><span class="n">drop_privileges</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>drop_privileges.py</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">logging</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;server&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">()</span>
+</span><span class='line'><span class="n">logging</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># ...</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">drop_privileges</span><span class="p">(</span><span class="n">uid_name</span><span class="o">=</span><span class="s">&#39;nobody&#39;</span><span class="p">,</span> <span class="n">gid_name</span><span class="o">=</span><span class="s">&#39;nogroup&#39;</span><span class="p">):</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">pwd</span><span class="o">,</span> <span class="nn">grp</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">starting_uid</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getuid</span><span class="p">()</span>
+</span><span class='line'>    <span class="n">starting_gid</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getgid</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">starting_uid_name</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">getpwuid</span><span class="p">(</span><span class="n">starting_uid</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;drop_privileges: started as </span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> \
+</span><span class='line'>             <span class="p">(</span><span class="n">pwd</span><span class="o">.</span><span class="n">getpwuid</span><span class="p">(</span><span class="n">starting_uid</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+</span><span class='line'>              <span class="n">grp</span><span class="o">.</span><span class="n">getgrgid</span><span class="p">(</span><span class="n">starting_gid</span><span class="p">)[</span><span class="mi">0</span><span class="p">]))</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">getuid</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+</span><span class='line'>        <span class="c"># We&#39;re not root so, like, whatever dude</span>
+</span><span class='line'>        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="o">&amp;</span><span class="n">quot</span><span class="p">;</span><span class="n">drop_privileges</span><span class="p">:</span> <span class="n">already</span> <span class="n">running</span> <span class="k">as</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">&#39;</span><span class="o">&amp;</span><span class="n">quot</span><span class="p">;</span><span class="o">%</span><span class="n">starting_uid_name</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">return</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c"># If we started as root, drop privs and become the specified user/group</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">starting_uid</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c"># Get the uid/gid from the name</span>
+</span><span class='line'>        <span class="n">running_uid</span> <span class="o">=</span> <span class="n">pwd</span><span class="o">.</span><span class="n">getpwnam</span><span class="p">(</span><span class="n">uid_name</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span>
+</span><span class='line'>        <span class="n">running_gid</span> <span class="o">=</span> <span class="n">grp</span><span class="o">.</span><span class="n">getgrnam</span><span class="p">(</span><span class="n">gid_name</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c"># Try setting the new uid/gid</span>
+</span><span class='line'>        <span class="k">try</span><span class="p">:</span>
+</span><span class='line'>            <span class="n">os</span><span class="o">.</span><span class="n">setgid</span><span class="p">(</span><span class="n">running_gid</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">except</span> <span class="ne">OSError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+</span><span class='line'>            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;Could not set effective group id: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">e</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">try</span><span class="p">:</span>
+</span><span class='line'>            <span class="n">os</span><span class="o">.</span><span class="n">setuid</span><span class="p">(</span><span class="n">running_uid</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">except</span> <span class="ne">OSError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+</span><span class='line'>            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;Could not set effective user id: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">e</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c"># Ensure a very convervative umask</span>
+</span><span class='line'>        <span class="n">new_umask</span> <span class="o">=</span> <span class="mo">077</span>
+</span><span class='line'>        <span class="n">old_umask</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">umask</span><span class="p">(</span><span class="n">new_umask</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;drop_privileges: Old umask: </span><span class="si">%s</span><span class="s">, new umask: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> \
+</span><span class='line'>                 <span class="p">(</span><span class="nb">oct</span><span class="p">(</span><span class="n">old_umask</span><span class="p">),</span> <span class="nb">oct</span><span class="p">(</span><span class="n">new_umask</span><span class="p">)))</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">final_uid</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getuid</span><span class="p">()</span>
+</span><span class='line'>    <span class="n">final_gid</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getgid</span><span class="p">()</span>
+</span><span class='line'>    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;drop_privileges: running as </span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> \
+</span><span class='line'>             <span class="p">(</span><span class="n">pwd</span><span class="o">.</span><span class="n">getpwuid</span><span class="p">(</span><span class="n">final_uid</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+</span><span class='line'>              <span class="n">grp</span><span class="o">.</span><span class="n">getgrgid</span><span class="p">(</span><span class="n">final_gid</span><span class="p">)[</span><span class="mi">0</span><span class="p">]))</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># Test it</span>
+</span><span class='line'><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+</span><span class='line'>    <span class="n">drop_privileges</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Archived Comments</h2>
+
+<p>AUTHOR: Dan C
+DATE: 12/30/2005 11:54:37 PM
+Thanks
+Hey thanks, this function was exactly what I was looking for! (made me realise I should&rsquo;ve been able to code it myself too :&ndash;). I&rsquo;m running Cherrypy on an embedded system (crazy, I know!) so I want to minimise memory overheads, therefore no Apache or lighttpd with FCGI or anything &mdash; I&rsquo;m just serving everything from the Python HTTP server. I really wanted it to drop privileges so it&rsquo;s not running as root &hellip;</p>
+
+<p>The only problem is, Cherrypy calls the onStartServerList functions <em>before</em> it starts the HTTP server i.e. before it binds to the socket. I can&rsquo;t figure out how to get around it without editing the code for the HTTP server &hellip; any ideas?</p>
+
+<p>AUTHOR: gavinb
+DATE: 01/31/2006 12:21:04 PM
+Socket binding CherryPy
+Hi Dan,</p>
+
+<p>Glad it helped! I&rsquo;ve been using this code successfully for a while to run a private server on port 80.  I went to the CherryPy code to check on the order as you mentioned, and verified that (in at least version 2.0) it calls the onServerStartList functions after it binds to the socket.  I checked both the regular server class and the PooledThreadServer class.</p>
+
+<p>It&rsquo;s possible that in v2.1 (I haven&rsquo;t upgraded yet) they have changed the order of initialisation and binding.  And things are different again now that 2.2 is using WSGI.  I suggest you send your question to the cherrypy mailing list.</p>
+
+<p>Best &ndash; G</p>
+
+<p>AUTHOR: Dwayne Litzenberger
+DATE: 11/02/2007 12:36:27 PM
+What about os.setgroups()?
+You missed something: os.setgroups([]).  Look:</p>
+
+<blockquote><blockquote><blockquote><p>import os
+os.setgid(1000)
+os.setuid(1000)
+os.getgroups()
+[0]
+os.system(&ldquo;id&rdquo;)
+uid=1000(dwon) gid=1000(dwon) groups=0(root)</p>
+
+<hr /></blockquote></blockquote></blockquote>
+
+<p>COMMENT:
+AUTHOR: Anonymous
+DATE: 08/06/2008 02:59:35 AM
+A slight change to make this prettier:
+To get the current userid name:</p>
+
+<p>pwd.getpwuid(os.getuid()).pw_name</p>
+
+<p>is better than</p>
+
+<p>pwd.getpwuid(os.getuid())[0]</p>
+
+<p>Marius.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+  
+    
+      <h1 class="entry-title"><a href="/2005/05/who-really-cares-about-usability.html">Who Really Cares About Usability?</a></h1>
+      
+      
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2005-05-31T14:03:00+10:00" pubdate data-updated="true">2005-05-31</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Users, that&rsquo;s who.  They just don&rsquo;t realise it until the computer gets in the way of them doing what they want.</p>
+
+<p>I&rsquo;ve been ranting for years about usability, task-centered design, blah, blah.  I know just how hard it is to get right too.  But both FLOSS and proprietary software are generally abysmal at this sort of thing.</p>
+
+<p><a href="http://nat.org/2005/may/#30-May-2005-10:23-CEST">Nat</a> seems to be catching on to what usability is really all about:</p>
+
+<blockquote><p>&ldquo;It was interesting to watch this video and instantly realize that the &lsquo;Send /
+Receive&rsquo; button is all about <em>how Evolution works</em> and not about <em>what
+the user wants to do</em>. I&rsquo;ve been staring at that button for five years,
+and never realized it was wrong until I saw that video.&rdquo;</p></blockquote>
+
+<p>So I just hope more people make this intellectual leap.  Everywhere, you see examples of the <em>inside-out</em> design, where the implementation is exposed &ndash; warts and all! &ndash; all the way up to the interface.  This is one of the most pervasive errors in design, and it is only getting worse, with more features crammed into every new release.</p>
+
+<p>Imagine: you are designing a VCR remote control.  Does the user really care that it is reading an analog signal from a helical scan magnetic head, with the tape running at 2.1cm/sec?  Do you have a separate button to engage the heads?  A dial to adjust the variable speed motor?  Another dial to adjust the helical rotation speed to match the tape?  Do the users really care how it works inside?  Do they need to know in order to use the player?</p>
+
+<p>Or do they just want to &ldquo;watch the movie&rdquo;?</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+  
+    
+      <h1 class="entry-title"><a href="/2005/04/bug-of-the-year.html">Bug of the Year</a></h1>
+      
+      
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2005-04-21T10:14:00+10:00" pubdate data-updated="true">2005-04-21</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I discovered the weirdest bug the other day&hellip;</p>
+
+<p>I had built a new version of the imaging system, tested it and was ready to deploy it.  It was working great on the development box, and it seemed ready to go.  I downloaded the new version on the target machine, and fired it up, expecting to have only a few minutes downtime. And then&hellip;</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/2005/04/bug-of-the-year.html">Read more &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+  
+    
+      <h1 class="entry-title"><a href="/2005/04/optimize-this-dot-dot-dot.html">Optimize This&#8230;</a></h1>
+      
+      
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2005-04-13T10:54:00+10:00" pubdate data-updated="true">2005-04-13</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I&rsquo;m working on an industrial image processing system, and it&rsquo;s coming together pretty well.  I hadn&rsquo;t tried optimising anything up until now, as I wanted to get all the features implemented and do some profiling.  &ldquo;Premature optimisation is the root of all evil&rdquo;, as they say&hellip;</p>
+
+<p>But as of the last few days, the system has reached the point where most of the key features are working on the imaging unit, certainly enough for meaningful performance tests.  And since it is a near real-time system, performance has always been a key concern.  A good excuse to start some hunting for some optimising opportunities&hellip;</p>
+
+<h2>Classifier</h2>
+
+<p>The target for a full processing cycle is 100-120ms, although I&rsquo;m aiming for more like 90ms.  Without any optimising whatsoever, the processing cycle was taking far too long at something over 200ms.  One stage, the classifier, was taking just over 30ms per frame, which seemed excessive considering its primary role.  I started looking at the main loop, and it became clear that there was a lot of extra code calculating stuff only used during calibration.  Making that optional saved 5ms per frame.</p>
+
+<p>Looking at the guts of the inner loop, there staring at me was the next obvious candidate: a function call, used to retrieve the YUV pixel (or YCbCr CCIR-601 if you prefer) components from the YUV:422 packed frame.  I rewrote the pixel access as a macro, and got it down to 15ms.  Nice, but I&rsquo;m sure can do more.</p>
+
+<p>At this point I realise that I haven&rsquo;t even tried the obvious thing of adding &lsquo;-O3&rsquo; to the compiler flags.  I rectify this oversight, and this gets us down to 10ms.</p>
+
+<p>I restructure the loop some more, and remove even the test for the calibration code from the inner loop, so all it is doing is the lookup table.  I also remove a histogram calculation that I didn&rsquo;t end up needing to refer to, and now get it down to around 4ms.</p>
+
+<p>I was reasonably happy at this point, as the code was still perfectly readable and modular, and I didn&rsquo;t have to resort to assembler, obfuscation or kinky tricks.  There&rsquo;s one more thing I can do that might shave off a few cycles, but I had to move on to the next target.</p>
+
+<h2>Capture</h2>
+
+<p>We are using Firewire cameras, specifically the <a href="http://www.basler.com/">Basler 601fc</a>.  The state of <a href="http://www.linux1394.org/">IEEE 1394</a> support under Linux is somewhat in flux at the moment, and I wrote a layer to abstract away the details of Firewire camera control.  This not only simplified the layers above, it made us insensitive to which particular underlying library we would ultimately use (currently libdc1394).  It also made it nice and easy to write a Python wrapper (using Pyrex of course).</p>
+
+<p>When I first wrote this fwcam layer, I used the simpler of two capture models, and once it was working, left it at that.  But when I added a high resolution timer to profile the image capture code, I discovered that just the capture was taking over 40ms.  This seeemed excessive too, so I went back to re-read the docs and code and see how I could speed things up.  It turns out that there was a DMA version of the capture function, and although it required some extra buffering, it wasn&rsquo;t much effort to change the fwcam layer to take advantage of it.</p>
+
+<p>I was rather shocked to see, once I had rebuilt the library, the capture time was down to under 2ms!  I was expecting a big difference, but even this much was a surprise.  Another nice feature is a non-blocking variant of the DMA capture call that could return immediately if no frame was available.  This would prove useful in the async triggering protocol.</p>
+
+<h2>But wait &ndash; there&rsquo;s more&hellip;</h2>
+
+<p>There are many more opportunities, I&rsquo;m sure.  Through some careful analysis, strategic placement of some high-resolution (microsecond) timers, and restructing and refactoring of the code, I managed to shave around 26ms per frame in the first case, or about 8 times faster.  But the most important thing is that the code is still readable and maintainable, not some mess of macros and funky shortcuts nobody else but me can grok.</p>
+
+<p>Of course, I have been looking at the MMX extensions in GCC recently, so&hellip; :)</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+  
+    
+      <h1 class="entry-title"><a href="/2005/03/a-real-python-logging-example.html">A Real Python Logging Example</a></h1>
+      
+      
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2005-03-15T10:56:00+11:00" pubdate data-updated="true">2005-03-15</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>For some reason, all the examples of the configuration files for the Python logging framework are artificial ones, with names like <code>handler01, handler02</code> and so on.  This makes it a little difficult to figure out how to apply it to a real world example.  So after a bit of fiddling around, here is a real example of using the Python <code>logging</code> module in a non-trivial application (ie. with multiple hierarchical modules) with an associated configuration file.</p>
+
+<p>The Python logging framework is extremely useful and powerful, but the documentation is somewhat lacking.  It is dead easy to use in its simplest form:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">os</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">math</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">logging</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">frobnicate</span><span class="p">(</span><span class="n">foo</span><span class="p">,</span> <span class="n">baz</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;Processing </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">foo</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">baz</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span class='line'>        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;This could get complex!&#39;</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">baz</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So you really do nothing more than import the module, then make logging calls with the appropriate severity level.  But if you have a project with lots of different modules, and you want more control over how things are handled, what do you do?</p>
+
+<p>The first thing is to get a logger instance for each module.  You can use the same name as the module hierarchy, which gives you a lot of flexibility.  Thus, at the top of each module, we have something like:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">logging</span>
+</span><span class='line'><span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;pi.basil.gui.widgets&#39;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The <code>logging.getLogger()</code> call will return us a logger for just that module, which we can then use throughout.  Thus:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">CalibrationCanvas</span><span class="p">:</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c">#... some stuff</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">_on_draw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;ImageCanvas._on_draw&#39;</span><span class="p">)</span>
+</span><span class='line'>        <span class="c"># do some funky stuff</span>
+</span><span class='line'>        <span class="n">glBegin</span><span class="p">()</span>
+</span><span class='line'>        <span class="c"># ...</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">if</span> <span class="ow">not</span> <span class="n">model</span><span class="p">:</span>
+</span><span class='line'>            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;update: No model specified&#39;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So note the use of the logging instance <code>log</code> instead of <code>logging</code>.  By using a different <code>Logger</code> for each module, we have very fine-grained control.</p>
+
+<p>It is important to use the right severity levels when you write you log calls.  I tend to use <code>INFO</code> for generally useful stuff that I like to see traced while developing, but not at runtime, while I reserve <code>DEBUG</code> for the extra detailed information that is only useful when something is going wrong.  The <code>WARNING</code> and lower I always have on at runtime, and in production are sent to an operator console.</p>
+
+<p>So now we need to set up the logging configuration.  Don&rsquo;t bother trying to do this programmatically (although you could) &ndash; use a configuration file.  This is the part that isn&rsquo;t documented so well.  Here is a snippet from a real file:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="p">[</span><span class="n">formatters</span><span class="p">]</span>
+</span><span class='line'><span class="n">keys</span><span class="p">:</span> <span class="n">detailed</span><span class="p">,</span><span class="n">simple</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">[</span><span class="n">handlers</span><span class="p">]</span>
+</span><span class='line'><span class="n">keys</span><span class="p">:</span> <span class="n">console</span><span class="p">,</span><span class="n">syslog</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">[</span><span class="n">loggers</span><span class="p">]</span>
+</span><span class='line'><span class="n">keys</span><span class="p">:</span> <span class="n">root</span><span class="p">,</span><span class="n">gui</span><span class="p">,</span><span class="n">engine</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">[</span><span class="n">formatter_simple</span><span class="p">]</span>
+</span><span class='line'><span class="n">format</span><span class="p">:</span> <span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="n">s</span><span class="p">:</span><span class="o">%</span><span class="p">(</span><span class="n">levelname</span><span class="p">)</span><span class="n">s</span><span class="p">:</span>  <span class="o">%</span><span class="p">(</span><span class="n">message</span><span class="p">)</span><span class="n">s</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">[</span><span class="n">formatter_detailed</span><span class="p">]</span>
+</span><span class='line'><span class="n">format</span><span class="p">:</span> <span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="n">s</span><span class="p">:</span><span class="o">%</span><span class="p">(</span><span class="n">levelname</span><span class="p">)</span><span class="n">s</span> <span class="o">%</span><span class="p">(</span><span class="n">module</span><span class="p">)</span><span class="n">s</span><span class="p">:</span><span class="o">%</span><span class="p">(</span><span class="n">lineno</span><span class="p">)</span><span class="n">d</span><span class="p">:</span>  <span class="o">%</span><span class="p">(</span><span class="n">message</span><span class="p">)</span><span class="n">s</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">[</span><span class="n">handler_console</span><span class="p">]</span>
+</span><span class='line'><span class="n">class</span><span class="p">:</span> <span class="n">StreamHandler</span>
+</span><span class='line'><span class="n">args</span><span class="p">:</span> <span class="p">[]</span>
+</span><span class='line'><span class="n">formatter</span><span class="p">:</span> <span class="n">simple</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">[</span><span class="n">handler_syslog</span><span class="p">]</span>
+</span><span class='line'><span class="n">class</span><span class="p">:</span> <span class="n">handlers</span><span class="o">.</span><span class="n">SysLogHandler</span>
+</span><span class='line'><span class="n">args</span><span class="p">:</span> <span class="p">[(</span><span class="s">&#39;myhost.mycorp.net&#39;</span><span class="p">,</span> <span class="n">handlers</span><span class="o">.</span><span class="n">SYSLOG_UDP_PORT</span><span class="p">),</span> <span class="n">handlers</span><span class="o">.</span><span class="n">SysLogHandler</span><span class="o">.</span><span class="n">LOG_USER</span><span class="p">]</span>
+</span><span class='line'><span class="n">formatter</span><span class="p">:</span> <span class="n">detailed</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">[</span><span class="n">logger_root</span><span class="p">]</span>
+</span><span class='line'><span class="n">level</span><span class="p">:</span> <span class="n">INFO</span>
+</span><span class='line'><span class="n">handlers</span><span class="p">:</span> <span class="n">syslog</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">[</span><span class="n">logger_gui</span><span class="p">]</span>
+</span><span class='line'><span class="n">level</span><span class="p">:</span> <span class="n">WARNING</span>
+</span><span class='line'><span class="n">qualname</span><span class="p">:</span> <span class="n">pi</span><span class="o">.</span><span class="n">basil</span><span class="o">.</span><span class="n">gui</span>
+</span><span class='line'><span class="n">handlers</span><span class="p">:</span> <span class="n">console</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">[</span><span class="n">logger_engine</span><span class="p">]</span>
+</span><span class='line'><span class="n">level</span><span class="p">:</span> <span class="n">INFO</span>
+</span><span class='line'><span class="n">qualname</span><span class="p">:</span> <span class="n">pi</span><span class="o">.</span><span class="n">basil</span>
+</span><span class='line'><span class="n">handlers</span><span class="p">:</span> <span class="n">console</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>A few notes: First, you must list all of the loggers, formatters and handlers in a section up front.  This is a bit odd, since each has their own section with a unique name anyway, but it appears to be due to a limitation of the <code>ConfigParser</code>.  So if you have formatters called <code>root</code> and <code>engine</code>, you must declare them in a section:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="p">[</span><span class="n">formatters</span><span class="p">]</span>
+</span><span class='line'><span class="n">keys</span><span class="p">:</span> <span class="n">simple</span><span class="p">,</span><span class="n">detailed</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Then the details of each formatter are supplied like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="p">[</span><span class="n">formatter_simple</span><span class="p">]</span>
+</span><span class='line'><span class="n">format</span><span class="p">:</span> <span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="n">s</span><span class="p">:</span><span class="o">%</span><span class="p">(</span><span class="n">levelname</span><span class="p">)</span><span class="n">s</span><span class="p">:</span>  <span class="o">%</span><span class="p">(</span><span class="n">message</span><span class="p">)</span><span class="n">s</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And so on, for each instance of each type.</p>
+
+<p>Second, be careful not to add any spaces in the comma-separated list of keys (I think this is a bug) as you can end up with a Logger with a leading space in the name.  So &lsquo;keys:root,db,gui&rsquo; is not the same as &lsquo;keys:root, db, gui&rsquo;.</p>
+
+<p>Third, I have configured one of the handlers above to send logging information to a separate host using the SysLog facility.  Note that you will need to make sure <code>syslogd</code> is listening for remote calls for this to work, as it does not by default.  Under Debian, this involved adding the &ldquo;-r&rdquo; option to the SYSLOGD settings at the top of <code>/etc/init.d/sysklogd</code>.  Also note there are security implications for doing this, so some careful firewall rules are appropriate here.</p>
+
+<p>The trick is the <code>qualname</code> setting &ndash; this allows us to specify different loggers, and associate the name that we use to get a logger instance with particular settings in the config file.  So the <code>root</code> logger above is the default for the system, but we have separate settings for the engine and GUI components.  This <code>qualname</code> corresponds to the <code>getLogger()</code> call in our code.</p>
+
+<p>The configuration file is loaded at app startup time like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c"># ...</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kn">import</span> <span class="nn">logging.config</span>
+</span><span class='line'>    <span class="n">logging</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">fileConfig</span><span class="p">(</span><span class="s">&#39;logging_basil.conf&#39;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Once you get the hang of it, the logging framework can save you a lot of time and effort, and you will be able to stop the bad habit of adding <code>print</code> statements all over the place, only to forget them or have to come back later and remove them.  The logging calls become a part of the code, you leave them in for production code, and can turn up the level of detail for diagnosing problems.  Fortunately, the performance penalty for leaving the logging code in is <em>very</em> small, and it is definitely worth a few extra cycles for that peace of mind.</p>
+
+<h2>Archived Comments</h2>
+
+<p>AUTHOR: Anonymous
+DATE: 08/02/2005 07:00:29 AM</p>
+
+<p>Typo in config file
+Thanks for clearing up this mistery! I encountered a small typo in the config file. In section
+ [logger_root]
+ level: INFO
+ handlers: root
+the handlers value should be syslog instead of root.</p>
+
+<p>Joost van Lawick
+<a href="&#109;&#97;&#x69;&#x6c;&#116;&#x6f;&#58;&#x6a;&#x6f;&#x6f;&#x73;&#116;&#64;&#x6c;&#97;&#x77;&#x69;&#x63;&#107;&#46;&#x6e;&#x6c;">&#106;&#111;&#111;&#x73;&#116;&#64;&#x6c;&#x61;&#x77;&#x69;&#99;&#107;&#46;&#110;&#108;</a></p>
+
+<p>AUTHOR: Chris Lambacher
+DATE: 03/17/2006 09:07:37 AM
+You are missing an closing pre tag
+After the first code block you are missing a closing pre tag.  It makes the article kind of hard to read.</p>
+
+<p>AUTHOR: gavinb
+DATE: 06/07/2006 11:40:57 AM
+d&#8217;oh
+Thanks, fixed!</p>
+
+<p>AUTHOR: Pokerbot
+DATE: 08/21/2007 03:23:32 PM
+it must be difficult being a
+it must be difficult being a python logging &ndash; do they wrap around the logs or swallow them in order to move them?</p>
+
+<p>AUTHOR: Kirk Strauser
+DATE: 12/25/2007 05:17:45 AM
+Reason for listing all the elements
+A few notes: First, you must list all of the loggers, formatters and handlers in a section up front. This is a bit odd, since each has their own section with a unique name anyway, but it appears to be due to a limitation of the ConfigParser.</p>
+
+<p>That&rsquo;s not so odd when you consider larger deployments where many applications are configured from the same config file.  This is the case in my company where a master &ldquo;mycompany.conf&rdquo; holds all settings used throughout our entire codebase.  In theory, you could run every piece of our software on your own system just by tweaking that one file.  With this setup, the logger details will occupy just one tiny corner; it&rsquo;s not as if the whole config file is dedicated to it.</p>
+
+<p>AUTHOR: dramenbejs
+DATE: 05/07/2008 11:07:44 PM</p>
+
+<p>The font configured for the PRE tag in this article is too small: 0.8em.
+It forces me to process the article by hand to read it.
+Why you don&rsquo;t leave it on the default settings, which are at least readable?</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+  
+    
+      <h1 class="entry-title"><a href="/2005/02/pyrex-and-sharing-extension-modules.html">Pyrex and Sharing Extension Modules</a></h1>
+      
+      
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2005-02-16T22:21:00+11:00" pubdate data-updated="true">2005-02-16</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I&rsquo;m using <a href="http://www.python.org/">Python</a> and C in one of the rather large projects I&rsquo;m working on, and I&rsquo;m using <a href="http://nz.cosc.canterbury.ac.nz/~greg/python/Pyrex/">Pyrex</a> to provide the bridging code.  Once I got over some of the tricks involved in sharing types between extension modules, it was cooking with gas.</p>
+
+<p>Now I have a <a href="http://www.linux1394.org/">Firewire</a> camera running live in a <a href="http://www.wxpython.org/">wxPython</a> window being displayed using <a href="http://pyopengl.sourceforge.net/">PyOpenGL</a>.  Very cool indeed&hellip;  Now all I have to do is hack in YUV support into <a href="http://gandalf-library.sourceforge.net/">Gandalf</a>, and I&rsquo;ll be set!</p>
+
+<p>Writing extension modules in Pyrex is dead easy, sharing them just takes a little extra know-how.  You have to declare the <tt>cdef</tt> functions along with the data members in your <tt>.pxd</tt> file.  Then the implementation goes into the <tt>.pyx</tt> module, which is compiled.  The trouble I came across was calling <tt>cdef</tt>ed functions between modules that used a common C type defined in another module.  Clear as mud?</p>
+
+<p>The solution was to declare the C <tt>typedef</tt>s in their own <tt>.pxd</tt> and import those into both, thus putting all the C types in their own namespace.  Then two different extension modules can use the same C types from Pyrex code and all&rsquo;s well.</p>
+
+<h2>2013 Update</h2>
+
+<p>These days, you would likely use the <a href="http://www.python.org/lib/ctypes/"><code>ctypes</code> module</a>, which allows you to transparently
+invoke C functions from Python code.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+  
+    
+      <h1 class="entry-title"><a href="/2004/12/how-not-to-give-a-talk.html">How Not to Give a Talk</a></h1>
+      
+      
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2004-12-13T14:27:00+11:00" pubdate data-updated="true">2004-12-13</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I just got back from the Artificial Intelligence &lsquo;04 conference in Cairns.  It was a great conference, met lots of people, went to some interesting talks, saw some fantastic keynote talks, and generally had a good time.  I even got to go for a swim and soak up some sun on the last day.</p>
+
+<p>But I am writing this particular entry to capture some points I think are worth recording, based on some of what most people would agree were the less successful talks.  If anyone is giving a technical talk, maybe some of the following will be useful&hellip;</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/2004/12/how-not-to-give-a-talk.html">Read more &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+  
+    
+      <h1 class="entry-title"><a href="/2003/10/verisign-vs-the-rest-of-the-world.html">VeriSign vs the Rest of the World</a></h1>
+      
+      
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2003-10-08T21:25:00+10:00" pubdate data-updated="true">2003-10-08</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>On the 15th of September, the top-level Domain Name Service (DNS) for <code>.net</code> and <code>.com</code>, fundamental to the entire Internet, was hijacked &ndash; by the very custodian entrusted with its upkeep.</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/2003/10/verisign-vs-the-rest-of-the-world.html">Read more &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+  
+    
+      <h1 class="entry-title"><a href="/2003/09/c-plus-plus-stl-extras-random-sample-n.html">C++ STL Extras - Random_sample_n</a></h1>
+      
+      
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2003-09-13T22:20:00+10:00" pubdate data-updated="true">2003-09-13</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Working on some code for my research tonight, I wasted a lot of time looking for some information on a particlar STL function.  Since I couldn&rsquo;t find the answers elsewhere, I am posting a quick explanation/solution here, to hopefully save someone else the trouble.</p>
+
+<p>I am writing a C++ application, and use the STL in various places. I have been consulting the <a href="http://www.sgi.com/tech/stl/">SGI Standard Template Library Programmer&rsquo;s Guide</a>.  It is quite poorly named; it is really a reference, with not much guidance at all.  And unfortunately I have yet to find a decent book on the STL (I have one but it sucks).</p>
+
+<p>(Note that the below applies to the <code>g++</code> compiler version 3.3; I don&rsquo;t know about other compilers or libraries.)</p>
+
+<p>Anyway, I found just the function I was after: <code>random_sample_n</code>.  So I added the include for algorithm, and couldn&rsquo;t get the sucker to compile.  It turns out that since it is an <em>extension</em> to the STL, it is located in the <code>ext/algorithm</code> header, and under the namespace <code>__gnu_cxx::</code> instead of <code>std::</code>.  This stuff I found the hard way, slugging through header files.</p>
+
+<p>Another thing: I didn&rsquo;t find any decent examples (the one in the SGI docs is trivial) so here is some real code:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="cp">#include &lt;ext/algorithm&gt;</span>
+</span><span class='line'><span class="c1">//...</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">vector</span><span class="o">&lt;</span><span class="n">fve</span><span class="o">&gt;</span> <span class="n">cxp</span><span class="p">(</span><span class="n">n_samples</span><span class="p">);</span>
+</span><span class='line'>    <span class="c1">// fill up cxp with useful stuff</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">const</span> <span class="kt">unsigned</span>          <span class="n">N</span> <span class="o">=</span> <span class="mi">20</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">vectorf</span><span class="o">&gt;</span>    <span class="n">rs_model</span><span class="p">(</span><span class="n">N</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// Take N random models</span>
+</span><span class='line'>    <span class="n">__gnu_cxx</span><span class="o">::</span><span class="n">random_sample_n</span><span class="p">(</span> <span class="n">cxp</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">cxp</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span> <span class="n">rs_model</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">N</span> <span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// Now process rs_model ...</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>2013 Update</h2>
+
+<p>Nowdays, there is the most excellent <a href="http://www.cppreference.com/">http://www.cppreference.com/</a> which has a comprehensive reference for all the STL and standard C++ library classes, methods and functions.</p>
+
+<p>And the new C++11 standard features e whole module for generating random numbers.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+  
+    
+      <h1 class="entry-title"><a href="/2002/01/emacs-myths.html">Emacs Myths</a></h1>
+      
+      
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2002-01-12T02:46:00+11:00" pubdate data-updated="true">2002-01-12</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>A recent <a href="http://www.newsforge.com/">article</a> on NewsForge brought up
+one of the oldest rwars on the planet (almost as old as the operating system
+rwars), asking which editor is best: vi or Emacs?  I was inspired to write my
+own thoughts, findings and opinions after reading this article.  Especially
+since most of the arguments I read were trolls sprouting opinions and
+regurgitating fallacies, rather than any informed sort of debate.  So here I am,
+with my own 2 cents.</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/2002/01/emacs-myths.html">Read more &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/blog/page/2/">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/2013/10/bug-of-the-year-2011.html">Bug of the Year - 2011</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2013/10/what-is-rust.html">What is Rust?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/03/good-code-gardening.html">Good Code Gardening</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2010/04/25-tips-for-intermediate-mercurial-users.html">25 Tips for Intermediate Mercurial Users</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2010/01/threading-with-boost---part-ii-threading-challenges.html">Threading with Boost - Part II: Threading Challenges</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Gavin Baker <br/>
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>, customized with <a href="https://github.com/mjhea0/whiterspace">whiterspace</a>.</span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'antonym';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

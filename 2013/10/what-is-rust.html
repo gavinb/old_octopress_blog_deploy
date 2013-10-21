@@ -1,0 +1,357 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>What is Rust? - Gavin Baker ~ antonym.org</title>
+  <meta name="author" content="Gavin Baker">
+
+  
+  <meta name="description" content="Rust is a compiled, hybrid imperative/object-
+oriented/functional language. It appeals directly to any C++ developer who has
+battled with memory &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.antonym.org//2013/10/what-is-rust.html">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Gavin Baker ~ antonym.org" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-6131956-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="collapse-sidebar sidebar-footer" >
+  <header role="banner">
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:www.antonym.org/" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+  
+    
+      <h1 class="entry-title">What Is Rust?</h1>
+    
+  
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-10-08T20:50:00+11:00" pubdate data-updated="true">2013-10-08</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><a href="http://www.rust-lang.org/">Rust</a> is a compiled, hybrid imperative/object-
+oriented/functional language. It appeals directly to any C++ developer who has
+battled with memory management, and Python developers who long for faster code.
+So why might you be interested in learning Rust?</p>
+
+<!--more-->
+
+
+<p>It&rsquo;s <strong>compiled</strong>, so it&rsquo;s fast. Rust uses <a href="http://www.llvm.org/">LLVM</a> as the
+compilation engine, and benefits from all its optimisation and native code
+generation support that targets ARM and Intel processors.</p>
+
+<p>Rust uses <strong>type inference</strong>, so you can write cleaner, simpler code while
+retaining the benefits of strong static typing. It also supports <strong>generic</strong> and
+<strong>algebraic types</strong>, which offers a far richer type system than C++.</p>
+
+<p>There are no <code>NULL</code> pointers, thus rendering an entire class of bugs impossible.
+This alone is worth a serious look, as the security and reliability implications
+are huge.</p>
+
+<p>Rust is a brace-oriented like C/C++, so many aspects of the syntax will be
+immediately familiar to existing developers.</p>
+
+<p>Memory ownership semantics are rich, strict and enforced. There are owned
+pointers, shared pointers and <em>optional</em> garbage-collection.</p>
+
+<p>Rust has first-class <strong>concurrency</strong> support, featuring lightweight tasks
+and message passing.</p>
+
+<p>What does it look like? I would describe it as terse &ndash; or rather, minimalist.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='rust'><span class='line'><span class="k">fn</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s">&quot;Hello, world&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Ok, that&rsquo;s not very useful. How about a naïve Fibonacci function:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='rust'><span class='line'><span class="k">fn</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">:</span> <span class="k">uint</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="k">uint</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">match</span> <span class="n">n</span> <span class="p">{</span>
+</span><span class='line'>        <span class="m">0.</span><span class="p">.</span><span class="m">1</span>    <span class="o">=&gt;</span> <span class="m">1</span><span class="p">,</span>
+</span><span class='line'>        <span class="n">_</span>       <span class="o">=&gt;</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="m">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="m">2</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Yes, Rust has <strong>pattern matching</strong> just like Haskell. Forget about the simple
+<code>switch</code> statement &ndash; <code>match</code> is super-powerful and flexible, supporting ranges,
+options and destructuring fields from <code>struct</code>s.</p>
+
+<p>What about some tasks:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='rust'><span class='line'><span class="k">fn</span> <span class="n">test_tasks</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">println</span><span class="p">(</span><span class="s">&quot;About to spawn...&quot;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">do</span> <span class="n">spawn</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">println</span><span class="p">(</span><span class="s">&quot;Hello from the first subtask!&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">do</span> <span class="n">spawn</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">println</span><span class="p">(</span><span class="s">&quot;Hello from another subtask!&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Despite having spent years working in C++, I have often lamented its
+shortcomings. Yet until recently, no other language seems to have come close to
+competing with C++ as a systems language.</p>
+
+<p>The <a href="http://dlang.org">D programming language</a> looks very interesting, and aims
+to provide a worthy alternative to C++.  However, last time I looked, there was
+a schism over the runtime libraries which made adoption difficult. Uncertainty
+about such a fundamental aspect is not reassuring for potential users.</p>
+
+<p>The <a href="http://www.go-lang.org/">Go programming language</a> from Google is fantastic,
+and I have already used it on a number of small projects. The only shortcoming I
+see here is the garbage collection, which makes real-time systems impractical.</p>
+
+<p>Rust has great promise, and also has both Mozilla and Samsung backing its
+progress. There is a vibrant, friendly and smart community behind it, and a
+growing number of third-party libraries are supported. I am very optimistic
+about the future of Rust, and look forward to contributing.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Gavin Baker</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-10-08T20:50:00+11:00" pubdate data-updated="true">2013-10-08</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/rust/'>rust</a>, <a class='category' href='/blog/categories/software/'>software</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.antonym.org//2013/10/what-is-rust.html" data-via="gavinb" data-counturl="http://www.antonym.org//2013/10/what-is-rust.html" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/2011/03/good-code-gardening.html" title="Previous Post: Good Code Gardening">&laquo; Good Code Gardening</a>
+      
+      
+        <a class="basic-alignment right" href="/2013/10/bug-of-the-year-2011.html" title="Next Post: Bug of the Year - 2011">Bug of the Year - 2011 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/2013/10/bug-of-the-year-2011.html">Bug of the Year - 2011</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2013/10/what-is-rust.html">What is Rust?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/03/good-code-gardening.html">Good Code Gardening</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2010/04/25-tips-for-intermediate-mercurial-users.html">25 Tips for Intermediate Mercurial Users</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2010/01/threading-with-boost---part-ii-threading-challenges.html">Threading with Boost - Part II: Threading Challenges</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Gavin Baker <br/>
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>, customized with <a href="https://github.com/mjhea0/whiterspace">whiterspace</a>.</span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'antonym';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://www.antonym.org//2013/10/what-is-rust.html';
+        var disqus_url = 'http://www.antonym.org//2013/10/what-is-rust.html';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

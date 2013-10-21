@@ -1,0 +1,278 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>What went wrong? - Gavin Baker ~ antonym.org</title>
+  <meta name="author" content="Gavin Baker">
+
+  
+  <meta name="description" content="Writing good diagnostic error messages is hard. But it&rsquo;s worth the effort. And there&rsquo;s also some side benefits if you take the time, and &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.antonym.org//2006/04/what-went-wrong.html">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Gavin Baker ~ antonym.org" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-6131956-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="collapse-sidebar sidebar-footer" >
+  <header role="banner">
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:www.antonym.org/" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+  
+    
+      <h1 class="entry-title">What Went Wrong?</h1>
+    
+  
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2006-04-19T17:34:00+10:00" pubdate data-updated="true">2006-04-19</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Writing <em>good</em> diagnostic error messages is hard.  But it&rsquo;s worth the effort.  And there&rsquo;s also some side benefits if you take the time, and it&rsquo;s not just avoiding hate-mail from your users.</p>
+
+<!--more-->
+
+
+<p>How many times have you run some software, only to have it fail with a message:</p>
+
+<pre><code>Unknown Error: -3
+
+[Abort] [Retry]
+</code></pre>
+
+<p>There should be a third button: &ldquo;Punch the developer who couldn&rsquo;t be bothered to put in a decent error message.&rdquo;</p>
+
+<p>But it&rsquo;s actually hard to write good error handling, and that&rsquo;s why so many people don&rsquo;t.  Either that, or they are coding demigods who are so confident in their code they know it will never fail.  But a quick browse of the <a href="http://www.userinterfacehallofshame.com">UI Hall of Shame</a> is enough to prove the point that even proprietary commercial developers goof up.</p>
+
+<p>I&rsquo;m just now writing a tool to import data into our software from CSV files.  And the variety of flavours of CSV, combined with different field labels, column ordering, field aliases, is staggering.  Add to that some fields are required, some optional, some should be ignored, then there are user-defined columns that come after the required ones we know about.  So a simple task as &ldquo;import from CSV&rdquo; turns out to be pretty complicated, and giving the user meaningful feedback to guide them to the problem is particularly tricky.</p>
+
+<p>So to make things easier for the user, I&rsquo;ve tried to be really friendly and provide comprehensive diagnostics.  This means checking every possible way things could go wrong, and ensuring that you have sufficient context in your code at each point to be able to provide <em>meaningful</em> errors.</p>
+
+<p>So &ndash; which error message would you prefer to see when importing your data?</p>
+
+<pre><code>Error: invalid field DS5301
+</code></pre>
+
+<p>or:</p>
+
+<pre><code>Unexpected field 'DS5301' in header line 1 at column 11.
+Looking for required fields, still haven't found: id, family.
+</code></pre>
+
+<p>It takes time to craft an error message that reads like an actual English sentence, and conveys not only what went wrong but where and why, and what the software was expecting to find instead.  Error codes might be useful for the developer, but it&rsquo;s useless for the user.</p>
+
+<p>So the bonus you get if you do write decent error messages?  It guides you to write your test cases, of course!  So after I added the above check to ensure all the required fields had been read before the user-defined fields, I wrote a data file that would trigger that error.  Now I have regression testing, I can make sure that the error gets picked up.  All this work for those ungrateful users&hellip;</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Gavin Baker</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2006-04-19T17:34:00+10:00" pubdate data-updated="true">2006-04-19</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.antonym.org//2006/04/what-went-wrong.html" data-via="gavinb" data-counturl="http://www.antonym.org//2006/04/what-went-wrong.html" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/2006/02/surface-plots-of-image-data-in-gnu-r.html" title="Previous Post: Surface plots of image data in GNU R">&laquo; Surface plots of image data in GNU R</a>
+      
+      
+        <a class="basic-alignment right" href="/2006/07/autoantonyms.html" title="Next Post: Autoantonyms">Autoantonyms &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/2013/10/bug-of-the-year-2011.html">Bug of the Year - 2011</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2013/10/what-is-rust.html">What is Rust?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/03/good-code-gardening.html">Good Code Gardening</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2010/04/25-tips-for-intermediate-mercurial-users.html">25 Tips for Intermediate Mercurial Users</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2010/01/threading-with-boost---part-ii-threading-challenges.html">Threading with Boost - Part II: Threading Challenges</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Gavin Baker <br/>
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>, customized with <a href="https://github.com/mjhea0/whiterspace">whiterspace</a>.</span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'antonym';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://www.antonym.org//2006/04/what-went-wrong.html';
+        var disqus_url = 'http://www.antonym.org//2006/04/what-went-wrong.html';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

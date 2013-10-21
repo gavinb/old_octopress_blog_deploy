@@ -4,7 +4,7 @@
   <title><![CDATA[Gavin Baker ~ antonym.org]]></title>
   <link href="http://www.antonym.org//atom.xml" rel="self"/>
   <link href="http://www.antonym.org//"/>
-  <updated>2013-10-18T17:16:27+11:00</updated>
+  <updated>2013-10-21T18:36:54+11:00</updated>
   <id>http://www.antonym.org//</id>
   <author>
     <name><![CDATA[Gavin Baker]]></name>
@@ -16,10 +16,10 @@
   <entry>
     
     <title type="html"><![CDATA[Bug of the Year - 2011]]></title>
-    <link href="http://www.antonym.org//blog/2013/10/17/bug-of-the-year-2011/"/>
+    <link href="http://www.antonym.org//2013/10/bug-of-the-year-2011.html"/>
     
     <updated>2013-10-17T18:24:00+11:00</updated>
-    <id>http://www.antonym.org//blog/2013/10/17/bug-of-the-year-2011</id>
+    <id>http://www.antonym.org//2013/10/bug-of-the-year-2011</id>
     
     <content type="html"><![CDATA[
 ]]></content>
@@ -29,10 +29,10 @@
   <entry>
     
     <title type="html"><![CDATA[What is Rust?]]></title>
-    <link href="http://www.antonym.org//blog/2013/10/08/what-is-rust/"/>
+    <link href="http://www.antonym.org//2013/10/what-is-rust.html"/>
     
     <updated>2013-10-08T20:50:00+11:00</updated>
-    <id>http://www.antonym.org//blog/2013/10/08/what-is-rust</id>
+    <id>http://www.antonym.org//2013/10/what-is-rust</id>
     
     <content type="html"><![CDATA[<p><a href="http://www.rust-lang.org/">Rust</a> is a compiled, hybrid imperative/object-
 oriented/functional language. It appeals directly to any C++ developer who has
@@ -146,10 +146,10 @@ about the future of Rust, and look forward to contributing.</p>
   <entry>
     
     <title type="html"><![CDATA[Good Code Gardening]]></title>
-    <link href="http://www.antonym.org//blog/2011/03/09/good-code-gardening/"/>
+    <link href="http://www.antonym.org//2011/03/good-code-gardening.html"/>
     
     <updated>2011-03-09T12:09:00+11:00</updated>
-    <id>http://www.antonym.org//blog/2011/03/09/good-code-gardening</id>
+    <id>http://www.antonym.org//2011/03/good-code-gardening</id>
     
     <content type="html"><![CDATA[<p>During a code review at work recently, we had an interesting discussion about code maintenance.  You could say that coding is a bit like gardening: while you are planting new seedlings, do you weed nearby areas as you go, or save up all the weeding for the next sunny weekend?  Should code maintenance be a continual, gradual process, or does it warrant being scheduled as a task in its own right?</p>
 
@@ -290,10 +290,10 @@ M utils.h
   <entry>
     
     <title type="html"><![CDATA[25 Tips for Intermediate Mercurial Users]]></title>
-    <link href="http://www.antonym.org//blog/2010/04/07/25-tips-for-intermediate-mercurial-users/"/>
+    <link href="http://www.antonym.org//2010/04/25-tips-for-intermediate-mercurial-users.html"/>
     
     <updated>2010-04-07T23:58:00+10:00</updated>
-    <id>http://www.antonym.org//blog/2010/04/07/25-tips-for-intermediate-mercurial-users</id>
+    <id>http://www.antonym.org//2010/04/25-tips-for-intermediate-mercurial-users</id>
     
     <content type="html"><![CDATA[<p>I recently read an interesting article by Andy Jeffries entitled <a href="http://andyjeffries.co.uk/articles/25-tips-for-intermediate-git-users">25 Tips for Intermediate Git Users</a> (linked to via <a href="http://www.reddit.com/r/programming/">proggit</a>) .  It had lots of useful information condensed into bite-sized task-oriented chunks.</p>
 
@@ -795,10 +795,10 @@ MyProject.xcodeproj/*.mode1v3
   <entry>
     
     <title type="html"><![CDATA[Threading with Boost - Part II: Threading Challenges]]></title>
-    <link href="http://www.antonym.org//blog/2010/01/01/threading-with-boost-part-ii-threading-challenges/"/>
+    <link href="http://www.antonym.org//2010/01/threading-with-boost---part-ii-threading-challenges.html"/>
     
     <updated>2010-01-01T21:15:00+11:00</updated>
-    <id>http://www.antonym.org//blog/2010/01/01/threading-with-boost-part-ii-threading-challenges</id>
+    <id>http://www.antonym.org//2010/01/threading-with-boost&#8212;part-ii-threading-challenges</id>
     
     <content type="html"><![CDATA[<p>In <a href="http://antonym.org/">Part I</a> of this series on <a href="http://boost.org/">Boost</a>, we looked at the basics of how to create and run threads using the Boost libraries.  But once you have more than one thread running in a process, you have to deal with the problems and challenges that threads can introduce.  So, before delving into the mechanics of how to use mutexes and other threading constructs, we look at what can go wrong &ndash; and how to avoid it.</p>
 
@@ -1114,10 +1114,10 @@ Thumbs up!</p>
   <entry>
     
     <title type="html"><![CDATA[STL: filtering]]></title>
-    <link href="http://www.antonym.org//blog/2009/09/16/stl-filtering/"/>
+    <link href="http://www.antonym.org//2009/09/stl-filtering.html"/>
     
     <updated>2009-09-16T11:51:00+10:00</updated>
-    <id>http://www.antonym.org//blog/2009/09/16/stl-filtering</id>
+    <id>http://www.antonym.org//2009/09/stl-filtering</id>
     
     <content type="html"><![CDATA[<p>The STL makes it easy to create lists, iterate over lists, and apply a function to each member of a list.  So how do you filter a vector according to some criteria?  It&rsquo;s not hard, but the obvious solution isn&rsquo;t <em>quite</em> enough.  Here&rsquo;s how.</p>
 
@@ -1276,10 +1276,10 @@ Thumbs up!</p>
   <entry>
     
     <title type="html"><![CDATA[Threading with Boost - Part I: Creating Threads]]></title>
-    <link href="http://www.antonym.org//blog/2009/09/13/threading-with-boost-part-i-creating-threads/"/>
+    <link href="http://www.antonym.org//2009/05/threading-with-boost---part-i-creating-threads.html"/>
     
-    <updated>2009-09-13T22:16:00+10:00</updated>
-    <id>http://www.antonym.org//blog/2009/09/13/threading-with-boost-part-i-creating-threads</id>
+    <updated>2009-05-13T22:16:00+10:00</updated>
+    <id>http://www.antonym.org//2009/05/threading-with-boost&#8212;part-i-creating-threads</id>
     
     <content type="html"><![CDATA[<p><a href="http://www.boost.org/">Boost</a> is an incredibly powerful collection of portable class libraries for C++.  There are classes for such tasks as date/time manipulation, filesystem interfaces, networking, numerical programming, interprocess communication and <a href="http://www.boost.org/doc/libs">much more</a>.</p>
 
@@ -1735,10 +1735,10 @@ Cuong Bui</p>
   <entry>
     
     <title type="html"><![CDATA[The first user]]></title>
-    <link href="http://www.antonym.org//blog/2009/04/30/the-first-user/"/>
+    <link href="http://www.antonym.org//2009/04/the-first-user.html"/>
     
     <updated>2009-04-30T23:26:00+10:00</updated>
-    <id>http://www.antonym.org//blog/2009/04/30/the-first-user</id>
+    <id>http://www.antonym.org//2009/04/the-first-user</id>
     
     <content type="html"><![CDATA[<p>When you are developing a new piece of software, you typically first spend quite some time setting up your development environment.  As you progress, your application becomes a very cozy inhabitant of this environment, a safe happy cocoon that has evolved as you make lots of small changes to the application or your system.  What could possibly go wrong?</p>
 
@@ -1803,10 +1803,10 @@ DATE: 05/14/2009 06:35:35 PM</p>
   <entry>
     
     <title type="html"><![CDATA[Improve your C++: const-correctness]]></title>
-    <link href="http://www.antonym.org//blog/2008/11/22/improve-your-c-plus-plus-const-correctness/"/>
+    <link href="http://www.antonym.org//2008/11/improve-your-c-plus-plus-const-correctness.html"/>
     
     <updated>2008-11-22T15:18:00+11:00</updated>
-    <id>http://www.antonym.org//blog/2008/11/22/improve-your-c-plus-plus-const-correctness</id>
+    <id>http://www.antonym.org//2008/11/improve-your-c-plus-plus-const-correctness</id>
     
     <content type="html"><![CDATA[<p>Writing &ldquo;const-correct&rdquo; code will improve the quality and maintainability of your code.  It is especially important and useful when writing Object-Oriented code, as objects are often passed around as constant references.  Properly declaring non-mutating methods as <code>const</code> allows you to safely call any <code>const</code> method on such a reference.  It is part of good type-safe practice and good code hygiene. So how do we do it?</p>
 
@@ -2036,11 +2036,136 @@ Date: 07/09/2009 03:26:30 PM</p>
   
   <entry>
     
+    <title type="html"><![CDATA[STL Iterators and Performance]]></title>
+    <link href="http://www.antonym.org//2008/05/stl-iterators-and-performance.html"/>
+    
+    <updated>2008-05-30T11:02:00+10:00</updated>
+    <id>http://www.antonym.org//2008/05/stl-iterators-and-performance</id>
+    
+    <content type="html"><![CDATA[<p>The Standard Template Library (STL) for C++ provides a set of powerful and flexible templated container classes.  Never again will you have to hand-craft a doubly-linked list (and get your pointer arithmetic mixed up) &mdash; just use <code>std::list&lt;T&gt;</code>.</p>
+
+<p>Now most of the idiomatic C++ code I&rsquo;ve read that uses STL iterators uses the prefix <code>operator++</code> to move the iterator forward.  And so I had long ago adopted this too, with a vague recollection of having read somewhere that it performed better.  But why?  Good question&hellip; (Updated: fixed formatting, got numbers the right way around.)</p>
+
+<p>The use of the post-increment operator is well established idiomatic code for looping (in both C and C++):</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'>  <span class="k">for</span> <span class="p">(</span> <span class="kt">unsigned</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">array_length</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span> <span class="p">)</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// do something with array[i]</span>
+</span><span class='line'>    <span class="c1">// ...</span>
+</span><span class='line'>  <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>When the indexing variable is an ordinal type (usually an integer), the incrementing order makes no difference.  The expressions <code>++i</code> and <code>i++</code> are identical in this case.  And so many people developing in C++ simply use the same style in C++ with their iterator code.  Why would it matter?</p>
+
+<p>Well, it turns out that it does.  If the indexing variable is a class, such as an iterator, there are some subtle differences between the pre-increment and post-increment operators that may have a big impact on performance.</p>
+
+<p>Referring back to Scott Meyer&rsquo;s wonderful <a href="http://www.amazon.com/More-Effective-C%2B%2B-Addison-Wesley-Professional/dp/020163371X/ref=pd_bbs_sr_1/002-4241626-5806441?ie=UTF8&amp;s=books&amp;qid=1190249817&amp;sr=8-1">More Effective C++</a> book, I tracked down the explanation (item 6, page 31), which I will attempt to reproduce here in simplified form.  The signature of the pre-increment <code>operator++</code> for a class T is:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'>  <span class="n">T</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">++</span><span class="p">();</span> <span class="c1">// prefix</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>while the post-increment operator had a dummy parameter added to make the signature unique:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'>  <span class="k">const</span> <span class="n">T</span> <span class="k">operator</span><span class="o">++</span><span class="p">(</span> <span class="kt">int</span> <span class="p">);</span> <span class="c1">// postfix</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>But that isn&rsquo;t the only difference &ndash; notice that the prefix operator returns a <em>reference</em> to the object itself (permitting chaining of method calls), while the postfix operator returns a <em>const object</em>, semantically defined as the previous value.  (This is for consistency with the behaviour of ordinal types.)</p>
+
+<p>The result is that the pre-increment operator modifies the object in-place, whereas the post-increment operator will result in temporaries being created, invoking the constructor and destructor.  So something as simple as <code>++it</code> versus <code>it++</code> turns out to have some significant side-effects when applied to an object with overloaded operators.  Since this is the case with virtually all iterators in the STL, as well as many other similar objects, it is worth investigating.</p>
+
+<p>So I decided to quantify the difference, to see how much of a difference it made.  I wrote a test program that created a very large (5 million) array of integers, and iterated over the array.  I used a high-resolution timer to time two versions of the loop, identical save for one being pre-increment and one being post-increment.  After a warmup of 3 runs, I ran the test 10 times, collected the timings and compared them.</p>
+
+<p>The results were very interesting: on an Intel workstation, the pre-increment code took an average of 14.1ns per call, while the post-increment code took 27.6ns per call.  That&rsquo;s a significant difference of 49%, or nearly twice as fast!  A plot of 10 iterations each is shown below:</p>
+
+<p><span class="mt-enclosure mt-enclosure-image" style="display: inline;"><a href="http://antonym.org/assets_c/2009/05/results_ppc_g4.html" onclick="http://antonym.org/assets_c/2009/05/results_ppc_g4.html','popup','width=998,height=928,scrollbars=no,resizable=no,toolbar=no,directories=no,location=no,menubar=no,status=no,left=0,top=0'); return false"><img src="http://antonym.org/assets_c/2009/05/results_ppc_g4-thumb-200x185.png" width="200" height="185" alt="results_ppc_g4.png" class="mt-image-center" style="text-align: center; display: block; margin: 0 auto 20px;" /></a></span></p>
+
+<p>So &ndash; it really does improve the performance of your code to write:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'>  <span class="n">mylist</span><span class="o">::</span><span class="n">const_iterator</span> <span class="n">it</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">for</span> <span class="p">(</span> <span class="n">it</span> <span class="o">=</span> <span class="n">numbers</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span> <span class="n">it</span> <span class="o">!=</span> <span class="n">numbers</span><span class="p">.</span><span class="n">end</span><span class="p">();</span> <span class="o">++</span><span class="n">it</span> <span class="p">)</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// do something with *it</span>
+</span><span class='line'>  <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>For small arrays, it may not make much of a noticeable difference, but every cycle counts, and a little consistency goes a long way.  Using the prefix increment will enable your application to scale better.</p>
+
+<p>Using the prefix form won&rsquo;t make your actual loop run twice as fast, as the iterator increment is only one component contributing to the performance, and the looping overhead may indeed be swamped by the execution time of the body.  So as always, YMMV!</p>
+
+<p>I have provided the test source in C++, along with an R script to summarise and plot the output.  You can download it via the attachment linked at the end of this article.  The code should compile on any POSIX-conforming system with a decent C++ compiler.  And if you do your own performance tests, please drop me a line and let me know what you found.</p>
+
+<p>As one final note, the wonderful <a href="http://www.boost.org/">Boost++ library</a> provides the <code>foreach</code> module, which provides a powerful wrapper to iterate over containers with a nice clean simple syntax:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="kt">int</span> <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="n">foreach</span><span class="p">(</span> <span class="kt">int</span> <span class="n">num</span><span class="p">,</span> <span class="n">numbers</span> <span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">total</span> <span class="o">+=</span> <span class="n">num</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And yes, it uses the pre-increment operator for maximum performance.</p>
+
+<p>Download the source used for this article:</p>
+
+<p><span class="mt-enclosure mt-enclosure-file" style="display: inline;"><a href="http://antonym.org/iterperf/iterperf-0.1.zip">iterperf-0.1.zip</a></span></p>
+
+<p>Archived Comments</p>
+
+<p>AUTHOR: bynio
+DATE: 04/15/2009 03:17:24 AM
+&ldquo;the post-increment code took an average of 14.1ns per call, while the pre-increment code took 27.6ns per call&rdquo;, so actually post-increment is faster?</p>
+
+<p>AUTHOR: Reid Ellis
+DATE: 04/28/2009 01:48:50 AM</p>
+
+<blockquote><em>the post-increment code took an average of 14.1ns per call, while the pre-increment code took 27.6ns per call</em></blockquote>
+
+
+<p><p />
+Do you have these numbers backwards? Because otherwise you are saying that the post-increment code is faster than the pre-increment code.
+<p />
+Reid</p>
+
+<p>AUTHOR: Gavin Baker
+DATE: 05/02/2009 10:50:17 PM
+Hi Reid, you&rsquo;re right &ndash; I got the names back-to-front (the article is updated now).  The post-increment is definitely twice as fast, and I have repeated the test on other machines, with the same relative results.</p>
+
+<p>In the migration from my old blog setup, this article lost a plot of the data, as well as the source of the test code.  I&rsquo;ve added the plot and linked the source tarball in here.</p>
+
+<p>:: Gavin</p>
+]]></content>
+    
+  </entry>
+  
+  <entry>
+    
     <title type="html"><![CDATA[Tiger isn't really for the users]]></title>
-    <link href="http://www.antonym.org//blog/2008/05/18/tiger-isnt-really-for-the-users/"/>
+    <link href="http://www.antonym.org//2008/05/tiger-isnt-really-for-the-users.html"/>
     
     <updated>2008-05-18T10:55:00+10:00</updated>
-    <id>http://www.antonym.org//blog/2008/05/18/tiger-isnt-really-for-the-users</id>
+    <id>http://www.antonym.org//2008/05/tiger-isnt-really-for-the-users</id>
     
     <content type="html"><![CDATA[<p>Sure, <a href="http://www.apple.com/macosx">Tiger</a> &ndash; the latest release of Apple&rsquo;s Mac OS X &ndash; has a huge array of new features.  Sure, the Spotlight search features alone are compelling enough to make you want to upgrade. Automator enables workflow and user-level scripting.  And Dashboard is a whole new dimension in desktop widgets.</p>
 
@@ -2064,11 +2189,521 @@ Date: 07/09/2009 03:26:30 PM</p>
   
   <entry>
     
+    <title type="html"><![CDATA[Debugging NSBezierPath drawing]]></title>
+    <link href="http://www.antonym.org//2008/02/debugging-nsbezierpath-drawing.html"/>
+    
+    <updated>2008-02-19T21:38:00+11:00</updated>
+    <id>http://www.antonym.org//2008/02/debugging-nsbezierpath-drawing</id>
+    
+    <content type="html"><![CDATA[<p>I was working on some Cocoa programming, making heavy use of <code>NSBezierPath</code>.  I wished there was an easy way to see just where my control points were ending up, and how the curves were being constructed.  So I wrote a category method to add such a thing to the NSBezierPath class.  It is here for all to share.</p>
+
+<!--break-->
+
+
+<p>Here&rsquo;s an example of annotating a curve:</p>
+
+<p><img src="http://img.skitch.com/20080219-cp95n9wjm391ptfarkja1hg7xf.png" alt="BezTest1"/></p>
+
+<p>It&rsquo;s very simple, but very handy as you can easily switch from the normal stroking of the path to this annotated version in one line.  It puts blue dots on all the regular points, green dots for the control points, adds lines to join control points to their anchor point, and adds a label so you can see the direction of the control point (so &ldquo;cp3_2&rdquo; is anchored at point 3, on the side of point 2.  It also draws the bounding box in red, so you can see the extents of the full path.</p>
+
+<ul>
+<li>Grab the code (MIT license): <a href="http://antonym.org/files/antonym/bezier_debug.zip">bezier_debug.zip</a> (2kB)</li></ul></li>
+</ul>
+
+
+<p>Enjoy!  I&rsquo;d love to get feedback from anyone who tries this.  (Please email me; the comments system is sadly flooded with spam and I may miss legitimate posts.)</p>
+
+<h2>Update: New project hosting</h2>
+
+<p>Thanks to Mathieu Tozer, this little module has been incorporated into the <a href="http://code.google.com/p/morecocoa/">morecocoa</a> project, hosted at Google Project Hosting.  Please obtain the latest source from there.</p>
+
+<ul>
+<li><a href="http://code.google.com/p/morecocoa/"><a href="http://code.google.com/p/morecocoa/">http://code.google.com/p/morecocoa/</a></a></li>
+</ul>
+
+]]></content>
+    
+  </entry>
+  
+  <entry>
+    
+    <title type="html"><![CDATA[STL warts - when removing isn't]]></title>
+    <link href="http://www.antonym.org//2008/01/stl-warts-when-removing-isnt.html"/>
+    
+    <updated>2008-01-01T17:33:00+11:00</updated>
+    <id>http://www.antonym.org//2008/01/stl-warts-when-removing-isnt</id>
+    
+    <content type="html"><![CDATA[<p>Pop quiz: what does the <code>remove</code> function provided in the C++ STL algorithm package do?</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">remove</span><span class="p">(</span><span class="n">list</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;::</span><span class="n">iterator</span> <span class="n">begin</span><span class="p">,</span> <span class="n">list</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;::</span><span class="n">iterator</span> <span class="n">end</span><span class="p">,</span> <span class="n">T</span><span class="o">&amp;</span> <span class="n">t</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Simple question, surely&hellip; Your answer?</p>
+
+<p>If you said &ldquo;it removes the value t from the list between the two iterators&rdquo; then &mdash; bzzzzt, thank you for playing.  It doesn&rsquo;t actually remove anything.  Quoting from the description:</p>
+
+<pre><code>Reorders the range [first,last) to prepare for erasing all elements of equal value.
+</code></pre>
+
+<p>So the way to <i>actually</i> erase something from a <code>std::vector</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">v</span><span class="p">.</span><span class="n">erase</span><span class="p">(</span><span class="n">remove</span><span class="p">(</span><span class="n">v</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">v</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span> <span class="n">item</span><span class="p">));</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So all it does is shuffle the items to be deleted to the end, and return an iterator to them.  Then the <code>erase</code> method from the vector snips them off the end.</p>
+
+<p>The above <code>erase/remove</code> line is a standard idiom for actually removing an item by value from a container.</p>
+
+<p>This is one of several poorly named methods in the STL.  There are other design warts which I&rsquo;ll discuss in future articles.</p>
+]]></content>
+    
+  </entry>
+  
+  <entry>
+    
+    <title type="html"><![CDATA[A subtle bug involving C++ temporaries]]></title>
+    <link href="http://www.antonym.org//2008/01/a-subtle-bug-involving-c-plus-plus-temporaries.html"/>
+    
+    <updated>2008-01-01T17:26:00+11:00</updated>
+    <id>http://www.antonym.org//2008/01/a-subtle-bug-involving-c-plus-plus-temporaries</id>
+    
+    <content type="html"><![CDATA[<p>I tracked down a subtle little bug the other day.  My code was crashing on a line that should never crash (and we&rsquo;ve all heard that one before!).  It arose from doing two quite innocuous things, but when combined &ndash; disaster!  I decided to write it up as an example to my 3 readers and Google.</p>
+
+<h2>The Setup</h2>
+
+<p>Say you have a Master-Detail relationship between two classes, whereby the master object has a 1:N relationship with the detail objects, and thus has a collection of them.  Let&rsquo;s say it&rsquo;s a vector of pointers (or even better, <a href="http://www.boost.org/">smart ones</a>!).</p>
+
+<p>And as a convenience, the master class has a method which returns a copy of the list <i>by value</i>.  This is quite a reasonable thing to do, especially since the container holds references to the detail objects, and not actual instances.  So we have something like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="k">class</span> <span class="nc">Detail</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span><span class="o">:</span>
+</span><span class='line'>        <span class="k">typedef</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Detail</span><span class="o">*&gt;</span> <span class="n">List</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">// ...</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="k">class</span> <span class="nc">Master</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="k">public</span><span class="o">:</span>
+</span><span class='line'>    <span class="c1">// ...</span>
+</span><span class='line'>    <span class="n">Detail</span><span class="o">::</span><span class="n">List</span> <span class="n">getAllDetailedObjects</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">_details</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="c1">// ...</span>
+</span><span class='line'>  <span class="k">private</span><span class="o">:</span>
+</span><span class='line'>    <span class="n">Detail</span><span class="o">::</span><span class="n">List</span> <span class="n">_details</span><span class="p">;</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So far, so good&hellip;</p>
+
+<h2>The Bug</h2>
+
+<p>And say some chunk of code wants to do something with all those detail objects, so we might reasonably iterate over the list like so:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="c1">// You probably don&#39;t actually want to do it this way...</span>
+</span><span class='line'><span class="n">Detail</span><span class="o">::</span><span class="n">List</span><span class="o">::</span><span class="n">iterator</span> <span class="n">it</span><span class="p">;</span>
+</span><span class='line'><span class="k">for</span> <span class="p">(</span> <span class="n">it</span> <span class="o">=</span> <span class="n">master</span><span class="p">.</span><span class="n">getAllDetailedObjects</span><span class="p">().</span><span class="n">begin</span><span class="p">();</span>
+</span><span class='line'>      <span class="n">it</span> <span class="o">!=</span> <span class="n">master</span><span class="p">.</span><span class="n">getAllDetailedObjects</span><span class="p">().</span><span class="n">end</span><span class="p">();</span>
+</span><span class='line'>      <span class="o">++</span><span class="n">it</span> <span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">Detail</span><span class="o">*</span> <span class="n">d</span> <span class="o">=</span> <span class="o">*</span><span class="n">it</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">// do something useful with d</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And of course, this code crashes, right around the dereferencing of the iterator.  Spotted the bug yet?  Take your time, I&rsquo;ll wait here&hellip;</p>
+
+<p>Well, it&rsquo;s a pretty basic error when you know what it is, of course.  Each time <code>getAllDetailedObjects()</code> is being called, a temporary copy of the list is being returned.  So assigning the iterator it to the temporary list&rsquo;s <code>begin()</code> works just fine, except that the temporary list is then destroyed while the iterator is still pointing to its first element.  And so you get to the body of the loop, and you&rsquo;ve got a bad pointer because the temporary list has been thrown away!</p>
+
+<h2>The Solution</h2>
+
+<p>The obvious solution is to avoid temporaries and get only one copy of the list, thus:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="c1">// The corrected version...</span>
+</span><span class='line'><span class="n">Detail</span><span class="o">::</span><span class="n">List</span> <span class="n">details</span><span class="p">;</span>
+</span><span class='line'><span class="n">Detail</span><span class="o">::</span><span class="n">List</span><span class="o">::</span><span class="n">iterator</span> <span class="n">it</span><span class="p">;</span>
+</span><span class='line'><span class="k">for</span> <span class="p">(</span> <span class="n">it</span> <span class="o">=</span> <span class="n">details</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
+</span><span class='line'>      <span class="n">it</span> <span class="o">!=</span> <span class="n">details</span><span class="p">.</span><span class="n">end</span><span class="p">();</span>
+</span><span class='line'>      <span class="o">++</span><span class="n">it</span> <span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">Detail</span><span class="o">*</span> <span class="n">d</span> <span class="o">=</span> <span class="o">*</span><span class="n">it</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">// do something with d</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This just goes to show how easy it is to be bitten by side-effects and temporaries in C++.  The compiler provides no help or warning, and there&rsquo;s no proper C++ version of lint that I know of.  This is the sort of thing you just have to pick apart, review all assumptions (&ldquo;the list is valid <b>here</b>!&rdquo;) and beware any time you get a result by value.</p>
+
+<h2>Boost to the rescue! (again)</h2>
+
+<p>The <a href="http://www.boost.org/doc/html/foreach.html">Boost foreach</a> module provides some syntactic sugar to replace all the boilerplate code in iterator loops.</p>
+
+<p>So instead of having to write:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">container_type</span><span class="o">::</span><span class="n">iterator</span> <span class="n">it</span><span class="p">;</span>
+</span><span class='line'><span class="k">for</span> <span class="p">(</span> <span class="n">it</span> <span class="o">=</span> <span class="n">container</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span> <span class="n">it</span> <span class="o">!=</span> <span class="n">container</span><span class="p">.</span><span class="n">end</span><span class="p">();</span> <span class="o">++</span><span class="n">it</span> <span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">inner_type</span> <span class="n">val</span> <span class="o">=</span> <span class="o">*</span><span class="n">it</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">// do something interesting with val</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>you can avoid all the boilerplate code and simply write:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">foreach</span> <span class="p">(</span> <span class="n">inner_type</span> <span class="n">val</span><span class="p">,</span> <span class="n">container</span> <span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// do something interesting with val</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>which is more concise, readable and less typing (or typo-ing!).</p>
+
+<p>And interestingly, it ensures the collection term is evaluated only once, which means it would be safe to iterate over an expression that returns a sequence by value (example from the docs):</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="k">extern</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span> <span class="n">get_vector_float</span><span class="p">();</span>
+</span><span class='line'><span class="n">foreach</span><span class="p">(</span> <span class="kt">float</span> <span class="n">f</span><span class="p">,</span> <span class="n">get_vector_float</span><span class="p">()</span> <span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">// safe: the collection will only be retrieved once</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So using the Boost foreach module would have actually avoided the above bug.  Though it wouldn&rsquo;t be nearly as satisfying, as I wouldn&rsquo;t have been able to blog about it.</p>
+]]></content>
+    
+  </entry>
+  
+  <entry>
+    
+    <title type="html"><![CDATA[The Happy Coder's Toolkit Part II: Profiling and R]]></title>
+    <link href="http://www.antonym.org//2007/01/the-happy-coders-toolkit-part-ii-profiling-and-r.html"/>
+    
+    <updated>2007-01-02T21:01:00+11:00</updated>
+    <id>http://www.antonym.org//2007/01/the-happy-coders-toolkit-part-ii-profiling-and-r</id>
+    
+    <content type="html"><![CDATA[<p>Need to do some performance analysis on the cheap?</p>
+
+<p>Add some debug code to your app to write out the raw numbers you&rsquo;re interested in to a simple text file. Then you post-process the data file. How?</p>
+
+<!--more-->
+
+
+<p>It&rsquo;s as simple as:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'>  <span class="kt">FILE</span><span class="o">*</span> <span class="n">perfdata</span> <span class="o">=</span> <span class="n">fopen</span><span class="p">(</span><span class="s">&quot;foo_perf.dat&quot;</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="cm">/* Simple header */</span>
+</span><span class='line'>  <span class="n">fprintf</span><span class="p">(</span><span class="s">&quot;# Generated by myapp at %s&quot;</span><span class="p">,</span> <span class="n">asctime</span><span class="p">(</span><span class="n">localtime</span><span class="p">(</span><span class="nb">NULL</span><span class="p">)));</span>
+</span><span class='line'>  <span class="n">fprintf</span><span class="p">(</span><span class="s">&quot;count rank score delta&quot;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">for</span> <span class="p">(</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="p">...</span> <span class="p">)</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>    <span class="cm">/* something intensive here ... */</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">fprintf</span><span class="p">(</span> <span class="n">perfdata</span><span class="p">,</span> <span class="s">&quot;%u %d %f %f&quot;</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">gen</span><span class="o">-&gt;</span><span class="n">rank</span><span class="p">,</span> <span class="n">gen</span><span class="o">-&gt;</span><span class="n">score</span><span class="p">,</span> <span class="n">gen</span><span class="o">-&gt;</span><span class="n">delta</span> <span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="n">fclose</span><span class="p">(</span> <span class="n">fp</span> <span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Then you can use <a href="http://www.r-project.org/">GNU R</a> to plot the numbers over time, and quickly visualise what your code is doing.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='r'><span class='line'><span class="o">&gt;</span> perf <span class="o">&lt;-</span> read.table<span class="p">(</span><span class="s">&quot;foo_perf.dat&quot;</span><span class="p">,</span> header<span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span>
+</span><span class='line'><span class="o">&gt;</span> plot<span class="p">(</span>perf<span class="p">)</span>
+</span><span class='line'><span class="o">&gt;</span> plot<span class="p">(</span>perf<span class="o">$</span>score <span class="o">~</span> perf<span class="o">$</span>delta<span class="p">)</span>
+</span><span class='line'><span class="o">&gt;</span> plot<span class="p">(</span>perf<span class="o">$</span>rank<span class="p">,</span> type<span class="o">=</span><span class="s">&#39;l&#39;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Enlightment!</p>
+
+<p>You can also write out a timestamp (the canonical float time since epoch will do fine) and use the powerful time series tools too.  Or simply subtract the value of the first timestamp entry from the column (eg. <code>attach perf ; tstamp &lt;- tstamp - tstamp[1]</code>) and you have a convenient &ldquo;zero time&rdquo; and your x-axis becomes a measure of milliseconds since the event.  Why, there&rsquo;s no end to the fun! :)</p>
+
+<p>And R isn&rsquo;t just a <a href="http://www.r-project.org/screenshots/screenshots.html">publication-quality plotting tool</a> &mdash; it is a fully-blown <a href="http://www.r-project.org/about.html">programming language</a>, with a massive array of statistical libraries.  There&rsquo;s an excellent stats book that uses R (or S Plus) and shows how to get the most out of it &ndash; <a href="ttp://www.amazon.com/Statistical-Computing-Introduction-Analysis-S-Plus/dp/0471560405/sr=1-2/qid=1167731672/ref=pd_bbs_sr_2/103-8385460-2747869?ie=UTF8&amp;amp;s=books">Statistical Computing by Crawley</a>.</p>
+
+<p>Oh, and I can&rsquo;t wait for <a href="http://www.apple.com/macosx/leopard/xcode.html">X-Ray</a>.  Wow.  I&rsquo;ve used <a href="http://www.opensolaris.org/os/community/dtrace/">DTrace</a> a few times, and it&rsquo;s awesomely powerful; it just takes a fair effort to learn, and even longer to learn how to use it <i>effectively</i>.  It looks like Apple&rsquo;s sexy front-end will make this an incredibly useful tool.</p>
+]]></content>
+    
+  </entry>
+  
+  <entry>
+    
+    <title type="html"><![CDATA[The Happy Coder's Toolkit Part I: mtrace]]></title>
+    <link href="http://www.antonym.org//2007/01/the-happy-coders-toolkit-part-i-mtrace.html"/>
+    
+    <updated>2007-01-02T20:32:00+11:00</updated>
+    <id>http://www.antonym.org//2007/01/the-happy-coders-toolkit-part-i-mtrace</id>
+    
+    <content type="html"><![CDATA[<p>I have been doing some serious hacking, fixing and refactoring on a codebase for genetics analysis.  And I&rsquo;ve needed tools to go beyond just sprinkling the usual calls to <code>printf</code> around the place to see what&rsquo;s going on.  Hell, I&rsquo;ve even fired up <code>gdb</code> once &ndash; but just to get a stack trace!  This is the first of a sporadically released series on tools I&rsquo;ve found useful.  Hopefully they will distill the essential steps of using these tools, as well as expose some extremely useful but lesser known tricks to a wider audience (like the huge number of readers of this blog).</p>
+
+<h2>mtrace: Debugging malloc</h2>
+
+<p>The memory management provided by the standard <code>libc</code> library with GCC provides a very useful debugging mode, which can be used to detect memory leaks.</p>
+
+<p>To start with, add:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &lt;mtrace.h&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>to the includes list at the top of your main module.  Then add a call to <code>mtrace()</code> right at the very top of main, conditionally compiled, like:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span> <span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">*</span> <span class="n">argv</span><span class="p">[],</span> <span class="kt">char</span><span class="o">*</span> <span class="n">envp</span><span class="p">[]</span> <span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="cm">/* locals etc ... */</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#ifdef MYAPP_DEBUG_ALLOC</span>
+</span><span class='line'>    <span class="n">mtrace</span><span class="p">();</span>
+</span><span class='line'><span class="cp">#endif </span><span class="cm">/* MYAPP_DEBUG_ALLOC */</span><span class="cp"></span>
+</span><span class='line'>
+</span><span class='line'>    <span class="cm">/* do something funky... */</span>
+</span><span class='line'>    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This will install special handlers to intercept calls to <code>malloc/free</code> et al.  Then you can enable this feature as required.</p>
+
+<p>At runtime, the <code>MALLOC_TRACE</code> environment variable must be set to the name of the output file to store the extra trace data.  If this is not set, <code>mtrace</code> will do <strong>nothing</strong>!</p>
+
+<p>You can run your program like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="o">%</span> <span class="n">MALLOC_TRACE</span><span class="o">=</span><span class="n">myapp</span><span class="p">.</span><span class="n">mtrace</span> <span class="p">.</span><span class="o">/</span><span class="n">myapp</span> <span class="o">-</span><span class="n">f</span> <span class="mi">123</span> <span class="n">foo</span><span class="p">.</span><span class="n">dat</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Once your program has terminated, you can then go ahead and analyse the output using the supplied <code>mtrace</code> tool.  You point it to your binary (so it can pull out the symbol table) and to the saved <code>.mtrace</code> file (from above) and &ndash; behold! &ndash; a big list of all your leakage.</p>
+
+<p>Now all you have to do is tidy up those calls to <code>free</code>!</p>
+
+<p>Stay tuned for the next exciting installments on:</p>
+
+<ul>
+<li>gcov</li>
+<li>gprof</li>
+<li>cflow</li>
+<li>Valgrind</li>
+<li>and probably not many more&hellip;</li>
+</ul>
+
+]]></content>
+    
+  </entry>
+  
+  <entry>
+    
+    <title type="html"><![CDATA[Autoantonyms]]></title>
+    <link href="http://www.antonym.org//2006/07/autoantonyms.html"/>
+    
+    <updated>2006-07-04T10:10:00+10:00</updated>
+    <id>http://www.antonym.org//2006/07/autoantonyms</id>
+    
+    <content type="html"><![CDATA[<p>What is the antonym (word of opposite meaning) to the word &ldquo;resign&rdquo;?  One correct answer is &ldquo;resign&rdquo;.  What about the opposite of &ldquo;dust&rdquo;?  Yup, 10 points for &ldquo;dust&rdquo;.</p>
+
+<p>Confused?  These words are <strong>autoantonyms</strong>, one word that can have two opposite meanings!  See a full list of <a href="http://www.fun-with-words.com/nym_autoantonyms.html">autoantonyms at &ldquo;Fun With Words&rdquo;</a>.</p>
+]]></content>
+    
+  </entry>
+  
+  <entry>
+    
+    <title type="html"><![CDATA[What went wrong?]]></title>
+    <link href="http://www.antonym.org//2006/04/what-went-wrong.html"/>
+    
+    <updated>2006-04-19T17:34:00+10:00</updated>
+    <id>http://www.antonym.org//2006/04/what-went-wrong</id>
+    
+    <content type="html"><![CDATA[<p>Writing <em>good</em> diagnostic error messages is hard.  But it&rsquo;s worth the effort.  And there&rsquo;s also some side benefits if you take the time, and it&rsquo;s not just avoiding hate-mail from your users.</p>
+
+<!--more-->
+
+
+<p>How many times have you run some software, only to have it fail with a message:</p>
+
+<pre><code>Unknown Error: -3
+
+[Abort] [Retry]
+</code></pre>
+
+<p>There should be a third button: &ldquo;Punch the developer who couldn&rsquo;t be bothered to put in a decent error message.&rdquo;</p>
+
+<p>But it&rsquo;s actually hard to write good error handling, and that&rsquo;s why so many people don&rsquo;t.  Either that, or they are coding demigods who are so confident in their code they know it will never fail.  But a quick browse of the <a href="http://www.userinterfacehallofshame.com">UI Hall of Shame</a> is enough to prove the point that even proprietary commercial developers goof up.</p>
+
+<p>I&rsquo;m just now writing a tool to import data into our software from CSV files.  And the variety of flavours of CSV, combined with different field labels, column ordering, field aliases, is staggering.  Add to that some fields are required, some optional, some should be ignored, then there are user-defined columns that come after the required ones we know about.  So a simple task as &ldquo;import from CSV&rdquo; turns out to be pretty complicated, and giving the user meaningful feedback to guide them to the problem is particularly tricky.</p>
+
+<p>So to make things easier for the user, I&rsquo;ve tried to be really friendly and provide comprehensive diagnostics.  This means checking every possible way things could go wrong, and ensuring that you have sufficient context in your code at each point to be able to provide <em>meaningful</em> errors.</p>
+
+<p>So &ndash; which error message would you prefer to see when importing your data?</p>
+
+<pre><code>Error: invalid field DS5301
+</code></pre>
+
+<p>or:</p>
+
+<pre><code>Unexpected field 'DS5301' in header line 1 at column 11.
+Looking for required fields, still haven't found: id, family.
+</code></pre>
+
+<p>It takes time to craft an error message that reads like an actual English sentence, and conveys not only what went wrong but where and why, and what the software was expecting to find instead.  Error codes might be useful for the developer, but it&rsquo;s useless for the user.</p>
+
+<p>So the bonus you get if you do write decent error messages?  It guides you to write your test cases, of course!  So after I added the above check to ensure all the required fields had been read before the user-defined fields, I wrote a data file that would trigger that error.  Now I have regression testing, I can make sure that the error gets picked up.  All this work for those ungrateful users&hellip;</p>
+]]></content>
+    
+  </entry>
+  
+  <entry>
+    
+    <title type="html"><![CDATA[Surface plots of image data in GNU R]]></title>
+    <link href="http://www.antonym.org//2006/02/surface-plots-of-image-data-in-gnu-r.html"/>
+    
+    <updated>2006-02-07T13:48:00+11:00</updated>
+    <id>http://www.antonym.org//2006/02/surface-plots-of-image-data-in-gnu-r</id>
+    
+    <content type="html"><![CDATA[<p>I needed to plot the intensity profile of some test images for my thesis.  It&rsquo;s really useful to be able to visualise 2D grayscale image data by treating the intensity as a height-field and displaying it in 3D.  There&rsquo;s a variety of ways to do this, but I wanted something that would produce good printed results, so EPS was the best output option.</p>
+
+<p>So here&rsquo;s a recipe for using <a href="http://www.r-project.org/">GNU R</a> to produce such a plot.</p>
+
+<p>First, generate your image data and crop it appropriately.  For example, I used <a href="http://www.itk.org/">ITK</a> to generate a Gaussian field.</p>
+
+<p>Then convert it to the <code>pgm</code> file format.  The most excellent <a href="http://www.imagemagick.org/">ImageMagick</a> tools make this a snap (note the &lsquo;%&rsquo; is the shell prompt):</p>
+
+<pre><code>% convert -compress none inputfile.tif inputfile.pgm
+</code></pre>
+
+<p>The <code>compress</code> option ensures the PGM file is written in ASCII format, for easy reading in.</p>
+
+<p>Then, fire up R and do the following (note the &lsquo;>&rsquo; character is the default R prompt):</p>
+
+<pre><code>&gt; sz &lt;- scan("gaussian.pgm", what=integer(0), skip=1, comment.char="#", nmax=2)
+Read 2 items
+&gt; g &lt;- scan("gaussian.pgm", what=integer(0), skip=3, comment.char="#")
+Read 65536 items
+&gt; gi &lt;- matrix(g, sz[1], sz[2])
+&gt; rm(g)
+</code></pre>
+
+<p>The first line reads the image size from the PGM header into the variable <tt>sz</tt>, the second reads in the actual data as an array.  The third line creates a matrix from the data, with the appropriate size.  The last line removes the temporary array data.</p>
+
+<p>Now you have a matrix object with your image data in it, you can do all sorts of groovy things.  Such as:</p>
+
+<pre><code>&gt; image(gi)
+&gt; contour(gi, add=TRUE)
+</code></pre>
+
+<p>[img_assist|fid=13|thumb=1|alt=Gaussian 2D Image Contour plot]</p>
+
+<p>will display it as an image, with a scalar mapping function (which you can customize), along with contour lines showing the isolevels.  But more interesting is this:</p>
+
+<pre><code>&gt; persp(gi, theta=25, phi=30)
+</code></pre>
+
+<p>This will produce a 3D contour plot in perspective (the theta and phi parameters rotate the viewing angle).</p>
+
+<p>[img_assist|fid=16|thumb=1|alt=Gaussian 2D Image Perspective plot]</p>
+
+<p>You can also do other handy stuff, like pick out a scanline and do a 2D intensity plot (or a series).</p>
+]]></content>
+    
+  </entry>
+  
+  <entry>
+    
     <title type="html"><![CDATA[Unexpected side-effect]]></title>
-    <link href="http://www.antonym.org//blog/2005/12/19/unexpected-side-effect/"/>
+    <link href="http://www.antonym.org//2005/12/unexpected-side-effect.html"/>
     
     <updated>2005-12-19T18:54:00+11:00</updated>
-    <id>http://www.antonym.org//blog/2005/12/19/unexpected-side-effect</id>
+    <id>http://www.antonym.org//2005/12/unexpected-side-effect</id>
     
     <content type="html"><![CDATA[<p>I discovered a strange bug in my Python code recently.  It took me a few minutes worth of digging to uncover something somewhat surprising, a side-effect to do with default parameters that is not obvious at first blush.</p>
 
@@ -2153,755 +2788,6 @@ Date: 07/09/2009 03:26:30 PM</p>
 <p>Even when the default parameter is a function, it is still evaluated only the once, so its return value becomes a constant default value.  It turns out that this is clearly documented (thanks Fred!) in the <a href="http://www.python.org/doc/2.4.2/ref/function.html">Python Language Reference: Section 7.5 Function definitions.</p>
 
 <p>For someone used to doing funky stuff in C++ constructors (like yours truly), this might be a subtle gotcha.</p>
-]]></content>
-    
-  </entry>
-  
-  <entry>
-    
-    <title type="html"><![CDATA[Who really cares about usability?]]></title>
-    <link href="http://www.antonym.org//blog/2005/05/31/who-really-cares-about-usability/"/>
-    
-    <updated>2005-05-31T14:03:00+10:00</updated>
-    <id>http://www.antonym.org//blog/2005/05/31/who-really-cares-about-usability</id>
-    
-    <content type="html"><![CDATA[<p>Users, that&rsquo;s who.  They just don&rsquo;t realise it until the computer gets in the way of them doing what they want.</p>
-
-<p>I&rsquo;ve been ranting for years about usability, task-centered design, blah, blah.  I know just how hard it is to get right too.  But both FLOSS and proprietary software are generally abysmal at this sort of thing.</p>
-
-<p><a href="http://nat.org/2005/may/#30-May-2005-10:23-CEST">Nat</a> seems to be catching on to what usability is really all about:</p>
-
-<blockquote><p>&ldquo;It was interesting to watch this video and instantly realize that the &lsquo;Send /
-Receive&rsquo; button is all about <em>how Evolution works</em> and not about <em>what
-the user wants to do</em>. I&rsquo;ve been staring at that button for five years,
-and never realized it was wrong until I saw that video.&rdquo;</p></blockquote>
-
-<p>So I just hope more people make this intellectual leap.  Everywhere, you see examples of the <em>inside-out</em> design, where the implementation is exposed &ndash; warts and all! &ndash; all the way up to the interface.  This is one of the most pervasive errors in design, and it is only getting worse, with more features crammed into every new release.</p>
-
-<p>Imagine: you are designing a VCR remote control.  Does the user really care that it is reading an analog signal from a helical scan magnetic head, with the tape running at 2.1cm/sec?  Do you have a separate button to engage the heads?  A dial to adjust the variable speed motor?  Another dial to adjust the helical rotation speed to match the tape?  Do the users really care how it works inside?  Do they need to know in order to use the player?</p>
-
-<p>Or do they just want to &ldquo;watch the movie&rdquo;?</p>
-]]></content>
-    
-  </entry>
-  
-  <entry>
-    
-    <title type="html"><![CDATA[Bug of the Year]]></title>
-    <link href="http://www.antonym.org//blog/2005/04/21/bug-of-the-year/"/>
-    
-    <updated>2005-04-21T10:14:00+10:00</updated>
-    <id>http://www.antonym.org//blog/2005/04/21/bug-of-the-year</id>
-    
-    <content type="html"><![CDATA[<p>I discovered the weirdest bug the other day&hellip;</p>
-
-<p>I had built a new version of the imaging system, tested it and was ready to deploy it.  It was working great on the development box, and it seemed ready to go.  I downloaded the new version on the target machine, and fired it up, expecting to have only a few minutes downtime. And then&hellip;</p>
-
-<!--more-->
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Floating point exception</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Oops.</p>
-
-<p>But it wasn&rsquo;t my fault, honest!  Actually my first inclination was to blame one of the new packages I had installed.  One of the new features was to plot some statistics, and I was ready to put it down to a conflict or some weirdness with the new plotting package.  I checked everything three ways, and it was the right version, had all the right dependencies&hellip;  It had to be in my code &ndash; but where?</p>
-
-<p>I cranked up the debug level in all modules (and was very glad at this point that I had decided to use the logging framework liberally, and with some granularity, and leave it in the production system).  I re-ran it and it <em>seemed</em> like the code was failing in a drawing routine for a custom widget.  This was extra weird, as I hadn&rsquo;t changed that module for a while, so it was the same as was running perfectly before.</p>
-
-<p>I then went in and resorted to the age-old technique of adding <code>print</code> commands at various stages of the code, to see how far it was getting.  Sure enough, in the middle of the <code>on_draw()</code> method, in amongst some OpenGL calls, it was raising the <code>SIGFPE</code>.  I should mention at this point that this module was coded in Python, so any floating point errors would raise a real Python exception and display a nice stack trace showing me precisely where my error occured.  The fact that the error was the most generic message, obviously coming from the C runtime (and calling <code>abort()</code> rather rudely) made me wonder&hellip;</p>
-
-<p>I stuck a premature <code>return</code> in the drawing code, and everything worked fine from then on.  But certain other widgets, also using OpenGL, could be made to trigger the error under certain circumstances.  Weirdness.  Time to fire up <code>gdb</code>.</p>
-
-<p>I ran Python under the debugger, and ran the program (which also includes a bunch of custom Pyrex modules, which were not above suspicion).  The first thing that happens is a dump from a SIGFPE, but this was in the <code>i830_dri.so</code> module, in some <code>__driCreateScreen()</code> call.  I had actually noticed this once or twice before, but it had never caused a problem and so I had blissfully ignored it.  But now some alarm bells were going off.</p>
-
-<p>I reverted the production machine to the previous release (thank goodness for Subversion and half-decent configuration management!) and went back to the office to track the problem down in detail on the test rig (which is identical to the production machine).</p>
-
-<p>It turns out that the i830 video driver raises some floating point exceptions under certain OpenGL operations.  AFAICT this is a bug, but it hadn&rsquo;t caused a problem before, and hadn&rsquo;t been a problem on the dev box (which, as it turns out, uses the i810 driver which is why I hadn&rsquo;t noticed it before).  But why was it failing now and not before?  The plotting library <code>matplotlib</code> I had installed needs a linear algrabra package to run, and it can use either <code>Numeric</code> or <code>numarray</code>.  I chose the latter because it was newer.  It seems that numarray actually installs an FP signal handler, so when I added it to the mix, it was picking up on the driver FPEs as well.</p>
-
-<p>After much binary partitioning (and a lot of hackery) I narrowed down the problem to the essentials, then wrote the most basic code that demonstrates the problem.  It is just a simple OpenGL program that displays a triangle, but if you so much as <code>import</code> the numarray module, you get a FPE in the drawing code.  Now I have to figure out where to report the bug!  (I suspect it is squarely the fault of the X i830 driver&hellip;)</p>
-
-<p>The solution for the time being was to use <code>Numeric</code> for the linalg stuff, and I could put the plotting features back in.  This would give me time to chase up the driver bug.</p>
-
-<p>The moral of this story: always test on a test rig that is the <strong>same</strong> as the production machine!</p>
-
-<p>Oh, and also &ndash; logging is your friend!  It is definitely worth the extra few cycles to have granular, detailed logging available at the flick of a switch when things start going wrong.  Use a proper logging framework, not just <code>printf</code>, so you can log to a file, <code>syslog</code>, or whatever.</p>
-]]></content>
-    
-  </entry>
-  
-  <entry>
-    
-    <title type="html"><![CDATA[Optimize this...]]></title>
-    <link href="http://www.antonym.org//blog/2005/04/13/optimize-this-dot-dot-dot/"/>
-    
-    <updated>2005-04-13T10:54:00+10:00</updated>
-    <id>http://www.antonym.org//blog/2005/04/13/optimize-this-dot-dot-dot</id>
-    
-    <content type="html"><![CDATA[<p>I&rsquo;m working on an industrial image processing system, and it&rsquo;s coming together pretty well.  I hadn&rsquo;t tried optimising anything up until now, as I wanted to get all the features implemented and do some profiling.  &ldquo;Premature optimisation is the root of all evil&rdquo;, as they say&hellip;</p>
-
-<p>But as of the last few days, the system has reached the point where most of the key features are working on the imaging unit, certainly enough for meaningful performance tests.  And since it is a near real-time system, performance has always been a key concern.  A good excuse to start some hunting for some optimising opportunities&hellip;</p>
-
-<h2>Classifier</h2>
-
-<p>The target for a full processing cycle is 100-120ms, although I&rsquo;m aiming for more like 90ms.  Without any optimising whatsoever, the processing cycle was taking far too long at something over 200ms.  One stage, the classifier, was taking just over 30ms per frame, which seemed excessive considering its primary role.  I started looking at the main loop, and it became clear that there was a lot of extra code calculating stuff only used during calibration.  Making that optional saved 5ms per frame.</p>
-
-<p>Looking at the guts of the inner loop, there staring at me was the next obvious candidate: a function call, used to retrieve the YUV pixel (or YCbCr CCIR-601 if you prefer) components from the YUV:422 packed frame.  I rewrote the pixel access as a macro, and got it down to 15ms.  Nice, but I&rsquo;m sure can do more.</p>
-
-<p>At this point I realise that I haven&rsquo;t even tried the obvious thing of adding &lsquo;-O3&rsquo; to the compiler flags.  I rectify this oversight, and this gets us down to 10ms.</p>
-
-<p>I restructure the loop some more, and remove even the test for the calibration code from the inner loop, so all it is doing is the lookup table.  I also remove a histogram calculation that I didn&rsquo;t end up needing to refer to, and now get it down to around 4ms.</p>
-
-<p>I was reasonably happy at this point, as the code was still perfectly readable and modular, and I didn&rsquo;t have to resort to assembler, obfuscation or kinky tricks.  There&rsquo;s one more thing I can do that might shave off a few cycles, but I had to move on to the next target.</p>
-
-<h2>Capture</h2>
-
-<p>We are using Firewire cameras, specifically the <a href="http://www.basler.com/">Basler 601fc</a>.  The state of <a href="http://www.linux1394.org/">IEEE 1394</a> support under Linux is somewhat in flux at the moment, and I wrote a layer to abstract away the details of Firewire camera control.  This not only simplified the layers above, it made us insensitive to which particular underlying library we would ultimately use (currently libdc1394).  It also made it nice and easy to write a Python wrapper (using Pyrex of course).</p>
-
-<p>When I first wrote this fwcam layer, I used the simpler of two capture models, and once it was working, left it at that.  But when I added a high resolution timer to profile the image capture code, I discovered that just the capture was taking over 40ms.  This seeemed excessive too, so I went back to re-read the docs and code and see how I could speed things up.  It turns out that there was a DMA version of the capture function, and although it required some extra buffering, it wasn&rsquo;t much effort to change the fwcam layer to take advantage of it.</p>
-
-<p>I was rather shocked to see, once I had rebuilt the library, the capture time was down to under 2ms!  I was expecting a big difference, but even this much was a surprise.  Another nice feature is a non-blocking variant of the DMA capture call that could return immediately if no frame was available.  This would prove useful in the async triggering protocol.</p>
-
-<h2>But wait &ndash; there&rsquo;s more&hellip;</h2>
-
-<p>There are many more opportunities, I&rsquo;m sure.  Through some careful analysis, strategic placement of some high-resolution (microsecond) timers, and restructing and refactoring of the code, I managed to shave around 26ms per frame in the first case, or about 8 times faster.  But the most important thing is that the code is still readable and maintainable, not some mess of macros and funky shortcuts nobody else but me can grok.</p>
-
-<p>Of course, I have been looking at the MMX extensions in GCC recently, so&hellip; :)</p>
-]]></content>
-    
-  </entry>
-  
-  <entry>
-    
-    <title type="html"><![CDATA[A real Python logging example]]></title>
-    <link href="http://www.antonym.org//blog/2005/03/15/a-real-python-logging-example/"/>
-    
-    <updated>2005-03-15T10:56:00+11:00</updated>
-    <id>http://www.antonym.org//blog/2005/03/15/a-real-python-logging-example</id>
-    
-    <content type="html"><![CDATA[<p>For some reason, all the examples of the configuration files for the Python logging framework are artificial ones, with names like <code>handler01, handler02</code> and so on.  This makes it a little difficult to figure out how to apply it to a real world example.  So after a bit of fiddling around, here is a real example of using the Python <code>logging</code> module in a non-trivial application (ie. with multiple hierarchical modules) with an associated configuration file.</p>
-
-<p>The Python logging framework is extremely useful and powerful, but the documentation is somewhat lacking.  It is dead easy to use in its simplest form:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">os</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">math</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">logging</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">def</span> <span class="nf">frobnicate</span><span class="p">(</span><span class="n">foo</span><span class="p">,</span> <span class="n">baz</span><span class="p">):</span>
-</span><span class='line'>    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;Processing </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">foo</span><span class="p">)</span>
-</span><span class='line'>    <span class="k">if</span> <span class="n">baz</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-</span><span class='line'>        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;This could get complex!&#39;</span><span class="p">)</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">baz</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">()</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>So you really do nothing more than import the module, then make logging calls with the appropriate severity level.  But if you have a project with lots of different modules, and you want more control over how things are handled, what do you do?</p>
-
-<p>The first thing is to get a logger instance for each module.  You can use the same name as the module hierarchy, which gives you a lot of flexibility.  Thus, at the top of each module, we have something like:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">logging</span>
-</span><span class='line'><span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;pi.basil.gui.widgets&#39;</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The <code>logging.getLogger()</code> call will return us a logger for just that module, which we can then use throughout.  Thus:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">CalibrationCanvas</span><span class="p">:</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c">#... some stuff</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">_on_draw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;ImageCanvas._on_draw&#39;</span><span class="p">)</span>
-</span><span class='line'>        <span class="c"># do some funky stuff</span>
-</span><span class='line'>        <span class="n">glBegin</span><span class="p">()</span>
-</span><span class='line'>        <span class="c"># ...</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">if</span> <span class="ow">not</span> <span class="n">model</span><span class="p">:</span>
-</span><span class='line'>            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;update: No model specified&#39;</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>So note the use of the logging instance <code>log</code> instead of <code>logging</code>.  By using a different <code>Logger</code> for each module, we have very fine-grained control.</p>
-
-<p>It is important to use the right severity levels when you write you log calls.  I tend to use <code>INFO</code> for generally useful stuff that I like to see traced while developing, but not at runtime, while I reserve <code>DEBUG</code> for the extra detailed information that is only useful when something is going wrong.  The <code>WARNING</code> and lower I always have on at runtime, and in production are sent to an operator console.</p>
-
-<p>So now we need to set up the logging configuration.  Don&rsquo;t bother trying to do this programmatically (although you could) &ndash; use a configuration file.  This is the part that isn&rsquo;t documented so well.  Here is a snippet from a real file:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="p">[</span><span class="n">formatters</span><span class="p">]</span>
-</span><span class='line'><span class="n">keys</span><span class="p">:</span> <span class="n">detailed</span><span class="p">,</span><span class="n">simple</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">[</span><span class="n">handlers</span><span class="p">]</span>
-</span><span class='line'><span class="n">keys</span><span class="p">:</span> <span class="n">console</span><span class="p">,</span><span class="n">syslog</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">[</span><span class="n">loggers</span><span class="p">]</span>
-</span><span class='line'><span class="n">keys</span><span class="p">:</span> <span class="n">root</span><span class="p">,</span><span class="n">gui</span><span class="p">,</span><span class="n">engine</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">[</span><span class="n">formatter_simple</span><span class="p">]</span>
-</span><span class='line'><span class="n">format</span><span class="p">:</span> <span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="n">s</span><span class="p">:</span><span class="o">%</span><span class="p">(</span><span class="n">levelname</span><span class="p">)</span><span class="n">s</span><span class="p">:</span>  <span class="o">%</span><span class="p">(</span><span class="n">message</span><span class="p">)</span><span class="n">s</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">[</span><span class="n">formatter_detailed</span><span class="p">]</span>
-</span><span class='line'><span class="n">format</span><span class="p">:</span> <span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="n">s</span><span class="p">:</span><span class="o">%</span><span class="p">(</span><span class="n">levelname</span><span class="p">)</span><span class="n">s</span> <span class="o">%</span><span class="p">(</span><span class="n">module</span><span class="p">)</span><span class="n">s</span><span class="p">:</span><span class="o">%</span><span class="p">(</span><span class="n">lineno</span><span class="p">)</span><span class="n">d</span><span class="p">:</span>  <span class="o">%</span><span class="p">(</span><span class="n">message</span><span class="p">)</span><span class="n">s</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">[</span><span class="n">handler_console</span><span class="p">]</span>
-</span><span class='line'><span class="n">class</span><span class="p">:</span> <span class="n">StreamHandler</span>
-</span><span class='line'><span class="n">args</span><span class="p">:</span> <span class="p">[]</span>
-</span><span class='line'><span class="n">formatter</span><span class="p">:</span> <span class="n">simple</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">[</span><span class="n">handler_syslog</span><span class="p">]</span>
-</span><span class='line'><span class="n">class</span><span class="p">:</span> <span class="n">handlers</span><span class="o">.</span><span class="n">SysLogHandler</span>
-</span><span class='line'><span class="n">args</span><span class="p">:</span> <span class="p">[(</span><span class="s">&#39;myhost.mycorp.net&#39;</span><span class="p">,</span> <span class="n">handlers</span><span class="o">.</span><span class="n">SYSLOG_UDP_PORT</span><span class="p">),</span> <span class="n">handlers</span><span class="o">.</span><span class="n">SysLogHandler</span><span class="o">.</span><span class="n">LOG_USER</span><span class="p">]</span>
-</span><span class='line'><span class="n">formatter</span><span class="p">:</span> <span class="n">detailed</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">[</span><span class="n">logger_root</span><span class="p">]</span>
-</span><span class='line'><span class="n">level</span><span class="p">:</span> <span class="n">INFO</span>
-</span><span class='line'><span class="n">handlers</span><span class="p">:</span> <span class="n">syslog</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">[</span><span class="n">logger_gui</span><span class="p">]</span>
-</span><span class='line'><span class="n">level</span><span class="p">:</span> <span class="n">WARNING</span>
-</span><span class='line'><span class="n">qualname</span><span class="p">:</span> <span class="n">pi</span><span class="o">.</span><span class="n">basil</span><span class="o">.</span><span class="n">gui</span>
-</span><span class='line'><span class="n">handlers</span><span class="p">:</span> <span class="n">console</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">[</span><span class="n">logger_engine</span><span class="p">]</span>
-</span><span class='line'><span class="n">level</span><span class="p">:</span> <span class="n">INFO</span>
-</span><span class='line'><span class="n">qualname</span><span class="p">:</span> <span class="n">pi</span><span class="o">.</span><span class="n">basil</span>
-</span><span class='line'><span class="n">handlers</span><span class="p">:</span> <span class="n">console</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>A few notes: First, you must list all of the loggers, formatters and handlers in a section up front.  This is a bit odd, since each has their own section with a unique name anyway, but it appears to be due to a limitation of the <code>ConfigParser</code>.  So if you have formatters called <code>root</code> and <code>engine</code>, you must declare them in a section:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="p">[</span><span class="n">formatters</span><span class="p">]</span>
-</span><span class='line'><span class="n">keys</span><span class="p">:</span> <span class="n">simple</span><span class="p">,</span><span class="n">detailed</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Then the details of each formatter are supplied like this:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="p">[</span><span class="n">formatter_simple</span><span class="p">]</span>
-</span><span class='line'><span class="n">format</span><span class="p">:</span> <span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="n">s</span><span class="p">:</span><span class="o">%</span><span class="p">(</span><span class="n">levelname</span><span class="p">)</span><span class="n">s</span><span class="p">:</span>  <span class="o">%</span><span class="p">(</span><span class="n">message</span><span class="p">)</span><span class="n">s</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>And so on, for each instance of each type.</p>
-
-<p>Second, be careful not to add any spaces in the comma-separated list of keys (I think this is a bug) as you can end up with a Logger with a leading space in the name.  So &lsquo;keys:root,db,gui&rsquo; is not the same as &lsquo;keys:root, db, gui&rsquo;.</p>
-
-<p>Third, I have configured one of the handlers above to send logging information to a separate host using the SysLog facility.  Note that you will need to make sure <code>syslogd</code> is listening for remote calls for this to work, as it does not by default.  Under Debian, this involved adding the &ldquo;-r&rdquo; option to the SYSLOGD settings at the top of <code>/etc/init.d/sysklogd</code>.  Also note there are security implications for doing this, so some careful firewall rules are appropriate here.</p>
-
-<p>The trick is the <code>qualname</code> setting &ndash; this allows us to specify different loggers, and associate the name that we use to get a logger instance with particular settings in the config file.  So the <code>root</code> logger above is the default for the system, but we have separate settings for the engine and GUI components.  This <code>qualname</code> corresponds to the <code>getLogger()</code> call in our code.</p>
-
-<p>The configuration file is loaded at app startup time like this:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c"># ...</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kn">import</span> <span class="nn">logging.config</span>
-</span><span class='line'>    <span class="n">logging</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">fileConfig</span><span class="p">(</span><span class="s">&#39;logging_basil.conf&#39;</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Once you get the hang of it, the logging framework can save you a lot of time and effort, and you will be able to stop the bad habit of adding <code>print</code> statements all over the place, only to forget them or have to come back later and remove them.  The logging calls become a part of the code, you leave them in for production code, and can turn up the level of detail for diagnosing problems.  Fortunately, the performance penalty for leaving the logging code in is <em>very</em> small, and it is definitely worth a few extra cycles for that peace of mind.</p>
-
-<h2>Archived Comments</h2>
-
-<p>AUTHOR: Anonymous
-DATE: 08/02/2005 07:00:29 AM</p>
-
-<p>Typo in config file
-Thanks for clearing up this mistery! I encountered a small typo in the config file. In section
- [logger_root]
- level: INFO
- handlers: root
-the handlers value should be syslog instead of root.</p>
-
-<p>Joost van Lawick
-<a href="&#109;&#x61;&#x69;&#x6c;&#116;&#x6f;&#58;&#x6a;&#x6f;&#x6f;&#x73;&#116;&#x40;&#108;&#97;&#x77;&#105;&#99;&#107;&#x2e;&#110;&#x6c;">&#106;&#111;&#111;&#115;&#116;&#x40;&#108;&#97;&#x77;&#105;&#99;&#107;&#x2e;&#110;&#x6c;</a></p>
-
-<p>AUTHOR: Chris Lambacher
-DATE: 03/17/2006 09:07:37 AM
-You are missing an closing pre tag
-After the first code block you are missing a closing pre tag.  It makes the article kind of hard to read.</p>
-
-<p>AUTHOR: gavinb
-DATE: 06/07/2006 11:40:57 AM
-d&#8217;oh
-Thanks, fixed!</p>
-
-<p>AUTHOR: Pokerbot
-DATE: 08/21/2007 03:23:32 PM
-it must be difficult being a
-it must be difficult being a python logging &ndash; do they wrap around the logs or swallow them in order to move them?</p>
-
-<p>AUTHOR: Kirk Strauser
-DATE: 12/25/2007 05:17:45 AM
-Reason for listing all the elements
-A few notes: First, you must list all of the loggers, formatters and handlers in a section up front. This is a bit odd, since each has their own section with a unique name anyway, but it appears to be due to a limitation of the ConfigParser.</p>
-
-<p>That&rsquo;s not so odd when you consider larger deployments where many applications are configured from the same config file.  This is the case in my company where a master &ldquo;mycompany.conf&rdquo; holds all settings used throughout our entire codebase.  In theory, you could run every piece of our software on your own system just by tweaking that one file.  With this setup, the logger details will occupy just one tiny corner; it&rsquo;s not as if the whole config file is dedicated to it.</p>
-
-<p>AUTHOR: dramenbejs
-DATE: 05/07/2008 11:07:44 PM</p>
-
-<p>The font configured for the PRE tag in this article is too small: 0.8em.
-It forces me to process the article by hand to read it.
-Why you don&rsquo;t leave it on the default settings, which are at least readable?</p>
-]]></content>
-    
-  </entry>
-  
-  <entry>
-    
-    <title type="html"><![CDATA[Pyrex and sharing extension modules]]></title>
-    <link href="http://www.antonym.org//blog/2005/02/16/pyrex-and-sharing-extension-modules/"/>
-    
-    <updated>2005-02-16T22:21:00+11:00</updated>
-    <id>http://www.antonym.org//blog/2005/02/16/pyrex-and-sharing-extension-modules</id>
-    
-    <content type="html"><![CDATA[<p>I&rsquo;m using <a href="http://www.python.org/">Python</a> and C in one of the rather large projects I&rsquo;m working on, and I&rsquo;m using <a href="http://nz.cosc.canterbury.ac.nz/~greg/python/Pyrex/">Pyrex</a> to provide the bridging code.  Once I got over some of the tricks involved in sharing types between extension modules, it was cooking with gas.</p>
-
-<p>Now I have a <a href="http://www.linux1394.org/">Firewire</a> camera running live in a <a href="http://www.wxpython.org/">wxPython</a> window being displayed using <a href="http://pyopengl.sourceforge.net/">PyOpenGL</a>.  Very cool indeed&hellip;  Now all I have to do is hack in YUV support into <a href="http://gandalf-library.sourceforge.net/">Gandalf</a>, and I&rsquo;ll be set!</p>
-
-<p>Writing extension modules in Pyrex is dead easy, sharing them just takes a little extra know-how.  You have to declare the <tt>cdef</tt> functions along with the data members in your <tt>.pxd</tt> file.  Then the implementation goes into the <tt>.pyx</tt> module, which is compiled.  The trouble I came across was calling <tt>cdef</tt>ed functions between modules that used a common C type defined in another module.  Clear as mud?</p>
-
-<p>The solution was to declare the C <tt>typedef</tt>s in their own <tt>.pxd</tt> and import those into both, thus putting all the C types in their own namespace.  Then two different extension modules can use the same C types from Pyrex code and all&rsquo;s well.</p>
-
-<h2>2013 Update</h2>
-
-<p>These days, you would likely use the <a href="http://www.python.org/lib/ctypes/"><code>ctypes</code> module</a>, which allows you to transparently
-invoke C functions from Python code.</p>
-]]></content>
-    
-  </entry>
-  
-  <entry>
-    
-    <title type="html"><![CDATA[How not to give a talk]]></title>
-    <link href="http://www.antonym.org//blog/2004/12/13/how-not-to-give-a-talk/"/>
-    
-    <updated>2004-12-13T14:27:00+11:00</updated>
-    <id>http://www.antonym.org//blog/2004/12/13/how-not-to-give-a-talk</id>
-    
-    <content type="html"><![CDATA[<p>I just got back from the Artificial Intelligence &lsquo;04 conference in Cairns.  It was a great conference, met lots of people, went to some interesting talks, saw some fantastic keynote talks, and generally had a good time.  I even got to go for a swim and soak up some sun on the last day.</p>
-
-<p>But I am writing this particular entry to capture some points I think are worth recording, based on some of what most people would agree were the less successful talks.  If anyone is giving a technical talk, maybe some of the following will be useful&hellip;</p>
-
-<!--more-->
-
-
-<ul>
-<li><strong>Don&rsquo;t stare at the projected slides</strong>: a frightening number of presenters will come up to the podium, turn their back to the audience and proceed to stare at the slides on the screen behind them.  This alienates the audience, and people will switch off.</li>
-<li><strong>Don&rsquo;t ignore the audience</strong>: these people came to listen to you: look at them, scan the room, engage with the people as you talk.  Don&rsquo;t stare at your notes, at the screen or at the projector.  Read the next bullet point, then talk about it for a while.</li>
-<li><strong>Don&rsquo;t mumble</strong>: speak slowly and clearly.  If you are nervous, you are more likely to rush.  Take your time, as anyone unfamiliar with your topic is unlikely to keep up if you are speeding ahead.</li>
-<li><strong>Don&rsquo;t just read the slides</strong>: your audience is most likely literate; if you have every word you are going to say on the slide, and proceed to read directly off the screen, you are certain to send people into a deep slumber.</li>
-<li><strong>Don&rsquo;t fill the slides with text</strong>: a good slide has no more than about 4 or 5 bullet points.  These should highlight key ideas, but not be whole sentences.  Do not write whole paragraphs of text.  Not only is it too dense, it will be hard to read from the back of the room, and you are more likely to read it rather than talk naturally.</li>
-<li><strong>Don&rsquo;t use distracting animations</strong>: animations can very effectively be used to illustrate important concepts, but there is a great danger of being overused.  One talk I went to featured an animated logo in the top left of every single page, a spinning 3D logo of the lab: this was annoying and distracting, and did nothing to help the speaker.</li>
-<li><strong>Don&rsquo;t assume too much</strong>: your audience is likely not the expert you are in your particular field, so don&rsquo;t jump in and start like you are speaking to your boss; some level of gentle intro is useful to give the audience an idea of what it is you are talking about.</li>
-<li><strong>Don&rsquo;t present the paper</strong>: some people try to present the entire paper in slide format, which is doomed to failure.  Your presentation should be something that will make people want to read the paper.  It should feature the highlights, key contributions and main points, but don&rsquo;t bother trying to cover everything; it is just not feasible, and you will lose your audience.</li>
-<li><strong>Don&rsquo;t go for style over substance</strong>: some of the templates in the more popular slideshow packages have some horrific choices of fonts an colours.  Especially stay away from those with animations; they are nothing but a distraction.</li>
-<li><strong>Don&rsquo;t use a table when a graph will do</strong>: graphical information is much easier to comprehend, so always use a graph whenever possible.  Don&rsquo;t fill up a slide with columns of numbers and expect people to interpret it &ndash; that is your job.</li>
-<li><strong>Don&rsquo;t throw away questions</strong>: people asking questions should not direct it only to the speaker; say it loudly and clearly so the rest of the audience can hear you.  Speakers should repeat the question (or paraphrase it) before answering, at least to mitigate against the first point.</li>
-<li><strong>Don&rsquo;t miss an opportunity</strong> to practice your talk, and practice public speaking in general.  Toastmasters have some excellent courses that can improve everyone&rsquo;s speaking technique.  Especially for people whose first language is not English, take courses and practice as much as possible.  Since most scientific publications are in English, as are most international conferences, this is a critical area you cannot afford to neglect.</li>
-</ul>
-
-
-<p>I hope the above is of some use, please feel free to leave a comment for any other ideas on what to include in the above list.</p>
-
-<h2>Archived Comments</h2>
-
-<p>Author: Anonymous</p>
-
-<p>Date: 02/09/2005 05:04:04 PM</p>
-
-<p>This is irrelevant.
-This is totally offtopic, but I just wanted to mention that I share with you both the same name and, coincidentally, the same interest in open source software.</p>
-
-<p><a href="http://www.gavinbaker.com/">Gavin</a></p>
-]]></content>
-    
-  </entry>
-  
-  <entry>
-    
-    <title type="html"><![CDATA[VeriSign vs The Rest of the World]]></title>
-    <link href="http://www.antonym.org//blog/2003/10/08/verisign-vs-the-rest-of-the-world/"/>
-    
-    <updated>2003-10-08T21:25:00+10:00</updated>
-    <id>http://www.antonym.org//blog/2003/10/08/verisign-vs-the-rest-of-the-world</id>
-    
-    <content type="html"><![CDATA[<p>On the 15th of September, the top-level Domain Name Service (DNS) for <code>.net</code> and <code>.com</code>, fundamental to the entire Internet, was hijacked &ndash; by the very custodian entrusted with its upkeep.</p>
-
-<!--more-->
-
-
-<p>Some time ago, VeriSign (better known for their rather pricey digital certificates) purchased Network Solutions, and now acts not only as a domain name registrar, but operates some of the top-level DNS services worldwide.  They have done a fairly good job up until now&hellip; when they decided to cash in on their DNS operation, and redirect typos to an ad-driven web site.  And effectively undermine part of the fabric of the net in the process&hellip;</p>
-
-<h2>Background &ndash; So what is DNS?</h2>
-
-<p>The Internet is built upon the TCP/IP protocol suite. Every machine connected to the net has a number, called an IP address, and machines use this address to communicate.  But since numbers are not very meaningful to us humans, there is a way to give all these numbers a name.  And that&rsquo;s where Domain Name Service (DNS) comes in.  Whenever you type <code>www.theage.com.au</code> into your browser, the first thing your browser does is look up the IP address corresponding to this name.  DNS works in a hierarchy, so first it checks <code>.au</code>, then <code>.com.au</code>, then <code>.theage.com.au</code> and finally <code>www.theage.com.au</code> before it gets the address.  And each level there is a different server that knows about that level of the hierarchy.</p>
-
-<p>It is extremely important to note here that web traffic is by no means the only internet service to use DNS.  On the contrary, virtually <em>all</em> internet protocols use DNS at some point.  Email, newsgroups, time servers, remote access shells, streaming media, anti-spam software &ndash; virtually all software that uses the net uses DNS.</p>
-
-<h2>So what did VeriSign do?</h2>
-
-<p>They added what is called a &ldquo;wildcard&rdquo; to the top-level DNS that handles anything ending with .com or .net.  So if someone tries to look up a bogus domain name, it will give back the address of their webserver called SiteFinder.  And their web server (assuming the error is coming from a user running a web browser) gives you a search screen &ndash; plus a whole lotta advertising.</p>
-
-<h2>Why is this bad?</h2>
-
-<p>It used to always be that if you tried to refer to a domain that didn&rsquo;t exist, you would receive the <code>NXDOMAIN</code> (non-existent domain) error.  Your software, whether it be a web browser, email client, or anti-spam software, would receive this error and handle the situation appropriately.  And obviously the appropriate response to an invalid domain name is different depending on the service.</p>
-
-<p>For example, to filter out spam using forged email addresses, it is standard procedure to for the email software to first look up the sender address and make sure it is at least coming from a valid domain.  If we get an <code>NXDOMAIN</code> response from the DNS server, we immediately know something is fishy.</p>
-
-<p>But now, irrespective of the software or protocol, any domain lookup that would have ordinarily failed, returns <code>sitefinder.verisign.com</code>.  So if you typed in <code>www.no8way8this8is8a8real8domain.com</code> you would be sent straight to SiteFinder, where they will hit you with advertising, and maybe even try to sell you a domain.  And now your spam filtering software can&rsquo;t tell if the domain was really forged or not.</p>
-
-<p>The implications of this are horrendous &ndash; name lookups will never fail.  Even completely bogus names.  Forgeet the web surfers that this is designed to target &ndash; this affects every protocol, because DNS is used by just about every protocol.</p>
-
-<h2>What does it mean?</h2>
-
-<p>This is a blatant abuse of responsibility.  There is clearly a conflict of interest when VeriSign are abusing their control of the root name servers to drive unsuspecting users to their site for advertising revenue.  It is a violation of the established protocols for DNS resolution.</p>
-
-<p>After serious threats from ICANN, VeriSign recently suspended the wildcard redirection to SiteFinder.  They argue that they are providing a &ldquo;service&rdquo; to users; they say they should be allowed to &ldquo;innovate&rdquo;.</p>
-
-<p>The problem they are ostensibly trying to solve is to help wayward web surfers when they mistype a URL.  Simple as that.  But rather than solve the problem on the client, and let the web browser decide how to handle the error condition and provide some sort of (customisable) searching facility (I believe AOL and MSN already do this), VeriSign have solved the problem on the server, in such a way that it affects not just web browsers but virtually everything else.</p>
-
-<p>If it weren&rsquo;t for some very clever sysadmins and BIND developers, the impact would have been much worse than it was.  But already we have seen how a company driven by greed can take half the net hostage.  Let us hope that ICANN and the regulatory powers see to it that fundamental services such as DNS remain unpolluted, and do not get hijacked for commercial gain.</p>
-]]></content>
-    
-  </entry>
-  
-  <entry>
-    
-    <title type="html"><![CDATA[C++ STL extras - random_sample_n]]></title>
-    <link href="http://www.antonym.org//blog/2003/09/13/c-plus-plus-stl-extras-random-sample-n/"/>
-    
-    <updated>2003-09-13T22:20:00+10:00</updated>
-    <id>http://www.antonym.org//blog/2003/09/13/c-plus-plus-stl-extras-random-sample-n</id>
-    
-    <content type="html"><![CDATA[<p>Working on some code for my research tonight, I wasted a lot of time looking for some information on a particlar STL function.  Since I couldn&rsquo;t find the answers elsewhere, I am posting a quick explanation/solution here, to hopefully save someone else the trouble.</p>
-
-<p>I am writing a C++ application, and use the STL in various places. I have been consulting the <a href="http://www.sgi.com/tech/stl/">SGI Standard Template Library Programmer&rsquo;s Guide</a>.  It is quite poorly named; it is really a reference, with not much guidance at all.  And unfortunately I have yet to find a decent book on the STL (I have one but it sucks).</p>
-
-<p>(Note that the below applies to the <code>g++</code> compiler version 3.3; I don&rsquo;t know about other compilers or libraries.)</p>
-
-<p>Anyway, I found just the function I was after: <code>random_sample_n</code>.  So I added the include for algorithm, and couldn&rsquo;t get the sucker to compile.  It turns out that since it is an <em>extension</em> to the STL, it is located in the <code>ext/algorithm</code> header, and under the namespace <code>__gnu_cxx::</code> instead of <code>std::</code>.  This stuff I found the hard way, slugging through header files.</p>
-
-<p>Another thing: I didn&rsquo;t find any decent examples (the one in the SGI docs is trivial) so here is some real code:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="cp">#include &lt;ext/algorithm&gt;</span>
-</span><span class='line'><span class="c1">//...</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">vector</span><span class="o">&lt;</span><span class="n">fve</span><span class="o">&gt;</span> <span class="n">cxp</span><span class="p">(</span><span class="n">n_samples</span><span class="p">);</span>
-</span><span class='line'>    <span class="c1">// fill up cxp with useful stuff</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">const</span> <span class="kt">unsigned</span>          <span class="n">N</span> <span class="o">=</span> <span class="mi">20</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">vectorf</span><span class="o">&gt;</span>    <span class="n">rs_model</span><span class="p">(</span><span class="n">N</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// Take N random models</span>
-</span><span class='line'>    <span class="n">__gnu_cxx</span><span class="o">::</span><span class="n">random_sample_n</span><span class="p">(</span> <span class="n">cxp</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">cxp</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span> <span class="n">rs_model</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">N</span> <span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// Now process rs_model ...</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>2013 Update</h2>
-
-<p>Nowdays, there is the most excellent <a href="http://www.cppreference.com/">http://www.cppreference.com/</a> which has a comprehensive reference for all the STL and standard C++ library classes, methods and functions.</p>
-
-<p>And the new C++11 standard features e whole module for generating random numbers.</p>
-]]></content>
-    
-  </entry>
-  
-  <entry>
-    
-    <title type="html"><![CDATA[Emacs Myths]]></title>
-    <link href="http://www.antonym.org//blog/2002/01/12/emacs-myths/"/>
-    
-    <updated>2002-01-12T02:46:00+11:00</updated>
-    <id>http://www.antonym.org//blog/2002/01/12/emacs-myths</id>
-    
-    <content type="html"><![CDATA[<p>A recent <a href="http://www.newsforge.com/">article</a> on NewsForge brought up
-one of the oldest rwars on the planet (almost as old as the operating system
-rwars), asking which editor is best: vi or Emacs?  I was inspired to write my
-own thoughts, findings and opinions after reading this article.  Especially
-since most of the arguments I read were trolls sprouting opinions and
-regurgitating fallacies, rather than any informed sort of debate.  So here I am,
-with my own 2 cents.</p>
-
-<!--more-->
-
-
-<h2>History</h2>
-
-<p>First, a few words on my history with editors.  I am an Emacs user, and have
-been for around 4 years.  Over the years, I have used a wide variety of editors
-on a number of platforms platforms.  Some of my favourites were Brief (small,
-fast, powerful), E/PM (powerful, intuitive) and Visual SlickEdit (very much like
-Emacs, but with crap default keybindings).  And yes, for a number of years,
-whenever I used Unix I used vi.  I found the modal editing system to be arcane,
-the keybindings obscure, and the functionality limited.  But I still used it for
-a long time,  and knew it reasonably well.</p>
-
-<p>One day I was reading the newsgroups, when a discussion (which quickly descended
-into a flamewar) on the relative merits of vi and Emacs broke out. Based on what
-people were saying, I thought this thing called Emacs sounded interesting, and I
-decided to check it out.  It was  installed on one of the Unix machines at Uni,
-so I tried it out and went through the tutorial.  I found the keys a bit weird,
-and felt a bit lost.  Unfortunately, this was around the time I was working on a
-major project, and it was pretty poor timing to consider changing editors.  I
-forgot about it, until around 6 months later.  I was working on a project over
-summer, and I thought it was time to try this new editor again.  I was intrigued
-by what I had read, as it sounded very powerful.  So I fired up the tutorial,
-and learned the very basic editing keys.  Then I started to actually use it
-while working on a compiler I was writing.  I found that once I knew the basics,
-I could get by.  And once I discovered how to take advantage of the help system,
-I could just look things up whenever I needed to do something but didn&rsquo;t know
-the keys. After a while, I started seeing the patterns in things.  There is,
-believe it or not, a system to the key mappings, which starts to make sense once
-you know enough of them.  But by the time I had moved past the &lsquo;novice&rsquo; user
-stage, I noticed three striking things.</p>
-
-<p>First, I was rapidly discovering that Emacs was much more than an editor. It was
-an incredibly powerful text processing system with a Lisp interpreter at its
-core, which could be extended in any way imaginable.  Second, I found that I
-could learn things incrementally.  Whenever I needed to do something new, such
-as run a spell check on a document, I would just look up the help system and
-there it was.  Which leads me to the third thing &ndash; after you use Emacs for a
-while, you realise that every time you need to do something, somebody has
-thought of it already, and it&rsquo;s there.  You can tell just by using it that it
-was designed by programmers for programmers.  So there are some of the reasons
-why I now call myself an Emacs user.  I&rsquo;ve just about tried them all, and I&rsquo;ve
-chosen the one I believe is the best, for many reasons.</p>
-
-<h2>Fact or opinion?</h2>
-
-<p>I went looking for pages advocating vi over Emacs, and found very little
-substance.  Most of the stuff around seems to be opinionated trolls spouting the
-usual &ldquo;Emacs sux&rdquo; lines, with no substantive arguments to back it up.  I have
-actually been the target of active ridicule by fellow  programmers who use vi.
-The interesting thing was that they all said the same two things: Emacs is big,
-and Emacs is slow.  But beyond that, they actually knew very little about what
-Emacs could do.  So let&rsquo;s dispell a few myths.</p>
-
-<h2>Emacs is big</h2>
-
-<p>Yes, it is &ndash; the latest version of Emacs (v21) takes up around 40Mb on my
-machine.  For comparison, the latest version of Vim takes up around 12Mb. But
-really, so what?  There is an enormous amount of functionality in the full
-package &ndash; you really do get a lot of bang-for-buck. Besides, these days, hard
-drives are so cheap that the difference here is meaningless &ndash; a few cents.  If
-you are really concerned about size, it is pretty easy to make a minimalist
-distribution of Emacs of only a few Meg.  And there are alternatives such as
-microEmacs which may suit too (this is is what Linus Torvalds, creator of Linux
-uses).</p>
-
-<h2>Emacs is slow</h2>
-
-<p>Slower to load perhaps, but certainly not slow to run.  Compared to vi, an Emacs
-system configured with a bunch of packages usually takes longer to load; this is
-true.  But once loaded, Emacs is extremely fast with just about every operation.
-And a fundamental distinction must be made here &ndash; unlike most vi users, Emacs
-users tend to open a session at the start of the day and leave it running,
-opening and closing multiple buffers.  This is a very different work style to
-the typical vi user, who will open and close vi many times.  In this case,
-startup time is obviously important, but the extra second or two for Emacs is
-irrelevant.  For text processing, that is where the speed counts, and even for
-multi-megabyte files Emacs is very fast.</p>
-
-<h2>Emacs is bloated</h2>
-
-<p>Many people think that Emacs is bloated, in that it has built in web browsing,
-mail reading, kitchen sink, news reading, etc. etc. Some people see this as an
-advantage, some think it sucks. Much of it comes down to personal perference,
-but don&rsquo;t forget you only use what you need. The extra functionality is there if
-you want it.  You can always use a minimalist installation with just what you
-need. People don&rsquo;t complain that Debian is bloated because it has over 4000
-packages, because people can just install the packages they want.</p>
-
-<h2>vim can do anything Emacs can</h2>
-
-<p>Crap. There are a zillion things Emacs can do that vi can&rsquo;t. The vast majority
-of vim users wouldn&rsquo;t have a clue just what functionality is available in Emacs,
-and anyone still wanting to argue this point should go reread point #3 above.</p>
-
-<h2>Modal editors are cool</h2>
-
-<p>Ok, I used to use vi. But the modality really bugged me. Now if you ask any
-knowledgable person in HCI, they will tell you that modal apps are bad design.
-They should know. Now I happen to prefer Emacs because it is not modal. But if
-you seriously prefer vim because it is modal, or you like the keystrokes, then
-fine &ndash; that is your opinion. It&rsquo;s about the only decent reason I&rsquo;ve heard for
-anyone using it.  So if you like that, great &ndash; enjoy it, I say. I won&rsquo;t argue
-with your preference.  But don&rsquo;t start preaching about how it is somehow
-inherently better &ndash; plenty of experts will disagree, and rightly so IMHO.</p>
-
-<p>&ldquo;People don&rsquo;t know that vi was written for a world that doesn&rsquo;t exist anymore.&rdquo;</p>
-
-<p>Who said that? Bill Joy, creator of vi. You have to remember that vi was
-designed for low-speed character terminals. But the world has moved on, as Bill
-notes. Obviously vi is stuck in the dark ages &ndash; vim might be an improvement on
-vi, but the fundamental design of modal editing no longer has a rationale.</p>
-
-<h2>Empirical Comparisons</h2>
-
-<p>Instead of making wild pronouncements, I decided to do some empirical testing.
-So I fired up both the console and the GUI versions of Emacs and Vim.  Here are
-the results (according to &lsquo;top&rsquo;):</p>
-
-<pre><code>  Program
-  Size
-
-
-  gvim
-  emacs
-  vim
-  emacs
-
-
-  8560K
-  10M   
-  8152K 
-  8544K 
-</code></pre>
-
-<p>So yes, Emacs is bigger, but not by very much.  And I would argue that for that
-size, you get a lot more functionality.  So for the sake of a few hundred
-kilobytes, I don&rsquo;t think those who argue that Emacs is huge compared to vi have
-much ground to stand on in light of these figures.</p>
-
-<p>Now comes the speed tests.  We want to test startup time only, so I ran the same
-test on each editor 5 times, then averaged the results.  I had already loaded
-both prior to the tests to prime the cache. Each editor was passed a command
-line which would make it quit straight away.  This was about the best comparison
-for startup time I could come up with.  If anyone has a better idea, I will
-listen.</p>
-
-<pre><code>  Program
-  Emacs
-  Vim
-
-
-  Size
-  0.348s
-  0.428s
-
-
-  Command Line
-  emacs -q -nw --execute (kill-emacs)
-  vim -c q
-</code></pre>
-
-<p>Now this was a big surprise &ndash; Emacs actually came out faster in startup time!  I
-was certainly not expecting this.  I know that it can slow down if you preload
-lots of packages in your customisation file (which is why you should use
-autoload) but I wasn&rsquo;t expecting this.</p>
-
-<h2>Conclusion</h2>
-
-<p>Well, what can we say?  Emacs is much bigger in terms of disk space, but it has
-lots more functionality out of the box.  It is a little bigger in terms of
-memory footprint, with no extras loaded.  And it can even load as quickly as vim
-if you want it to.</p>
-
-<p>Now I am not trying to convert vi users to Emacs, so don&rsquo;t get me wrong.  I just
-wanted to set the record straight about those ignorant vi users who deride Emacs
-out of an ill-deserved sense of superiority.  Now if you prefer vi, then great &ndash;
-use it! I&rsquo;m happy for you!  But don&rsquo;t turn around and try to argue that it is
-somehow intrinsically better than Emacs unless you have some facts and cogent
-arguments to back up your words.</p>
 ]]></content>
     
   </entry>

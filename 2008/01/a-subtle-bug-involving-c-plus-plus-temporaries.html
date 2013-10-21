@@ -1,0 +1,403 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>A subtle bug involving C++ temporaries - Gavin Baker ~ antonym.org</title>
+  <meta name="author" content="Gavin Baker">
+
+  
+  <meta name="description" content="I tracked down a subtle little bug the other day. My code was crashing on a line that should never crash (and we&rsquo;ve all heard that one before &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.antonym.org//2008/01/a-subtle-bug-involving-c-plus-plus-temporaries.html">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Gavin Baker ~ antonym.org" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-6131956-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="collapse-sidebar sidebar-footer" >
+  <header role="banner">
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:www.antonym.org/" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+  
+    
+      <h1 class="entry-title">A Subtle Bug Involving C++ Temporaries</h1>
+    
+  
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2008-01-01T17:26:00+11:00" pubdate data-updated="true">2008-01-01</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>I tracked down a subtle little bug the other day.  My code was crashing on a line that should never crash (and we&rsquo;ve all heard that one before!).  It arose from doing two quite innocuous things, but when combined &ndash; disaster!  I decided to write it up as an example to my 3 readers and Google.</p>
+
+<h2>The Setup</h2>
+
+<p>Say you have a Master-Detail relationship between two classes, whereby the master object has a 1:N relationship with the detail objects, and thus has a collection of them.  Let&rsquo;s say it&rsquo;s a vector of pointers (or even better, <a href="http://www.boost.org/">smart ones</a>!).</p>
+
+<p>And as a convenience, the master class has a method which returns a copy of the list <i>by value</i>.  This is quite a reasonable thing to do, especially since the container holds references to the detail objects, and not actual instances.  So we have something like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="k">class</span> <span class="nc">Detail</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span><span class="o">:</span>
+</span><span class='line'>        <span class="k">typedef</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Detail</span><span class="o">*&gt;</span> <span class="n">List</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">// ...</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="k">class</span> <span class="nc">Master</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="k">public</span><span class="o">:</span>
+</span><span class='line'>    <span class="c1">// ...</span>
+</span><span class='line'>    <span class="n">Detail</span><span class="o">::</span><span class="n">List</span> <span class="n">getAllDetailedObjects</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">_details</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="c1">// ...</span>
+</span><span class='line'>  <span class="k">private</span><span class="o">:</span>
+</span><span class='line'>    <span class="n">Detail</span><span class="o">::</span><span class="n">List</span> <span class="n">_details</span><span class="p">;</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So far, so good&hellip;</p>
+
+<h2>The Bug</h2>
+
+<p>And say some chunk of code wants to do something with all those detail objects, so we might reasonably iterate over the list like so:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="c1">// You probably don&#39;t actually want to do it this way...</span>
+</span><span class='line'><span class="n">Detail</span><span class="o">::</span><span class="n">List</span><span class="o">::</span><span class="n">iterator</span> <span class="n">it</span><span class="p">;</span>
+</span><span class='line'><span class="k">for</span> <span class="p">(</span> <span class="n">it</span> <span class="o">=</span> <span class="n">master</span><span class="p">.</span><span class="n">getAllDetailedObjects</span><span class="p">().</span><span class="n">begin</span><span class="p">();</span>
+</span><span class='line'>      <span class="n">it</span> <span class="o">!=</span> <span class="n">master</span><span class="p">.</span><span class="n">getAllDetailedObjects</span><span class="p">().</span><span class="n">end</span><span class="p">();</span>
+</span><span class='line'>      <span class="o">++</span><span class="n">it</span> <span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">Detail</span><span class="o">*</span> <span class="n">d</span> <span class="o">=</span> <span class="o">*</span><span class="n">it</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">// do something useful with d</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And of course, this code crashes, right around the dereferencing of the iterator.  Spotted the bug yet?  Take your time, I&rsquo;ll wait here&hellip;</p>
+
+<p>Well, it&rsquo;s a pretty basic error when you know what it is, of course.  Each time <code>getAllDetailedObjects()</code> is being called, a temporary copy of the list is being returned.  So assigning the iterator it to the temporary list&rsquo;s <code>begin()</code> works just fine, except that the temporary list is then destroyed while the iterator is still pointing to its first element.  And so you get to the body of the loop, and you&rsquo;ve got a bad pointer because the temporary list has been thrown away!</p>
+
+<h2>The Solution</h2>
+
+<p>The obvious solution is to avoid temporaries and get only one copy of the list, thus:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="c1">// The corrected version...</span>
+</span><span class='line'><span class="n">Detail</span><span class="o">::</span><span class="n">List</span> <span class="n">details</span><span class="p">;</span>
+</span><span class='line'><span class="n">Detail</span><span class="o">::</span><span class="n">List</span><span class="o">::</span><span class="n">iterator</span> <span class="n">it</span><span class="p">;</span>
+</span><span class='line'><span class="k">for</span> <span class="p">(</span> <span class="n">it</span> <span class="o">=</span> <span class="n">details</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
+</span><span class='line'>      <span class="n">it</span> <span class="o">!=</span> <span class="n">details</span><span class="p">.</span><span class="n">end</span><span class="p">();</span>
+</span><span class='line'>      <span class="o">++</span><span class="n">it</span> <span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">Detail</span><span class="o">*</span> <span class="n">d</span> <span class="o">=</span> <span class="o">*</span><span class="n">it</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">// do something with d</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This just goes to show how easy it is to be bitten by side-effects and temporaries in C++.  The compiler provides no help or warning, and there&rsquo;s no proper C++ version of lint that I know of.  This is the sort of thing you just have to pick apart, review all assumptions (&ldquo;the list is valid <b>here</b>!&rdquo;) and beware any time you get a result by value.</p>
+
+<h2>Boost to the rescue! (again)</h2>
+
+<p>The <a href="http://www.boost.org/doc/html/foreach.html">Boost foreach</a> module provides some syntactic sugar to replace all the boilerplate code in iterator loops.</p>
+
+<p>So instead of having to write:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">container_type</span><span class="o">::</span><span class="n">iterator</span> <span class="n">it</span><span class="p">;</span>
+</span><span class='line'><span class="k">for</span> <span class="p">(</span> <span class="n">it</span> <span class="o">=</span> <span class="n">container</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span> <span class="n">it</span> <span class="o">!=</span> <span class="n">container</span><span class="p">.</span><span class="n">end</span><span class="p">();</span> <span class="o">++</span><span class="n">it</span> <span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">inner_type</span> <span class="n">val</span> <span class="o">=</span> <span class="o">*</span><span class="n">it</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">// do something interesting with val</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>you can avoid all the boilerplate code and simply write:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">foreach</span> <span class="p">(</span> <span class="n">inner_type</span> <span class="n">val</span><span class="p">,</span> <span class="n">container</span> <span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// do something interesting with val</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>which is more concise, readable and less typing (or typo-ing!).</p>
+
+<p>And interestingly, it ensures the collection term is evaluated only once, which means it would be safe to iterate over an expression that returns a sequence by value (example from the docs):</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="k">extern</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span> <span class="n">get_vector_float</span><span class="p">();</span>
+</span><span class='line'><span class="n">foreach</span><span class="p">(</span> <span class="kt">float</span> <span class="n">f</span><span class="p">,</span> <span class="n">get_vector_float</span><span class="p">()</span> <span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">// safe: the collection will only be retrieved once</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So using the Boost foreach module would have actually avoided the above bug.  Though it wouldn&rsquo;t be nearly as satisfying, as I wouldn&rsquo;t have been able to blog about it.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Gavin Baker</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2008-01-01T17:26:00+11:00" pubdate data-updated="true">2008-01-01</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.antonym.org//2008/01/a-subtle-bug-involving-c-plus-plus-temporaries.html" data-via="gavinb" data-counturl="http://www.antonym.org//2008/01/a-subtle-bug-involving-c-plus-plus-temporaries.html" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/2007/01/the-happy-coders-toolkit-part-ii-profiling-and-r.html" title="Previous Post: The Happy Coder's Toolkit Part II: Profiling and R">&laquo; The Happy Coder's Toolkit Part II: Profiling and R</a>
+      
+      
+        <a class="basic-alignment right" href="/2008/01/stl-warts-when-removing-isnt.html" title="Next Post: STL warts - when removing isn't">STL warts - when removing isn't &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/2013/10/bug-of-the-year-2011.html">Bug of the Year - 2011</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2013/10/what-is-rust.html">What is Rust?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/03/good-code-gardening.html">Good Code Gardening</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2010/04/25-tips-for-intermediate-mercurial-users.html">25 Tips for Intermediate Mercurial Users</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2010/01/threading-with-boost---part-ii-threading-challenges.html">Threading with Boost - Part II: Threading Challenges</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Gavin Baker <br/>
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>, customized with <a href="https://github.com/mjhea0/whiterspace">whiterspace</a>.</span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'antonym';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://www.antonym.org//2008/01/a-subtle-bug-involving-c-plus-plus-temporaries.html';
+        var disqus_url = 'http://www.antonym.org//2008/01/a-subtle-bug-involving-c-plus-plus-temporaries.html';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

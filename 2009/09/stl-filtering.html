@@ -1,0 +1,394 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>STL: filtering - Gavin Baker ~ antonym.org</title>
+  <meta name="author" content="Gavin Baker">
+
+  
+  <meta name="description" content="The STL makes it easy to create lists, iterate over lists, and apply a function to each member of a list. So how do you filter a vector according to &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.antonym.org//2009/09/stl-filtering.html">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Gavin Baker ~ antonym.org" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-6131956-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="collapse-sidebar sidebar-footer" >
+  <header role="banner">
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:www.antonym.org/" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+  
+    
+      <h1 class="entry-title">STL: Filtering</h1>
+    
+  
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2009-09-16T11:51:00+10:00" pubdate data-updated="true">2009-09-16</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>The STL makes it easy to create lists, iterate over lists, and apply a function to each member of a list.  So how do you filter a vector according to some criteria?  It&rsquo;s not hard, but the obvious solution isn&rsquo;t <em>quite</em> enough.  Here&rsquo;s how.</p>
+
+<!--more-->
+
+
+<p>Say you have a vector of values, and you want to apply a filter to the list.  That is,  remove elements that satisfy some criteria.  It&rsquo;s quite a common requirement, so you&rsquo;d think there would be an obvious and simple way to do it.  If you go searching for the word &ldquo;filter&rdquo; in the STL documentation, you may not find much relevant in the <code>std::vector</code> method reference.  If you browse around in STL algorithms, eventually you&rsquo;ll come across a method called <code>remove_if</code>.  It takes two iterators to specify the range (first and last) of the operation, and a predicate function.  Sounds perfect!</p>
+
+<p>Let&rsquo;s use it to filter a list of numbers, removing even numbers.  Given the following input:</p>
+
+<pre><code>1 2 3 4 5 6 7 8 9
+</code></pre>
+
+<p>we expect to see the result:</p>
+
+<pre><code>1 3 5 7 9
+</code></pre>
+
+<p>A predicate function is essentially a test for a property, and returns whether or not the parameter has this property.  So our predicate function will take an integer value (matching the element type of our vector) and return a boolean, denoting whether or not to remove the given element.  So we&rsquo;d have:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="kt">bool</span> <span class="n">is_even</span><span class="p">(</span><span class="kt">int</span> <span class="n">N</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">N</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Easy!  Now, to store our numbers, we would start with a simple vector of integers, thus:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="k">typedef</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">vector_t</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">vector_t</span>    <span class="n">numbers</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We read in the numbers in a loop and save them in the array:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="k">while</span> <span class="p">(</span><span class="kc">true</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">n</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">std</span><span class="o">::</span><span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">n</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">std</span><span class="o">::</span><span class="n">cin</span><span class="p">.</span><span class="n">good</span><span class="p">())</span>
+</span><span class='line'>        <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">numbers</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This will take care of reading in the data, as it will stop as soon as it reads something that isn&rsquo;t an integer, or reaches the end of file.  Now we just apply the filter, and then print the result:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">remove_if</span><span class="p">(</span><span class="n">numbers</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">numbers</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span> <span class="n">is_even</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">vector_t</span><span class="o">::</span><span class="n">iterator</span> <span class="n">it</span><span class="p">;</span>
+</span><span class='line'><span class="k">for</span> <span class="p">(</span><span class="n">it</span> <span class="o">=</span> <span class="n">numbers</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span> <span class="n">it</span> <span class="o">!=</span> <span class="n">numbers</span><span class="p">.</span><span class="n">end</span><span class="p">();</span> <span class="o">++</span><span class="n">it</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="o">*</span><span class="n">it</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>There, we&rsquo;re done!  Now, we just run the completed program, and give it some test data:</p>
+
+<pre><code>$ ./filter 
+1 2 3 4 5 6 7 8 9 -
+</code></pre>
+
+<p>But wait, the output we see is wrong!</p>
+
+<pre><code>1
+3
+5
+7
+9
+6
+7
+8
+9
+</code></pre>
+
+<p>Oh, no!  There must be a bug in the libraries!  Curses, foiled again!</p>
+
+<p>Actually, no &ndash; the sky isn&rsquo;t falling, and there is no bug.  Now is when we probably should be doing a bit of RTFMing.  Let&rsquo;s check the docs and see what&rsquo;s going on.  According to the <a href="http://gcc.gnu.org/onlinedocs/libstdc++/latest-doxygen/">g++ library documentation</a>:</p>
+
+<blockquote><p>&ldquo;Elements between the end of the resulting sequence and &lsquo;last&rsquo; are still present, but their value is unspecified.&rdquo;</p></blockquote>
+
+<p>Er, ok&hellip; that&rsquo;s handy &ndash; not.  Looking back at the output, we do notice that the first 5 values are correct, but there&rsquo;s some junk after them.  And sure enough, that&rsquo;s the documented behaviour &ndash; we are just seeing the &ldquo;unspecified&rdquo; values left behind.</p>
+
+<p>It is worth pointing out right about now that the fine folk who designed the STL were fairly obsessed with efficiency, and the STL is designed to be low-level, powerful and fast, sometimes at the expense of user friendliness.  It is more efficient to implement filtering as a generic algorithm that can be applied to any container.  And sure enough, that is the intent, as we see in the docs:</p>
+
+<blockquote><p>&ldquo;@return   An iterator designating the end of the resulting sequence.&rdquo;</p></blockquote>
+
+<p>Ah, we were actually supposed to do something with the return value!  The implementation of <code>remove_if</code> moves (or actually copies) the values to be kept to the head of the list, and returns an iterator pointing to the start of the &ldquo;junk&rdquo; (just after the filtered list), in preparation for this tail to be snipped off.  So, let&rsquo;s use the <code>erase</code> method to do just that:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">numbers</span><span class="p">.</span><span class="n">erase</span><span class="p">(</span><span class="n">remove_if</span><span class="p">(</span><span class="n">numbers</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">numbers</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span> <span class="n">is_even</span><span class="p">),</span> <span class="n">numbers</span><span class="p">.</span><span class="n">end</span><span class="p">());</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now, running the test application again, we get the output:</p>
+
+<pre><code>1
+3
+5
+7
+9
+</code></pre>
+
+<p>Huzzah!  It is really a matter of getting a feel for the design patterns behind the STL, and the very low-level API that it provides.</p>
+
+<p>This process can be visualised thus:</p>
+
+<p><span class="mt-enclosure mt-enclosure-image" style="display: inline;"><img alt="STL Filtering Example" src="http://antonym.org/images/STLFilteringExample.png" width="532" height="670" class="mt-image-none" style="" /></span></p>
+
+<p>It is also worth mentioning at this point that if you are doing a lot of adding and removing of  elements, a <code>std::list</code> is probably a better choice, as inserting and deleting elements in vectors is very expensive.</p>
+
+<p>Now, you&rsquo;re probably wondering why <code>remove_if</code> is a function in the STL <code>algorithms</code> collection, rather than a method in <code>std::vector</code> itself.  Well, the folks who designed the STL are very, very clever.  The obvious thing would be to put a <code>remove_if</code> method in every single container class.  But the implementation would be <em>almost</em> the same, right?  Well, they reasoned, what if all container classes provided a common, minimal interface, we could implement <code>remove_if</code> just once, and it could apply to almost any container!  It&rsquo;s even more generic that way.  So there are a whole series of algorithms that apply to a wide variety of different containers, and use informal interfaces to decouple things.</p>
+
+<p>The (platform-neutral) sample code is available below&hellip;</p>
+
+<ul>
+<li>Sample C++ code: <span class="mt-enclosure mt-enclosure-file" style="display: inline;"><a href="http://antonym.org/files/stl_filter.zip">stl_filter.zip</a></span> (4.5kB zip)</li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Gavin Baker</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2009-09-16T11:51:00+10:00" pubdate data-updated="true">2009-09-16</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.antonym.org//2009/09/stl-filtering.html" data-via="gavinb" data-counturl="http://www.antonym.org//2009/09/stl-filtering.html" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/2009/05/threading-with-boost---part-i-creating-threads.html" title="Previous Post: Threading with Boost - Part I: Creating Threads">&laquo; Threading with Boost - Part I: Creating Threads</a>
+      
+      
+        <a class="basic-alignment right" href="/2010/01/threading-with-boost---part-ii-threading-challenges.html" title="Next Post: Threading with Boost - Part II: Threading Challenges">Threading with Boost - Part II: Threading Challenges &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/2013/10/bug-of-the-year-2011.html">Bug of the Year - 2011</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2013/10/what-is-rust.html">What is Rust?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/03/good-code-gardening.html">Good Code Gardening</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2010/04/25-tips-for-intermediate-mercurial-users.html">25 Tips for Intermediate Mercurial Users</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2010/01/threading-with-boost---part-ii-threading-challenges.html">Threading with Boost - Part II: Threading Challenges</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Gavin Baker <br/>
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>, customized with <a href="https://github.com/mjhea0/whiterspace">whiterspace</a>.</span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'antonym';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://www.antonym.org//2009/09/stl-filtering.html';
+        var disqus_url = 'http://www.antonym.org//2009/09/stl-filtering.html';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

@@ -1,91 +1,131 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
-        <loc>http://www.antonym.org//blog/2002/01/12/emacs-myths/</loc>
+        <loc>http://www.antonym.org//2002/01/emacs-myths.html</loc>
         <lastmod>2013-10-11T09:06:22+11:00</lastmod>
     </url>
     <url>
-        <loc>http://www.antonym.org//blog/2003/09/13/c-plus-plus-stl-extras-random-sample-n/</loc>
+        <loc>http://www.antonym.org//2003/09/c-plus-plus-stl-extras-random-sample-n.html</loc>
         <lastmod>2013-10-16T17:55:20+11:00</lastmod>
     </url>
     <url>
-        <loc>http://www.antonym.org//blog/2003/10/08/verisign-vs-the-rest-of-the-world/</loc>
+        <loc>http://www.antonym.org//2003/10/verisign-vs-the-rest-of-the-world.html</loc>
         <lastmod>2013-10-16T18:06:10+11:00</lastmod>
     </url>
     <url>
-        <loc>http://www.antonym.org//blog/2004/12/13/how-not-to-give-a-talk/</loc>
+        <loc>http://www.antonym.org//2004/12/how-not-to-give-a-talk.html</loc>
         <lastmod>2013-10-17T08:53:53+11:00</lastmod>
     </url>
     <url>
-        <loc>http://www.antonym.org//blog/2005/02/16/pyrex-and-sharing-extension-modules/</loc>
+        <loc>http://www.antonym.org//2005/02/pyrex-and-sharing-extension-modules.html</loc>
         <lastmod>2013-10-17T09:04:19+11:00</lastmod>
     </url>
     <url>
-        <loc>http://www.antonym.org//blog/2005/03/15/a-real-python-logging-example/</loc>
+        <loc>http://www.antonym.org//2005/03/a-real-python-logging-example.html</loc>
         <lastmod>2013-10-17T18:09:12+11:00</lastmod>
     </url>
     <url>
-        <loc>http://www.antonym.org//blog/2005/04/13/optimize-this-dot-dot-dot/</loc>
+        <loc>http://www.antonym.org//2005/04/optimize-this-dot-dot-dot.html</loc>
         <lastmod>2013-10-18T08:12:04+11:00</lastmod>
     </url>
     <url>
-        <loc>http://www.antonym.org//blog/2005/04/21/bug-of-the-year/</loc>
+        <loc>http://www.antonym.org//2005/04/bug-of-the-year.html</loc>
         <lastmod>2013-10-17T18:22:56+11:00</lastmod>
     </url>
     <url>
-        <loc>http://www.antonym.org//blog/2005/05/31/who-really-cares-about-usability/</loc>
+        <loc>http://www.antonym.org//2005/05/who-really-cares-about-usability.html</loc>
         <lastmod>2013-10-18T08:28:02+11:00</lastmod>
     </url>
     <url>
-        <loc>http://www.antonym.org//blog/2005/12/19/unexpected-side-effect/</loc>
+        <loc>http://www.antonym.org//2005/12/dropping-privileges-in-python.html</loc>
+        <lastmod>2013-10-18T18:38:55+11:00</lastmod>
+    </url>
+    <url>
+        <loc>http://www.antonym.org//2005/12/unexpected-side-effect.html</loc>
         <lastmod>2013-10-18T08:35:22+11:00</lastmod>
     </url>
     <url>
-        <loc>http://www.antonym.org//blog/2008/05/18/tiger-isnt-really-for-the-users/</loc>
-        <lastmod>2013-10-17T18:17:46+11:00</lastmod>
+        <loc>http://www.antonym.org//2006/02/surface-plots-of-image-data-in-gnu-r.html</loc>
+        <lastmod>2013-10-18T18:58:13+11:00</lastmod>
+    </url>
+    <url>
+        <loc>http://www.antonym.org//2006/04/what-went-wrong.html</loc>
+        <lastmod>2013-10-18T18:53:35+11:00</lastmod>
+    </url>
+    <url>
+        <loc>http://www.antonym.org//2006/07/autoantonyms.html</loc>
+        <lastmod>2013-10-21T08:57:36+11:00</lastmod>
+    </url>
+    <url>
+        <loc>http://www.antonym.org//2007/01/the-happy-coders-toolkit-part-i-mtrace.html</loc>
+        <lastmod>2013-10-21T09:06:29+11:00</lastmod>
     </url>
     <url>
         <loc>
-            http://www.antonym.org//blog/2008/11/22/improve-your-c-plus-plus-const-correctness/
+            http://www.antonym.org//2007/01/the-happy-coders-toolkit-part-ii-profiling-and-r.html
         </loc>
+        <lastmod>2013-10-18T23:39:24+11:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://www.antonym.org//2008/01/a-subtle-bug-involving-c-plus-plus-temporaries.html
+        </loc>
+        <lastmod>2013-10-21T14:00:18+11:00</lastmod>
+    </url>
+    <url>
+        <loc>http://www.antonym.org//2008/01/stl-warts-when-removing-isnt.html</loc>
+        <lastmod>2013-10-21T11:04:20+11:00</lastmod>
+    </url>
+    <url>
+        <loc>http://www.antonym.org//2008/02/debugging-nsbezierpath-drawing.html</loc>
+        <lastmod>2013-10-21T09:12:58+11:00</lastmod>
+    </url>
+    <url>
+        <loc>http://www.antonym.org//2008/05/tiger-isnt-really-for-the-users.html</loc>
+        <lastmod>2013-10-17T18:17:46+11:00</lastmod>
+    </url>
+    <url>
+        <loc>http://www.antonym.org//2008/05/stl-iterators-and-performance.html</loc>
+        <lastmod>2013-10-21T09:04:10+11:00</lastmod>
+    </url>
+    <url>
+        <loc>http://www.antonym.org//2008/11/improve-your-c-plus-plus-const-correctness.html</loc>
         <lastmod>2013-10-17T17:50:30+11:00</lastmod>
     </url>
     <url>
-        <loc>http://www.antonym.org//blog/2009/04/30/the-first-user/</loc>
+        <loc>http://www.antonym.org//2009/04/the-first-user.html</loc>
         <lastmod>2013-10-17T09:09:53+11:00</lastmod>
     </url>
     <url>
         <loc>
-            http://www.antonym.org//blog/2009/09/13/threading-with-boost-part-i-creating-threads/
+            http://www.antonym.org//2009/05/threading-with-boost---part-i-creating-threads.html
         </loc>
-        <lastmod>2013-10-16T09:00:04+11:00</lastmod>
+        <lastmod>2013-10-21T18:33:17+11:00</lastmod>
     </url>
     <url>
-        <loc>http://www.antonym.org//blog/2009/09/16/stl-filtering/</loc>
+        <loc>http://www.antonym.org//2009/09/stl-filtering.html</loc>
         <lastmod>2013-10-17T08:56:12+11:00</lastmod>
     </url>
     <url>
         <loc>
-            http://www.antonym.org//blog/2010/01/01/threading-with-boost-part-ii-threading-challenges/
+            http://www.antonym.org//2010/01/threading-with-boost---part-ii-threading-challenges.html
         </loc>
         <lastmod>2013-10-16T08:37:42+11:00</lastmod>
     </url>
     <url>
-        <loc>
-            http://www.antonym.org//blog/2010/04/07/25-tips-for-intermediate-mercurial-users/
-        </loc>
+        <loc>http://www.antonym.org//2010/04/25-tips-for-intermediate-mercurial-users.html</loc>
         <lastmod>2013-10-15T20:05:08+11:00</lastmod>
     </url>
     <url>
-        <loc>http://www.antonym.org//blog/2011/03/09/good-code-gardening/</loc>
+        <loc>http://www.antonym.org//2011/03/good-code-gardening.html</loc>
         <lastmod>2013-10-15T19:58:24+11:00</lastmod>
     </url>
     <url>
-        <loc>http://www.antonym.org//blog/2013/10/08/what-is-rust/</loc>
+        <loc>http://www.antonym.org//2013/10/what-is-rust.html</loc>
         <lastmod>2013-10-17T08:55:48+11:00</lastmod>
     </url>
     <url>
-        <loc>http://www.antonym.org//blog/2013/10/17/bug-of-the-year-2011/</loc>
+        <loc>http://www.antonym.org//2013/10/bug-of-the-year-2011.html</loc>
         <lastmod>2013-10-17T18:24:07+11:00</lastmod>
     </url>
     <url>
@@ -94,11 +134,11 @@
     </url>
     <url>
         <loc>http://www.antonym.org//blog/archives/</loc>
-        <lastmod>2013-10-18T08:35:22+11:00</lastmod>
+        <lastmod>2013-10-21T18:33:17+11:00</lastmod>
     </url>
     <url>
         <loc>http://www.antonym.org//</loc>
-        <lastmod>2013-10-18T08:35:22+11:00</lastmod>
+        <lastmod>2013-10-21T18:33:17+11:00</lastmod>
     </url>
     <url>
         <loc>http://www.antonym.org//libfg/</loc>
