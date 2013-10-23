@@ -1,0 +1,300 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Gloves off: Mercurial vs Subversion - Gavin Baker ~ antonym.org</title>
+  <meta name="author" content="Gavin Baker">
+
+  
+  <meta name="description" content="I use Subversion on a daily basis, and Mercurial a few days a week. I have noticed that Mercurial seems to be faster with a lot of common operations &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://antonym.org//2007/12/gloves-off-mercurial-vs-subversion.html">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Gavin Baker ~ antonym.org" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-6131956-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="collapse-sidebar sidebar-footer" >
+  <header role="banner">
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:antonym.org/" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+  
+    
+      <h1 class="entry-title">Gloves Off: Mercurial vs Subversion</h1>
+    
+  
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2007-12-04T23:53:00+11:00" pubdate data-updated="true">2007-12-04</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>I use <a href="http://subversion.tigris.org/">Subversion</a> on a daily basis, and <a href="http://www.selenic.com/mercurial/">Mercurial</a> a few days a week.  I have noticed that Mercurial <em>seems</em> to be faster with a lot of common operations, but I figured it wasn&rsquo;t a fair comparison as Mercurial was always operating locally, while Subversion has to hit the network for many (but certainly not all) operations.</p>
+
+<p>So I decided to do some very rough performance comparisons on a local repository.  And after some quick timings of common operations, this is what I found&hellip;</p>
+
+<!--more-->
+
+
+<p>(Updated: fixed table and added graph.)</p>
+
+<h2>Method</h2>
+
+<p>This is a very rough, and thus not very rigourous evaluation.  I performed all tests on a PowerBook G4 1GHz running Mac OS X 10.5 under the same operating conditions (ie. on the train home from work).  The versions used:</p>
+
+<ul>
+<li>Subversion 1.4.4</li>
+<li>Mercurial 0.9.5 with Python 2.5</li>
+</ul>
+
+
+<p>I created both repositories locally (under <code>/tmp</code>) and performed the equivalent operations with both VC systems.  The source tree used was a recent version of the Django source tree, which is fairly large (2263 files, 568 dirs, 18Mb).  For the <code>svn import</code> equivalent, I did an <code>hg commit -A</code> of the source tree.  For the <code>svn checkout</code> equivalent, I did an <code>hg clone</code> of the tree.  For the non-mutating operations (eg. <code>status</code>) I ran the same command 5 times and picked the best.</p>
+
+<p>I tried to be as fair as possible, but not take days to actually come up with some figures.  So without further ado&hellip;</p>
+
+<h2>Results</h2>
+
+<p>All times as reported by the <code>bash time</code> command, taking the real time value (ie. elapsed system time):</p>
+
+<table>
+<tr><th>Operation</th><th>Mercurial</th><th>Subversion</th><th>Speedup</th></tr>
+<tr><td>Create Repository</td><td>0.346s</td><td>0.279s</td><td>svn 1.2X</td></tr>
+<tr><td>Import source tree</td><td>12.241s</td><td>1m3.781s</td><td>hg 5.2X</td></tr>
+<tr><td>Checkout</td><td>19.808s</td><td>1m1.356s</td><td>hg 3.1X</td></tr>
+<tr><td>Status (1 mod)</td><td>0.631s</td><td>0.265s</td><td>svn 2.4X</td></tr>
+<tr><td>Diff (1 mod)</td><td>0.778s</td><td>0.212s</td><td>svn 3.7X</td></tr>
+<tr><td>Diff (2 mods)</td><td>0.784s</td><td>0.331s</td><td>svn 2.4X</td></tr>
+<tr><td>Commit (2 mods)</td><td>1.164s</td><td>3.442s</td><td>hg 3.0X</td></tr>
+<tr><td>Add file</td><td>0.544s</td><td>0.121s</td><td>svn 4.5X</td></tr>
+<tr><td>Commit</td><td>0.922s</td><td>2.920s</td><td>hg 3.2X</td></tr>
+<tr><td>Total</td><td>37.218s</td><td>132.707s</td><td>hg 3.6X</td></tr>
+</table>
+
+
+
+
+<div class="thumbnail"><a href="http://skitch.com/gavinb/rpts/mercurialsubversionperformance"><img src="http://img.skitch.com/20080107-nxs9pdi91q8ie9d7d6qrhswmkb.preview.jpg" alt="MercurialSubversionPerformance" /></a><br /></div>
+
+
+<h2>Conclusions</h2>
+
+<p>A simple count of which is faster for each operation shows both scored 5/10, so in that sense they are evenly matched.  But in the cases where Subversion was faster, the times were still well under 1sec, so the difference is far less noticeable.  It is clear from the above that for many expensive operations, Mercurial is significantly faster than Subversion, even for large I/O operations such as commits and importing.  Given Mercurial is written in Python (apart from one small module IIRC), and Subversion is compiled C, this is all the more impressive.  Looking at the overall total times for the test workload, Mercurial comes out at 3.6 times faster than Subversion.  If you are spending a lot of time with your VC system, this can make a huge difference to your workday productivity.</p>
+
+<p>Clearly the build-in diff engine in Subversion gives it a major advantage in diffs, a very important and common operation. Mercurial is still competitive, and in real-world tests seem to scale well.  Having tested it at work with an even larger source tree (the Boost++ library), Mercurial actually seemed to be faster than Subversion for status operations in particular (around a second versus several seconds).</p>
+
+<p>It should be noted that since running Subversion from a local repository like this is the exception rather than the norm for most projects, the performance advantage it has thanks to its fast diff engine evaporates against network latency.  Thus using a distributed VCS such as Mercurial can be a great productivity boost, as you only pay for the network when you need to branch or merge between developers, a far less common operation.</p>
+
+<p>This comparison has reinforced my positive impressions of Mercurial, and I hope it serves to bolster peoples&#8217; confidence in its ability to scale and perform.  It has all the features of Subversion, plus many more groovy features like patch queues (which I may blog about one day).  Since Mercurial is less well known, I hope more people will <a href="http://www.selenic.com/mercurial/">give Mercurial a try</a>.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Gavin Baker</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2007-12-04T23:53:00+11:00" pubdate data-updated="true">2007-12-04</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://antonym.org//2007/12/gloves-off-mercurial-vs-subversion.html" data-via="gavinb" data-counturl="http://antonym.org//2007/12/gloves-off-mercurial-vs-subversion.html" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/2007/09/nsopenglview-and-text.html" title="Previous Post: NSOpenGLView and text">&laquo; NSOpenGLView and text</a>
+      
+      
+        <a class="basic-alignment right" href="/2008/01/a-subtle-bug-involving-c-plus-plus-temporaries.html" title="Next Post: A subtle bug involving C++ temporaries">A subtle bug involving C++ temporaries &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/2013/10/bug-of-the-year-2011.html">Bug of the Year - 2011</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2013/10/what-is-rust.html">What is Rust?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/03/good-code-gardening.html">Good Code Gardening</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2010/04/25-tips-for-intermediate-mercurial-users.html">25 Tips for Intermediate Mercurial Users</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2010/01/threading-with-boost---part-ii-threading-challenges.html">Threading with Boost - Part II: Threading Challenges</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Gavin Baker <br/>
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>, customized with <a href="https://github.com/mjhea0/whiterspace">whiterspace</a>.</span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'antonym';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://antonym.org//2007/12/gloves-off-mercurial-vs-subversion.html';
+        var disqus_url = 'http://antonym.org//2007/12/gloves-off-mercurial-vs-subversion.html';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

@@ -9,7 +9,7 @@
   <meta name="author" content="Gavin Baker">
 
   
-  <meta name="description" content="When writing a small Python web application using the lightweight CherryPy framework, I needed the server to run on port 80. Of course running a &hellip;">
+  <meta name="description" content="I needed to plot the intensity profile of some test images for my thesis. It&rsquo;s really useful to be able to visualise 2D grayscale image data by &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://www.antonym.org//blog/page/3/index.html">
+  <link rel="canonical" href="http://antonym.org//blog/page/3/index.html">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Gavin Baker ~ antonym.org" type="application/atom+xml">
@@ -57,7 +57,7 @@
   
 <form action="http://google.com/search" method="get">
   <fieldset role="search">
-    <input type="hidden" name="q" value="site:www.antonym.org/" />
+    <input type="hidden" name="q" value="site:antonym.org/" />
     <input class="search" type="text" name="q" results="0" placeholder="Search"/>
   </fieldset>
 </form>
@@ -73,6 +73,129 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+  
+    
+      <h1 class="entry-title"><a href="/2006/02/surface-plots-of-image-data-in-gnu-r.html">Surface Plots of Image Data in GNU R</a></h1>
+      
+      
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2006-02-07T13:48:00+11:00" pubdate data-updated="true">2006-02-07</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I needed to plot the intensity profile of some test images for my thesis.  It&rsquo;s really useful to be able to visualise 2D grayscale image data by treating the intensity as a height-field and displaying it in 3D.  There&rsquo;s a variety of ways to do this, but I wanted something that would produce good printed results, so EPS was the best output option.</p>
+
+<p>So here&rsquo;s a recipe for using <a href="http://www.r-project.org/">GNU R</a> to produce such a plot.</p>
+
+<p>First, generate your image data and crop it appropriately.  For example, I used <a href="http://www.itk.org/">ITK</a> to generate a Gaussian field.</p>
+
+<p>Then convert it to the <code>pgm</code> file format.  The most excellent <a href="http://www.imagemagick.org/">ImageMagick</a> tools make this a snap (note the &lsquo;%&rsquo; is the shell prompt):</p>
+
+<pre><code>% convert -compress none inputfile.tif inputfile.pgm
+</code></pre>
+
+<p>The <code>compress</code> option ensures the PGM file is written in ASCII format, for easy reading in.</p>
+
+<p>Then, fire up R and do the following (note the &lsquo;>&rsquo; character is the default R prompt):</p>
+
+<pre><code>&gt; sz &lt;- scan("gaussian.pgm", what=integer(0), skip=1, comment.char="#", nmax=2)
+Read 2 items
+&gt; g &lt;- scan("gaussian.pgm", what=integer(0), skip=3, comment.char="#")
+Read 65536 items
+&gt; gi &lt;- matrix(g, sz[1], sz[2])
+&gt; rm(g)
+</code></pre>
+
+<p>The first line reads the image size from the PGM header into the variable <tt>sz</tt>, the second reads in the actual data as an array.  The third line creates a matrix from the data, with the appropriate size.  The last line removes the temporary array data.</p>
+
+<p>Now you have a matrix object with your image data in it, you can do all sorts of groovy things.  Such as:</p>
+
+<pre><code>&gt; image(gi)
+&gt; contour(gi, add=TRUE)
+</code></pre>
+
+<p>[img_assist|fid=13|thumb=1|alt=Gaussian 2D Image Contour plot]</p>
+
+<p>will display it as an image, with a scalar mapping function (which you can customize), along with contour lines showing the isolevels.  But more interesting is this:</p>
+
+<pre><code>&gt; persp(gi, theta=25, phi=30)
+</code></pre>
+
+<p>This will produce a 3D contour plot in perspective (the theta and phi parameters rotate the viewing angle).</p>
+
+<p>[img_assist|fid=16|thumb=1|alt=Gaussian 2D Image Perspective plot]</p>
+
+<p>You can also do other handy stuff, like pick out a scanline and do a 2D intensity plot (or a series).</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+  
+    
+      <h1 class="entry-title"><a href="/2005/12/unexpected-side-effect.html">Unexpected Side-effect</a></h1>
+      
+      
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2005-12-19T18:54:00+11:00" pubdate data-updated="true">2005-12-19</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I discovered a strange bug in my Python code recently.  It took me a few minutes worth of digging to uncover something somewhat surprising, a side-effect to do with default parameters that is not obvious at first blush.</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/2005/12/unexpected-side-effect.html">Read more &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -701,7 +824,7 @@ Thanks for clearing up this mistery! I encountered a small typo in the config fi
 the handlers value should be syslog instead of root.</p>
 
 <p>Joost van Lawick
-<a href="&#109;&#97;&#x69;&#x6c;&#116;&#x6f;&#58;&#x6a;&#x6f;&#x6f;&#x73;&#116;&#64;&#x6c;&#97;&#x77;&#x69;&#x63;&#107;&#46;&#x6e;&#x6c;">&#106;&#111;&#111;&#x73;&#116;&#64;&#x6c;&#x61;&#x77;&#x69;&#99;&#107;&#46;&#110;&#108;</a></p>
+<a href="&#x6d;&#x61;&#x69;&#x6c;&#x74;&#x6f;&#x3a;&#x6a;&#111;&#111;&#x73;&#116;&#64;&#x6c;&#97;&#119;&#x69;&#99;&#x6b;&#x2e;&#x6e;&#108;">&#106;&#x6f;&#111;&#115;&#116;&#x40;&#x6c;&#x61;&#119;&#105;&#99;&#x6b;&#x2e;&#x6e;&#108;</a></p>
 
 <p>AUTHOR: Chris Lambacher
 DATE: 03/17/2006 09:07:37 AM
@@ -875,137 +998,9 @@ invoke C functions from Python code.</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-  
-    
-      <h1 class="entry-title"><a href="/2003/09/c-plus-plus-stl-extras-random-sample-n.html">C++ STL Extras - Random_sample_n</a></h1>
-      
-      
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2003-09-13T22:20:00+10:00" pubdate data-updated="true">2003-09-13</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Working on some code for my research tonight, I wasted a lot of time looking for some information on a particlar STL function.  Since I couldn&rsquo;t find the answers elsewhere, I am posting a quick explanation/solution here, to hopefully save someone else the trouble.</p>
-
-<p>I am writing a C++ application, and use the STL in various places. I have been consulting the <a href="http://www.sgi.com/tech/stl/">SGI Standard Template Library Programmer&rsquo;s Guide</a>.  It is quite poorly named; it is really a reference, with not much guidance at all.  And unfortunately I have yet to find a decent book on the STL (I have one but it sucks).</p>
-
-<p>(Note that the below applies to the <code>g++</code> compiler version 3.3; I don&rsquo;t know about other compilers or libraries.)</p>
-
-<p>Anyway, I found just the function I was after: <code>random_sample_n</code>.  So I added the include for algorithm, and couldn&rsquo;t get the sucker to compile.  It turns out that since it is an <em>extension</em> to the STL, it is located in the <code>ext/algorithm</code> header, and under the namespace <code>__gnu_cxx::</code> instead of <code>std::</code>.  This stuff I found the hard way, slugging through header files.</p>
-
-<p>Another thing: I didn&rsquo;t find any decent examples (the one in the SGI docs is trivial) so here is some real code:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="cp">#include &lt;ext/algorithm&gt;</span>
-</span><span class='line'><span class="c1">//...</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">vector</span><span class="o">&lt;</span><span class="n">fve</span><span class="o">&gt;</span> <span class="n">cxp</span><span class="p">(</span><span class="n">n_samples</span><span class="p">);</span>
-</span><span class='line'>    <span class="c1">// fill up cxp with useful stuff</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">const</span> <span class="kt">unsigned</span>          <span class="n">N</span> <span class="o">=</span> <span class="mi">20</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">vectorf</span><span class="o">&gt;</span>    <span class="n">rs_model</span><span class="p">(</span><span class="n">N</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// Take N random models</span>
-</span><span class='line'>    <span class="n">__gnu_cxx</span><span class="o">::</span><span class="n">random_sample_n</span><span class="p">(</span> <span class="n">cxp</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">cxp</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span> <span class="n">rs_model</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">N</span> <span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// Now process rs_model ...</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>2013 Update</h2>
-
-<p>Nowdays, there is the most excellent <a href="http://www.cppreference.com/">http://www.cppreference.com/</a> which has a comprehensive reference for all the STL and standard C++ library classes, methods and functions.</p>
-
-<p>And the new C++11 standard features e whole module for generating random numbers.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-  
-    
-      <h1 class="entry-title"><a href="/2002/01/emacs-myths.html">Emacs Myths</a></h1>
-      
-      
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2002-01-12T02:46:00+11:00" pubdate data-updated="true">2002-01-12</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>A recent <a href="http://www.newsforge.com/">article</a> on NewsForge brought up
-one of the oldest rwars on the planet (almost as old as the operating system
-rwars), asking which editor is best: vi or Emacs?  I was inspired to write my
-own thoughts, findings and opinions after reading this article.  Especially
-since most of the arguments I read were trolls sprouting opinions and
-regurgitating fallacies, rather than any informed sort of debate.  So here I am,
-with my own 2 cents.</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/2002/01/emacs-myths.html">Read more &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
+    
+      <a class="prev" href="/blog/page/4/">&larr; Older</a>
     
     <a href="/blog/archives">Blog Archives</a>
     

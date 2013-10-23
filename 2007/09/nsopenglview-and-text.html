@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Debugging NSBezierPath drawing - Gavin Baker ~ antonym.org</title>
+  <title>NSOpenGLView and text - Gavin Baker ~ antonym.org</title>
   <meta name="author" content="Gavin Baker">
 
   
-  <meta name="description" content="I was working on some Cocoa programming, making heavy use of NSBezierPath. I wished there was an easy way to see just where my control points were &hellip;">
+  <meta name="description" content="The Cocoa view class NSOpenGLView, which automates all the initialisation required to provide an OpenGL context for drawing, is very useful indeed. &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://antonym.org//2008/02/debugging-nsbezierpath-drawing.html">
+  <link rel="canonical" href="http://antonym.org//2007/09/nsopenglview-and-text.html">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Gavin Baker ~ antonym.org" type="application/atom+xml">
@@ -77,7 +77,7 @@
   <header>
   
     
-      <h1 class="entry-title">Debugging NSBezierPath Drawing</h1>
+      <h1 class="entry-title">NSOpenGLView and Text</h1>
     
   
     
@@ -94,39 +94,23 @@
   
 
 
-<time datetime="2008-02-19T21:38:00+11:00" pubdate data-updated="true">2008-02-19</time>
+<time datetime="2007-09-28T10:28:00+10:00" pubdate data-updated="true">2007-09-28</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>I was working on some Cocoa programming, making heavy use of <code>NSBezierPath</code>.  I wished there was an easy way to see just where my control points were ending up, and how the curves were being constructed.  So I wrote a category method to add such a thing to the NSBezierPath class.  It is here for all to share.</p>
+<div class="entry-content"><p>The Cocoa view class <code>NSOpenGLView</code>, which automates all the initialisation required to provide an OpenGL context for drawing, is very useful indeed.  It would also seem that <code>aglUseFont</code> is a nice simple way to load up a font to draw some text in your view.  So long as it isn&rsquo;t the aforementioned <code>NSOpenGLView</code>, that is.</p>
 
-<!--break-->
-
-
-<p>Here&rsquo;s an example of annotating a curve:</p>
-
-<p><img src="http://img.skitch.com/20080219-cp95n9wjm391ptfarkja1hg7xf.png" alt="BezTest1"/></p>
-
-<p>It&rsquo;s very simple, but very handy as you can easily switch from the normal stroking of the path to this annotated version in one line.  It puts blue dots on all the regular points, green dots for the control points, adds lines to join control points to their anchor point, and adds a label so you can see the direction of the control point (so &ldquo;cp3_2&rdquo; is anchored at point 3, on the side of point 2.  It also draws the bounding box in red, so you can see the extents of the full path.</p>
-
-<ul>
-<li>Grab the code (MIT license): <a href="http://antonym.org/files/antonym/bezier_debug.zip">bezier_debug.zip</a> (2kB)</li></ul></li>
-</ul>
+<!--more-->
 
 
-<p>Enjoy!  I&rsquo;d love to get feedback from anyone who tries this.  (Please email me; the comments system is sadly flooded with spam and I may miss legitimate posts.)</p>
+<p>I found out the hard way that the way <code>NSOpenGLView</code> initialises the OpenGL context is not compatible with the <code>AGL</code> API.  So you can handle all the pixel formats and so on yourself but have easy fonts, or the other way round.  The <code>glut</code> text call does actually work, albeit in a rather less flexible manner.</p>
 
-<h2>Update: New project hosting</h2>
+<p>I guess this explains why there&rsquo;s a bunch of font/text utility libraries for OpenGL &ndash; it&rsquo;s non-trivial.  But if all you want is a quick and dirty text-drawing function, go for glut.</p>
 
-<p>Thanks to Mathieu Tozer, this little module has been incorporated into the <a href="http://code.google.com/p/morecocoa/">morecocoa</a> project, hosted at Google Project Hosting.  Please obtain the latest source from there.</p>
-
-<ul>
-<li><a href="http://code.google.com/p/morecocoa/"><a href="http://code.google.com/p/morecocoa/">http://code.google.com/p/morecocoa/</a></a></li>
-</ul>
-
+<p>One day I&rsquo;ll figure out how to properly render accelerated Quartz text into an OpenGL context, and write an article about it.</p>
 </div>
 
 
@@ -149,7 +133,7 @@
   
 
 
-<time datetime="2008-02-19T21:38:00+11:00" pubdate data-updated="true">2008-02-19</time>
+<time datetime="2007-09-28T10:28:00+10:00" pubdate data-updated="true">2007-09-28</time>
       
 
 
@@ -157,7 +141,7 @@
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://antonym.org//2008/02/debugging-nsbezierpath-drawing.html" data-via="gavinb" data-counturl="http://antonym.org//2008/02/debugging-nsbezierpath-drawing.html" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://antonym.org//2007/09/nsopenglview-and-text.html" data-via="gavinb" data-counturl="http://antonym.org//2007/09/nsopenglview-and-text.html" >Tweet</a>
   
   
   
@@ -166,10 +150,10 @@
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/2008/01/stl-warts-when-removing-isnt.html" title="Previous Post: STL warts - when removing isn't">&laquo; STL warts - when removing isn't</a>
+        <a class="basic-alignment left" href="/2007/01/the-happy-coders-toolkit-part-ii-profiling-and-r.html" title="Previous Post: The Happy Coder's Toolkit Part II: Profiling and R">&laquo; The Happy Coder's Toolkit Part II: Profiling and R</a>
       
       
-        <a class="basic-alignment right" href="/2008/05/tiger-isnt-really-for-the-users.html" title="Next Post: Tiger isn't really for the users">Tiger isn't really for the users &raquo;</a>
+        <a class="basic-alignment right" href="/2007/12/gloves-off-mercurial-vs-subversion.html" title="Next Post: Gloves off: Mercurial vs Subversion">Gloves off: Mercurial vs Subversion &raquo;</a>
       
     </p>
   </footer>
@@ -235,8 +219,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://antonym.org//2008/02/debugging-nsbezierpath-drawing.html';
-        var disqus_url = 'http://antonym.org//2008/02/debugging-nsbezierpath-drawing.html';
+        var disqus_identifier = 'http://antonym.org//2007/09/nsopenglview-and-text.html';
+        var disqus_url = 'http://antonym.org//2007/09/nsopenglview-and-text.html';
         var disqus_script = 'embed.js';
       
     (function () {

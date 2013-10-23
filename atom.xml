@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Gavin Baker ~ antonym.org]]></title>
-  <link href="http://www.antonym.org//atom.xml" rel="self"/>
-  <link href="http://www.antonym.org//"/>
-  <updated>2013-10-21T18:36:54+11:00</updated>
-  <id>http://www.antonym.org//</id>
+  <link href="http://antonym.org//atom.xml" rel="self"/>
+  <link href="http://antonym.org//"/>
+  <updated>2013-10-23T23:30:05+11:00</updated>
+  <id>http://antonym.org//</id>
   <author>
     <name><![CDATA[Gavin Baker]]></name>
     
@@ -16,10 +16,10 @@
   <entry>
     
     <title type="html"><![CDATA[Bug of the Year - 2011]]></title>
-    <link href="http://www.antonym.org//2013/10/bug-of-the-year-2011.html"/>
+    <link href="http://antonym.org//2013/10/bug-of-the-year-2011.html"/>
     
     <updated>2013-10-17T18:24:00+11:00</updated>
-    <id>http://www.antonym.org//2013/10/bug-of-the-year-2011</id>
+    <id>http://antonym.org//2013/10/bug-of-the-year-2011</id>
     
     <content type="html"><![CDATA[
 ]]></content>
@@ -29,10 +29,10 @@
   <entry>
     
     <title type="html"><![CDATA[What is Rust?]]></title>
-    <link href="http://www.antonym.org//2013/10/what-is-rust.html"/>
+    <link href="http://antonym.org//2013/10/what-is-rust.html"/>
     
     <updated>2013-10-08T20:50:00+11:00</updated>
-    <id>http://www.antonym.org//2013/10/what-is-rust</id>
+    <id>http://antonym.org//2013/10/what-is-rust</id>
     
     <content type="html"><![CDATA[<p><a href="http://www.rust-lang.org/">Rust</a> is a compiled, hybrid imperative/object-
 oriented/functional language. It appeals directly to any C++ developer who has
@@ -146,10 +146,10 @@ about the future of Rust, and look forward to contributing.</p>
   <entry>
     
     <title type="html"><![CDATA[Good Code Gardening]]></title>
-    <link href="http://www.antonym.org//2011/03/good-code-gardening.html"/>
+    <link href="http://antonym.org//2011/03/good-code-gardening.html"/>
     
     <updated>2011-03-09T12:09:00+11:00</updated>
-    <id>http://www.antonym.org//2011/03/good-code-gardening</id>
+    <id>http://antonym.org//2011/03/good-code-gardening</id>
     
     <content type="html"><![CDATA[<p>During a code review at work recently, we had an interesting discussion about code maintenance.  You could say that coding is a bit like gardening: while you are planting new seedlings, do you weed nearby areas as you go, or save up all the weeding for the next sunny weekend?  Should code maintenance be a continual, gradual process, or does it warrant being scheduled as a task in its own right?</p>
 
@@ -290,10 +290,10 @@ M utils.h
   <entry>
     
     <title type="html"><![CDATA[25 Tips for Intermediate Mercurial Users]]></title>
-    <link href="http://www.antonym.org//2010/04/25-tips-for-intermediate-mercurial-users.html"/>
+    <link href="http://antonym.org//2010/04/25-tips-for-intermediate-mercurial-users.html"/>
     
     <updated>2010-04-07T23:58:00+10:00</updated>
-    <id>http://www.antonym.org//2010/04/25-tips-for-intermediate-mercurial-users</id>
+    <id>http://antonym.org//2010/04/25-tips-for-intermediate-mercurial-users</id>
     
     <content type="html"><![CDATA[<p>I recently read an interesting article by Andy Jeffries entitled <a href="http://andyjeffries.co.uk/articles/25-tips-for-intermediate-git-users">25 Tips for Intermediate Git Users</a> (linked to via <a href="http://www.reddit.com/r/programming/">proggit</a>) .  It had lots of useful information condensed into bite-sized task-oriented chunks.</p>
 
@@ -795,10 +795,10 @@ MyProject.xcodeproj/*.mode1v3
   <entry>
     
     <title type="html"><![CDATA[Threading with Boost - Part II: Threading Challenges]]></title>
-    <link href="http://www.antonym.org//2010/01/threading-with-boost---part-ii-threading-challenges.html"/>
+    <link href="http://antonym.org//2010/01/threading-with-boost---part-ii-threading-challenges.html"/>
     
     <updated>2010-01-01T21:15:00+11:00</updated>
-    <id>http://www.antonym.org//2010/01/threading-with-boost&#8212;part-ii-threading-challenges</id>
+    <id>http://antonym.org//2010/01/threading-with-boost&#8212;part-ii-threading-challenges</id>
     
     <content type="html"><![CDATA[<p>In <a href="http://antonym.org/">Part I</a> of this series on <a href="http://boost.org/">Boost</a>, we looked at the basics of how to create and run threads using the Boost libraries.  But once you have more than one thread running in a process, you have to deal with the problems and challenges that threads can introduce.  So, before delving into the mechanics of how to use mutexes and other threading constructs, we look at what can go wrong &ndash; and how to avoid it.</p>
 
@@ -1114,10 +1114,10 @@ Thumbs up!</p>
   <entry>
     
     <title type="html"><![CDATA[STL: filtering]]></title>
-    <link href="http://www.antonym.org//2009/09/stl-filtering.html"/>
+    <link href="http://antonym.org//2009/09/stl-filtering.html"/>
     
     <updated>2009-09-16T11:51:00+10:00</updated>
-    <id>http://www.antonym.org//2009/09/stl-filtering</id>
+    <id>http://antonym.org//2009/09/stl-filtering</id>
     
     <content type="html"><![CDATA[<p>The STL makes it easy to create lists, iterate over lists, and apply a function to each member of a list.  So how do you filter a vector according to some criteria?  It&rsquo;s not hard, but the obvious solution isn&rsquo;t <em>quite</em> enough.  Here&rsquo;s how.</p>
 
@@ -1276,10 +1276,10 @@ Thumbs up!</p>
   <entry>
     
     <title type="html"><![CDATA[Threading with Boost - Part I: Creating Threads]]></title>
-    <link href="http://www.antonym.org//2009/05/threading-with-boost---part-i-creating-threads.html"/>
+    <link href="http://antonym.org//2009/05/threading-with-boost---part-i-creating-threads.html"/>
     
     <updated>2009-05-13T22:16:00+10:00</updated>
-    <id>http://www.antonym.org//2009/05/threading-with-boost&#8212;part-i-creating-threads</id>
+    <id>http://antonym.org//2009/05/threading-with-boost&#8212;part-i-creating-threads</id>
     
     <content type="html"><![CDATA[<p><a href="http://www.boost.org/">Boost</a> is an incredibly powerful collection of portable class libraries for C++.  There are classes for such tasks as date/time manipulation, filesystem interfaces, networking, numerical programming, interprocess communication and <a href="http://www.boost.org/doc/libs">much more</a>.</p>
 
@@ -1735,10 +1735,10 @@ Cuong Bui</p>
   <entry>
     
     <title type="html"><![CDATA[The first user]]></title>
-    <link href="http://www.antonym.org//2009/04/the-first-user.html"/>
+    <link href="http://antonym.org//2009/04/the-first-user.html"/>
     
     <updated>2009-04-30T23:26:00+10:00</updated>
-    <id>http://www.antonym.org//2009/04/the-first-user</id>
+    <id>http://antonym.org//2009/04/the-first-user</id>
     
     <content type="html"><![CDATA[<p>When you are developing a new piece of software, you typically first spend quite some time setting up your development environment.  As you progress, your application becomes a very cozy inhabitant of this environment, a safe happy cocoon that has evolved as you make lots of small changes to the application or your system.  What could possibly go wrong?</p>
 
@@ -1803,10 +1803,10 @@ DATE: 05/14/2009 06:35:35 PM</p>
   <entry>
     
     <title type="html"><![CDATA[Improve your C++: const-correctness]]></title>
-    <link href="http://www.antonym.org//2008/11/improve-your-c-plus-plus-const-correctness.html"/>
+    <link href="http://antonym.org//2008/11/improve-your-c-plus-plus-const-correctness.html"/>
     
     <updated>2008-11-22T15:18:00+11:00</updated>
-    <id>http://www.antonym.org//2008/11/improve-your-c-plus-plus-const-correctness</id>
+    <id>http://antonym.org//2008/11/improve-your-c-plus-plus-const-correctness</id>
     
     <content type="html"><![CDATA[<p>Writing &ldquo;const-correct&rdquo; code will improve the quality and maintainability of your code.  It is especially important and useful when writing Object-Oriented code, as objects are often passed around as constant references.  Properly declaring non-mutating methods as <code>const</code> allows you to safely call any <code>const</code> method on such a reference.  It is part of good type-safe practice and good code hygiene. So how do we do it?</p>
 
@@ -2037,10 +2037,10 @@ Date: 07/09/2009 03:26:30 PM</p>
   <entry>
     
     <title type="html"><![CDATA[STL Iterators and Performance]]></title>
-    <link href="http://www.antonym.org//2008/05/stl-iterators-and-performance.html"/>
+    <link href="http://antonym.org//2008/05/stl-iterators-and-performance.html"/>
     
     <updated>2008-05-30T11:02:00+10:00</updated>
-    <id>http://www.antonym.org//2008/05/stl-iterators-and-performance</id>
+    <id>http://antonym.org//2008/05/stl-iterators-and-performance</id>
     
     <content type="html"><![CDATA[<p>The Standard Template Library (STL) for C++ provides a set of powerful and flexible templated container classes.  Never again will you have to hand-craft a doubly-linked list (and get your pointer arithmetic mixed up) &mdash; just use <code>std::list&lt;T&gt;</code>.</p>
 
@@ -2162,10 +2162,10 @@ Hi Reid, you&rsquo;re right &ndash; I got the names back-to-front (the article i
   <entry>
     
     <title type="html"><![CDATA[Tiger isn't really for the users]]></title>
-    <link href="http://www.antonym.org//2008/05/tiger-isnt-really-for-the-users.html"/>
+    <link href="http://antonym.org//2008/05/tiger-isnt-really-for-the-users.html"/>
     
     <updated>2008-05-18T10:55:00+10:00</updated>
-    <id>http://www.antonym.org//2008/05/tiger-isnt-really-for-the-users</id>
+    <id>http://antonym.org//2008/05/tiger-isnt-really-for-the-users</id>
     
     <content type="html"><![CDATA[<p>Sure, <a href="http://www.apple.com/macosx">Tiger</a> &ndash; the latest release of Apple&rsquo;s Mac OS X &ndash; has a huge array of new features.  Sure, the Spotlight search features alone are compelling enough to make you want to upgrade. Automator enables workflow and user-level scripting.  And Dashboard is a whole new dimension in desktop widgets.</p>
 
@@ -2190,10 +2190,10 @@ Hi Reid, you&rsquo;re right &ndash; I got the names back-to-front (the article i
   <entry>
     
     <title type="html"><![CDATA[Debugging NSBezierPath drawing]]></title>
-    <link href="http://www.antonym.org//2008/02/debugging-nsbezierpath-drawing.html"/>
+    <link href="http://antonym.org//2008/02/debugging-nsbezierpath-drawing.html"/>
     
     <updated>2008-02-19T21:38:00+11:00</updated>
-    <id>http://www.antonym.org//2008/02/debugging-nsbezierpath-drawing</id>
+    <id>http://antonym.org//2008/02/debugging-nsbezierpath-drawing</id>
     
     <content type="html"><![CDATA[<p>I was working on some Cocoa programming, making heavy use of <code>NSBezierPath</code>.  I wished there was an easy way to see just where my control points were ending up, and how the curves were being constructed.  So I wrote a category method to add such a thing to the NSBezierPath class.  It is here for all to share.</p>
 
@@ -2228,10 +2228,10 @@ Hi Reid, you&rsquo;re right &ndash; I got the names back-to-front (the article i
   <entry>
     
     <title type="html"><![CDATA[STL warts - when removing isn't]]></title>
-    <link href="http://www.antonym.org//2008/01/stl-warts-when-removing-isnt.html"/>
+    <link href="http://antonym.org//2008/01/stl-warts-when-removing-isnt.html"/>
     
     <updated>2008-01-01T17:33:00+11:00</updated>
-    <id>http://www.antonym.org//2008/01/stl-warts-when-removing-isnt</id>
+    <id>http://antonym.org//2008/01/stl-warts-when-removing-isnt</id>
     
     <content type="html"><![CDATA[<p>Pop quiz: what does the <code>remove</code> function provided in the C++ STL algorithm package do?</p>
 
@@ -2266,10 +2266,10 @@ Hi Reid, you&rsquo;re right &ndash; I got the names back-to-front (the article i
   <entry>
     
     <title type="html"><![CDATA[A subtle bug involving C++ temporaries]]></title>
-    <link href="http://www.antonym.org//2008/01/a-subtle-bug-involving-c-plus-plus-temporaries.html"/>
+    <link href="http://antonym.org//2008/01/a-subtle-bug-involving-c-plus-plus-temporaries.html"/>
     
     <updated>2008-01-01T17:26:00+11:00</updated>
-    <id>http://www.antonym.org//2008/01/a-subtle-bug-involving-c-plus-plus-temporaries</id>
+    <id>http://antonym.org//2008/01/a-subtle-bug-involving-c-plus-plus-temporaries</id>
     
     <content type="html"><![CDATA[<p>I tracked down a subtle little bug the other day.  My code was crashing on a line that should never crash (and we&rsquo;ve all heard that one before!).  It arose from doing two quite innocuous things, but when combined &ndash; disaster!  I decided to write it up as an example to my 3 readers and Google.</p>
 
@@ -2436,11 +2436,101 @@ Hi Reid, you&rsquo;re right &ndash; I got the names back-to-front (the article i
   
   <entry>
     
+    <title type="html"><![CDATA[Gloves off: Mercurial vs Subversion]]></title>
+    <link href="http://antonym.org//2007/12/gloves-off-mercurial-vs-subversion.html"/>
+    
+    <updated>2007-12-04T23:53:00+11:00</updated>
+    <id>http://antonym.org//2007/12/gloves-off-mercurial-vs-subversion</id>
+    
+    <content type="html"><![CDATA[<p>I use <a href="http://subversion.tigris.org/">Subversion</a> on a daily basis, and <a href="http://www.selenic.com/mercurial/">Mercurial</a> a few days a week.  I have noticed that Mercurial <em>seems</em> to be faster with a lot of common operations, but I figured it wasn&rsquo;t a fair comparison as Mercurial was always operating locally, while Subversion has to hit the network for many (but certainly not all) operations.</p>
+
+<p>So I decided to do some very rough performance comparisons on a local repository.  And after some quick timings of common operations, this is what I found&hellip;</p>
+
+<!--more-->
+
+
+<p>(Updated: fixed table and added graph.)</p>
+
+<h2>Method</h2>
+
+<p>This is a very rough, and thus not very rigourous evaluation.  I performed all tests on a PowerBook G4 1GHz running Mac OS X 10.5 under the same operating conditions (ie. on the train home from work).  The versions used:</p>
+
+<ul>
+<li>Subversion 1.4.4</li>
+<li>Mercurial 0.9.5 with Python 2.5</li>
+</ul>
+
+
+<p>I created both repositories locally (under <code>/tmp</code>) and performed the equivalent operations with both VC systems.  The source tree used was a recent version of the Django source tree, which is fairly large (2263 files, 568 dirs, 18Mb).  For the <code>svn import</code> equivalent, I did an <code>hg commit -A</code> of the source tree.  For the <code>svn checkout</code> equivalent, I did an <code>hg clone</code> of the tree.  For the non-mutating operations (eg. <code>status</code>) I ran the same command 5 times and picked the best.</p>
+
+<p>I tried to be as fair as possible, but not take days to actually come up with some figures.  So without further ado&hellip;</p>
+
+<h2>Results</h2>
+
+<p>All times as reported by the <code>bash time</code> command, taking the real time value (ie. elapsed system time):</p>
+
+<table>
+<tr><th>Operation</th><th>Mercurial</th><th>Subversion</th><th>Speedup</th></tr>
+<tr><td>Create Repository</td><td>0.346s</td><td>0.279s</td><td>svn 1.2X</td></tr>
+<tr><td>Import source tree</td><td>12.241s</td><td>1m3.781s</td><td>hg 5.2X</td></tr>
+<tr><td>Checkout</td><td>19.808s</td><td>1m1.356s</td><td>hg 3.1X</td></tr>
+<tr><td>Status (1 mod)</td><td>0.631s</td><td>0.265s</td><td>svn 2.4X</td></tr>
+<tr><td>Diff (1 mod)</td><td>0.778s</td><td>0.212s</td><td>svn 3.7X</td></tr>
+<tr><td>Diff (2 mods)</td><td>0.784s</td><td>0.331s</td><td>svn 2.4X</td></tr>
+<tr><td>Commit (2 mods)</td><td>1.164s</td><td>3.442s</td><td>hg 3.0X</td></tr>
+<tr><td>Add file</td><td>0.544s</td><td>0.121s</td><td>svn 4.5X</td></tr>
+<tr><td>Commit</td><td>0.922s</td><td>2.920s</td><td>hg 3.2X</td></tr>
+<tr><td>Total</td><td>37.218s</td><td>132.707s</td><td>hg 3.6X</td></tr>
+</table>
+
+
+
+
+<div class="thumbnail"><a href="http://skitch.com/gavinb/rpts/mercurialsubversionperformance"><img src="http://img.skitch.com/20080107-nxs9pdi91q8ie9d7d6qrhswmkb.preview.jpg" alt="MercurialSubversionPerformance" /></a><br /></div>
+
+
+<h2>Conclusions</h2>
+
+<p>A simple count of which is faster for each operation shows both scored 5/10, so in that sense they are evenly matched.  But in the cases where Subversion was faster, the times were still well under 1sec, so the difference is far less noticeable.  It is clear from the above that for many expensive operations, Mercurial is significantly faster than Subversion, even for large I/O operations such as commits and importing.  Given Mercurial is written in Python (apart from one small module IIRC), and Subversion is compiled C, this is all the more impressive.  Looking at the overall total times for the test workload, Mercurial comes out at 3.6 times faster than Subversion.  If you are spending a lot of time with your VC system, this can make a huge difference to your workday productivity.</p>
+
+<p>Clearly the build-in diff engine in Subversion gives it a major advantage in diffs, a very important and common operation. Mercurial is still competitive, and in real-world tests seem to scale well.  Having tested it at work with an even larger source tree (the Boost++ library), Mercurial actually seemed to be faster than Subversion for status operations in particular (around a second versus several seconds).</p>
+
+<p>It should be noted that since running Subversion from a local repository like this is the exception rather than the norm for most projects, the performance advantage it has thanks to its fast diff engine evaporates against network latency.  Thus using a distributed VCS such as Mercurial can be a great productivity boost, as you only pay for the network when you need to branch or merge between developers, a far less common operation.</p>
+
+<p>This comparison has reinforced my positive impressions of Mercurial, and I hope it serves to bolster peoples&#8217; confidence in its ability to scale and perform.  It has all the features of Subversion, plus many more groovy features like patch queues (which I may blog about one day).  Since Mercurial is less well known, I hope more people will <a href="http://www.selenic.com/mercurial/">give Mercurial a try</a>.</p>
+]]></content>
+    
+  </entry>
+  
+  <entry>
+    
+    <title type="html"><![CDATA[NSOpenGLView and text]]></title>
+    <link href="http://antonym.org//2007/09/nsopenglview-and-text.html"/>
+    
+    <updated>2007-09-28T10:28:00+10:00</updated>
+    <id>http://antonym.org//2007/09/nsopenglview-and-text</id>
+    
+    <content type="html"><![CDATA[<p>The Cocoa view class <code>NSOpenGLView</code>, which automates all the initialisation required to provide an OpenGL context for drawing, is very useful indeed.  It would also seem that <code>aglUseFont</code> is a nice simple way to load up a font to draw some text in your view.  So long as it isn&rsquo;t the aforementioned <code>NSOpenGLView</code>, that is.</p>
+
+<!--more-->
+
+
+<p>I found out the hard way that the way <code>NSOpenGLView</code> initialises the OpenGL context is not compatible with the <code>AGL</code> API.  So you can handle all the pixel formats and so on yourself but have easy fonts, or the other way round.  The <code>glut</code> text call does actually work, albeit in a rather less flexible manner.</p>
+
+<p>I guess this explains why there&rsquo;s a bunch of font/text utility libraries for OpenGL &ndash; it&rsquo;s non-trivial.  But if all you want is a quick and dirty text-drawing function, go for glut.</p>
+
+<p>One day I&rsquo;ll figure out how to properly render accelerated Quartz text into an OpenGL context, and write an article about it.</p>
+]]></content>
+    
+  </entry>
+  
+  <entry>
+    
     <title type="html"><![CDATA[The Happy Coder's Toolkit Part II: Profiling and R]]></title>
-    <link href="http://www.antonym.org//2007/01/the-happy-coders-toolkit-part-ii-profiling-and-r.html"/>
+    <link href="http://antonym.org//2007/01/the-happy-coders-toolkit-part-ii-profiling-and-r.html"/>
     
     <updated>2007-01-02T21:01:00+11:00</updated>
-    <id>http://www.antonym.org//2007/01/the-happy-coders-toolkit-part-ii-profiling-and-r</id>
+    <id>http://antonym.org//2007/01/the-happy-coders-toolkit-part-ii-profiling-and-r</id>
     
     <content type="html"><![CDATA[<p>Need to do some performance analysis on the cheap?</p>
 
@@ -2507,10 +2597,10 @@ Hi Reid, you&rsquo;re right &ndash; I got the names back-to-front (the article i
   <entry>
     
     <title type="html"><![CDATA[The Happy Coder's Toolkit Part I: mtrace]]></title>
-    <link href="http://www.antonym.org//2007/01/the-happy-coders-toolkit-part-i-mtrace.html"/>
+    <link href="http://antonym.org//2007/01/the-happy-coders-toolkit-part-i-mtrace.html"/>
     
     <updated>2007-01-02T20:32:00+11:00</updated>
-    <id>http://www.antonym.org//2007/01/the-happy-coders-toolkit-part-i-mtrace</id>
+    <id>http://antonym.org//2007/01/the-happy-coders-toolkit-part-i-mtrace</id>
     
     <content type="html"><![CDATA[<p>I have been doing some serious hacking, fixing and refactoring on a codebase for genetics analysis.  And I&rsquo;ve needed tools to go beyond just sprinkling the usual calls to <code>printf</code> around the place to see what&rsquo;s going on.  Hell, I&rsquo;ve even fired up <code>gdb</code> once &ndash; but just to get a stack trace!  This is the first of a sporadically released series on tools I&rsquo;ve found useful.  Hopefully they will distill the essential steps of using these tools, as well as expose some extremely useful but lesser known tricks to a wider audience (like the huge number of readers of this blog).</p>
 
@@ -2584,10 +2674,10 @@ Hi Reid, you&rsquo;re right &ndash; I got the names back-to-front (the article i
   <entry>
     
     <title type="html"><![CDATA[Autoantonyms]]></title>
-    <link href="http://www.antonym.org//2006/07/autoantonyms.html"/>
+    <link href="http://antonym.org//2006/07/autoantonyms.html"/>
     
     <updated>2006-07-04T10:10:00+10:00</updated>
-    <id>http://www.antonym.org//2006/07/autoantonyms</id>
+    <id>http://antonym.org//2006/07/autoantonyms</id>
     
     <content type="html"><![CDATA[<p>What is the antonym (word of opposite meaning) to the word &ldquo;resign&rdquo;?  One correct answer is &ldquo;resign&rdquo;.  What about the opposite of &ldquo;dust&rdquo;?  Yup, 10 points for &ldquo;dust&rdquo;.</p>
 
@@ -2599,10 +2689,10 @@ Hi Reid, you&rsquo;re right &ndash; I got the names back-to-front (the article i
   <entry>
     
     <title type="html"><![CDATA[What went wrong?]]></title>
-    <link href="http://www.antonym.org//2006/04/what-went-wrong.html"/>
+    <link href="http://antonym.org//2006/04/what-went-wrong.html"/>
     
     <updated>2006-04-19T17:34:00+10:00</updated>
-    <id>http://www.antonym.org//2006/04/what-went-wrong</id>
+    <id>http://antonym.org//2006/04/what-went-wrong</id>
     
     <content type="html"><![CDATA[<p>Writing <em>good</em> diagnostic error messages is hard.  But it&rsquo;s worth the effort.  And there&rsquo;s also some side benefits if you take the time, and it&rsquo;s not just avoiding hate-mail from your users.</p>
 
@@ -2638,156 +2728,6 @@ Looking for required fields, still haven't found: id, family.
 <p>It takes time to craft an error message that reads like an actual English sentence, and conveys not only what went wrong but where and why, and what the software was expecting to find instead.  Error codes might be useful for the developer, but it&rsquo;s useless for the user.</p>
 
 <p>So the bonus you get if you do write decent error messages?  It guides you to write your test cases, of course!  So after I added the above check to ensure all the required fields had been read before the user-defined fields, I wrote a data file that would trigger that error.  Now I have regression testing, I can make sure that the error gets picked up.  All this work for those ungrateful users&hellip;</p>
-]]></content>
-    
-  </entry>
-  
-  <entry>
-    
-    <title type="html"><![CDATA[Surface plots of image data in GNU R]]></title>
-    <link href="http://www.antonym.org//2006/02/surface-plots-of-image-data-in-gnu-r.html"/>
-    
-    <updated>2006-02-07T13:48:00+11:00</updated>
-    <id>http://www.antonym.org//2006/02/surface-plots-of-image-data-in-gnu-r</id>
-    
-    <content type="html"><![CDATA[<p>I needed to plot the intensity profile of some test images for my thesis.  It&rsquo;s really useful to be able to visualise 2D grayscale image data by treating the intensity as a height-field and displaying it in 3D.  There&rsquo;s a variety of ways to do this, but I wanted something that would produce good printed results, so EPS was the best output option.</p>
-
-<p>So here&rsquo;s a recipe for using <a href="http://www.r-project.org/">GNU R</a> to produce such a plot.</p>
-
-<p>First, generate your image data and crop it appropriately.  For example, I used <a href="http://www.itk.org/">ITK</a> to generate a Gaussian field.</p>
-
-<p>Then convert it to the <code>pgm</code> file format.  The most excellent <a href="http://www.imagemagick.org/">ImageMagick</a> tools make this a snap (note the &lsquo;%&rsquo; is the shell prompt):</p>
-
-<pre><code>% convert -compress none inputfile.tif inputfile.pgm
-</code></pre>
-
-<p>The <code>compress</code> option ensures the PGM file is written in ASCII format, for easy reading in.</p>
-
-<p>Then, fire up R and do the following (note the &lsquo;>&rsquo; character is the default R prompt):</p>
-
-<pre><code>&gt; sz &lt;- scan("gaussian.pgm", what=integer(0), skip=1, comment.char="#", nmax=2)
-Read 2 items
-&gt; g &lt;- scan("gaussian.pgm", what=integer(0), skip=3, comment.char="#")
-Read 65536 items
-&gt; gi &lt;- matrix(g, sz[1], sz[2])
-&gt; rm(g)
-</code></pre>
-
-<p>The first line reads the image size from the PGM header into the variable <tt>sz</tt>, the second reads in the actual data as an array.  The third line creates a matrix from the data, with the appropriate size.  The last line removes the temporary array data.</p>
-
-<p>Now you have a matrix object with your image data in it, you can do all sorts of groovy things.  Such as:</p>
-
-<pre><code>&gt; image(gi)
-&gt; contour(gi, add=TRUE)
-</code></pre>
-
-<p>[img_assist|fid=13|thumb=1|alt=Gaussian 2D Image Contour plot]</p>
-
-<p>will display it as an image, with a scalar mapping function (which you can customize), along with contour lines showing the isolevels.  But more interesting is this:</p>
-
-<pre><code>&gt; persp(gi, theta=25, phi=30)
-</code></pre>
-
-<p>This will produce a 3D contour plot in perspective (the theta and phi parameters rotate the viewing angle).</p>
-
-<p>[img_assist|fid=16|thumb=1|alt=Gaussian 2D Image Perspective plot]</p>
-
-<p>You can also do other handy stuff, like pick out a scanline and do a 2D intensity plot (or a series).</p>
-]]></content>
-    
-  </entry>
-  
-  <entry>
-    
-    <title type="html"><![CDATA[Unexpected side-effect]]></title>
-    <link href="http://www.antonym.org//2005/12/unexpected-side-effect.html"/>
-    
-    <updated>2005-12-19T18:54:00+11:00</updated>
-    <id>http://www.antonym.org//2005/12/unexpected-side-effect</id>
-    
-    <content type="html"><![CDATA[<p>I discovered a strange bug in my Python code recently.  It took me a few minutes worth of digging to uncover something somewhat surprising, a side-effect to do with default parameters that is not obvious at first blush.</p>
-
-<!--more-->
-
-
-<p>Consider the following code:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">sys</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">class</span> <span class="nc">Group</span><span class="p">:</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">questions</span><span class="o">=</span><span class="p">[]):</span>
-</span><span class='line'>      <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
-</span><span class='line'>      <span class="bp">self</span><span class="o">.</span><span class="n">desc</span> <span class="o">=</span> <span class="n">desc</span>
-</span><span class='line'>      <span class="bp">self</span><span class="o">.</span><span class="n">questions</span> <span class="o">=</span> <span class="n">questions</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">def__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">return</span><span class="s">&#39;&#39;&#39;Group:</span>
-</span><span class='line'><span class="s">        Name:        </span><span class="si">%s</span><span class="s"></span>
-</span><span class='line'><span class="s">        Description: </span><span class="si">%s</span><span class="s"></span>
-</span><span class='line'><span class="s">        Questions:   </span><span class="si">%s</span><span class="s"></span>
-</span><span class='line'><span class="s">        &#39;&#39;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">desc</span><span class="p">,</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">questions</span><span class="p">))</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">deftest</span><span class="p">():</span>
-</span><span class='line'>    <span class="n">g1</span> <span class="o">=</span> <span class="n">Group</span><span class="p">(</span><span class="s">&#39;foo&#39;</span><span class="p">)</span>
-</span><span class='line'>    <span class="n">g2</span> <span class="o">=</span> <span class="n">Group</span><span class="p">(</span><span class="s">&#39;baz&#39;</span><span class="p">,</span> <span class="s">&#39;a really bazzy group&#39;</span><span class="p">)</span>
-</span><span class='line'>    <span class="n">g3</span> <span class="o">=</span> <span class="n">Group</span><span class="p">(</span><span class="s">&#39;bar&#39;</span><span class="p">,</span> <span class="s">&#39;some barry groups&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;first q&#39;</span><span class="p">,</span> <span class="s">&#39;secundo&#39;</span><span class="p">,</span> <span class="s">&#39;tri&#39;</span><span class="p">])</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">g4</span> <span class="o">=</span> <span class="n">Group</span><span class="p">(</span><span class="s">&#39;vroom&#39;</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-</span><span class='line'>        <span class="n">g4</span><span class="o">.</span><span class="n">questions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;This is not a question&#39;</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">print</span> <span class="n">g1</span>
-</span><span class='line'>    <span class="k">print</span> <span class="n">g2</span>
-</span><span class='line'>    <span class="k">print</span> <span class="n">g3</span>
-</span><span class='line'>    <span class="k">print</span> <span class="n">g4</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
-</span><span class='line'>    <span class="n">test</span><span class="p">()</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>If run with no parameters, it appears to have the expected and desired behaviour.  Give it a parameter, and the line that appends a question will cause <em>all</em> instances to have the same question added.  Obviously a bug, but why?</p>
-
-<p>What&rsquo;s happening is the default value for the <code>question</code> parameter is evaluated at compile time to be an instance of an empty list.  All instances then refer to this same empty list, so when one gets something appended, they all appear to get it.  The solution is of course to have it default to <code>None</code> and then construct a list when required.</p>
-
-<p>Even when the default parameter is a function, it is still evaluated only the once, so its return value becomes a constant default value.  It turns out that this is clearly documented (thanks Fred!) in the <a href="http://www.python.org/doc/2.4.2/ref/function.html">Python Language Reference: Section 7.5 Function definitions.</p>
-
-<p>For someone used to doing funky stuff in C++ constructors (like yours truly), this might be a subtle gotcha.</p>
 ]]></content>
     
   </entry>
