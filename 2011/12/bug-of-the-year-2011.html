@@ -1,0 +1,510 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Bug of the Year - 2011 - Gavin Baker ~ antonym.org</title>
+  <meta name="author" content="Gavin Baker">
+
+  
+  <meta name="description" content="My favourite bug of all time was uncovered because I was just too impatient. I was working on a fairly large and complex embedded project. A &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://antonym.org//2011/12/bug-of-the-year-2011.html">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Gavin Baker ~ antonym.org" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-6131956-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="collapse-sidebar sidebar-footer" >
+  <header role="banner">
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:antonym.org/" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+  
+    
+      <h1 class="entry-title">Bug of the Year - 2011</h1>
+    
+  
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-12-24T18:24:00+11:00" pubdate data-updated="true">2011-12-24</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>My favourite bug of all time was uncovered because I was just too impatient.</p>
+
+<p>I was working on a fairly large and complex embedded project.  A microcontroller
+was interfacing with some custom hardware. It would configure, control, and
+monitor the hardware.  The microprocessor was running an RTOS with a lightweight
+TCP/IP stack, so remote clients could connect to the device via Ethernet and
+perform remote configuration.  We also used this for diagnostics and testing
+during development.  We had successfully used a similar design on several
+products, with great results.  We had also designed a protocol for monitoring
+and control that was used in earlier models,  and  we extended it here &ndash; though
+this product was significantly larger and more complex than its predecessors.
+What could possibly go wrong?</p>
+
+<!--more-->
+
+
+<p>The first thing the microprocessor does when you connect is to dump the status
+of the entire system.  With smaller devices, this was very fast.  But this new
+model was so large and had many more components and subsystems, it was taking a
+very long time every time you connected. This device can also serve many
+concurrent clients, so this slow connection startup would be repeated for every
+client.  The processing and time cost was not trivial, and this delay would
+limit how quickly clients could start updating their own settings.</p>
+
+<p>Slow and inefficient code bothers me.  Eventually I got sick of waiting a good
+10-20 seconds or so every time I connected before I could start working with the
+hardware to test my latest changes, so I decided to track down the performance
+problem.  As a baseline, I measured the system performance before changing
+anything, and then got to work. It had to be something simple, after all &ndash; we&rsquo;ve
+had this same code working on other products for many months in the field.</p>
+
+<p>I figured a few hours would probably be enough to solve it.  The debugging
+process was made somewhat more difficult by the fact that there was no keyboard
+or monitor on this hardware; all debugging was either via JTAG and a serial USB
+connection, or by the Ethernet port &ndash; which was part of the problem.</p>
+
+<p>The actual time to solve the mystery would be more like a week, with several
+long, late, pizza-fuelled nights, drilling through many layers and thousands of
+lines of code to find the <em>very</em> surprising root cause.</p>
+
+<h2>First layer: application protocol</h2>
+
+<p>The most obvious point to start with was the application level buffering. A
+protocol layer abstracted away the TCP/IP networking (which also allowed for
+serial interfaces) and had its own read and write buffers.  I guessed it might
+help to increase the buffer size a little, to have fewer networking calls.  A
+little increase didn&rsquo;t help much overall, nor did a big increase.  Ok, so it&rsquo;s
+not the protocol buffering.</p>
+
+<p>The status dump on connection has to traverse many data structures, build
+strings and create structured text for output.  I reviewed the algorithms,
+memory management and improved the code by reducing reallocations and copies,
+tidied things up and used pre-allocated buffers more efficiently.</p>
+
+<p>I measured the performance improvement and noticed a modest difference. All that
+work helped &ndash; but it was still not enough.  It was just too slow for my liking.
+According to my calculations, the system should be capable of <em>much</em> higher
+throughput.  I decided to keep digging.</p>
+
+<h2>Second layer: networking and OS</h2>
+
+<p>Underneath the protocol code was a high level interface for networking.  Perhaps
+this wasn&rsquo;t as efficient as it could be?  After poring over the code, analysing
+potential performance issues, I found a few small issues, but no smoking gun.</p>
+
+<p>Now this RTOS has many tasks (threads) running, only one of which is the
+networking support. Could this networking task be getting starved for processing
+time? The interrupt handling latency should be guaranteed and well within the
+required time.  I disabled all non-essential tasks, tried increasing the
+priority of the networking task, and various other tweaks.  None had any impact.
+The RTOS kernel was perfectly happy and running smoothly.</p>
+
+<p>Keep digging&hellip;</p>
+
+<h2>Third layer: TCP/IP tuning</h2>
+
+<p>The TCP/IP stack we were using has a boatload of parameters you can configure at
+build time, including its internal buffers.  This was a prime candidate for
+performance issues. I dug up the documentation, went through our configuration,
+and sure enough &ndash; bingo!  Several parameters were not at the recommended values
+for this version of the library. Some buffer sizes needed to be multiples of the
+packet sizes (eg MSS), and tuned to match other significant parameters.  This
+could have caused fragmented packets or memory buffers, and introduce small but
+potentially disruptive delays to the flow.</p>
+
+<p>This tuning process took many many hours, and eventually resulted in a decent
+improvement in throughput.  But was it enough?  No &ndash; the big dump when the
+connection was established wasn&rsquo;t just slow now, it was noticeably jerky and
+very <em>bursty</em>. I really needed to see exactly what was happening between the two
+socket endpoints.  I needed to understand why it was bursty &ndash; and fix it.</p>
+
+<h2>Fourth Layer: On the Wire</h2>
+
+<p>Having calculated the theoretical peak throughput, I decided there was no good
+reason this microprocessor shouldn&rsquo;t be able to maintain a <em>much</em> higher level
+of throughput.  Time to do some low-level packet analysis.</p>
+
+<p>I set up Wireshark and started capturing packets.  At first, everything seemed
+ok but looking at the timestamps showed clearly that the transmissions were very
+bursty.  Sometimes there were delays of a few <em>seconds</em> between packets! No
+wonder it was taking so long for a full status dump&hellip; but what was causing
+this?</p>
+
+<p>Looking at the IP layer, I decoded and inspected the session piece by piece,
+from the very first packet. <code>SYN, SYN-ACK, ACK...</code> All good so far.  But after
+transmitting only a few data packets: <code>NAK</code>. Retries? Backoff? Delays! What on
+earth was going on?  The trace showed the micro was resending packets it had
+successfully sent. Yet by matching up the sequence numbers, it showed the
+packets were being <code>ACK</code>ed by the other end. Eventually after receiving a few
+out-of-order packets, the receiver tried to back off by increasing timeouts.
+This perfectly illustrates the bursty nature of the traffic.  But what could
+be causing it?</p>
+
+<p>Not leaving anything to chance, I tried changing Ethernet cables to make sure
+it wasn&rsquo;t a dodgy connection causing the fault.  No dice.</p>
+
+<p>At this point, my best hunch pointed to a bug in the TCP/IP library.  Resending
+an already acknowledged packet? Madness! Since we had found bugs in this library
+before, it was quite conceivable.  I upgraded the stack to the absolute latest
+version and reran all the tests.  Same problem.  Yet according to the forums and
+bug tracker, nobody else had reported this kind of problem with this stack
+before.</p>
+
+<p>I decided some major action was needed.  I needed to partition the problem and
+eliminate large components to isolate the fault.</p>
+
+<h2>Isolation</h2>
+
+<p>First stop, to write a simple socket server which would accept a client
+connection, and then send out packets in a tight loop, as fast as it could. This
+would exercise the TCP/IP stack, driver and hardware without any of the protocol
+or application code. The packets contained a monotonic counter so I could see if
+any packets were being corrupted or lost.</p>
+
+<p>Running this test and capturing packets on the wire revealed the same problem. A
+burst of traffic, a flurry of <code>ACK</code>s and <code>NAK</code>s followed by timeouts and
+resends. Curses, foiled again!</p>
+
+<p>Ok, how do I eliminate the TCP/IP stack from the equation?  I constructed a UDP
+ping packet by hand, using parts of the wire capture data to fill in the
+relevant fields (such as MAC addresses).  I kept a monotonic sequence counter
+and copied this into the binary ping blob at the correct offset, which I passed
+directly to the driver, with my workstation hardcoded as the destination.  I
+started with a small delay, in the order of 100ms between ping packets.  This
+seemed to work ok.  But as I decreased the delay, packets were being dropped.
+Dropped?!</p>
+
+<p>The only thing between this test and the wire is the device driver and hardware.
+Could the driver be corrupting or dropping packets?</p>
+
+<h2>Fourth layer: device driver</h2>
+
+<p>A code review of the device driver didn&rsquo;t show up anything suspicious.  Looking
+at the memory management, interrupt handling &ndash; it all seemed quite carefully
+written. Many hours later, no closer to the problem.</p>
+
+<p>I pulled up the datasheet for the Ethernet controller and started querying the
+status registers, halting the microprocessor and printing a diagnostic. There
+were no clear errors to be found, so the driver did not appear to be causing the
+hardware to fail sending or receiving data.</p>
+
+<h2>Fifth layer: hardware</h2>
+
+<p>The microprocessor has onboard Ethernet support, which is connected to a
+separate MAC (Media Access Control) chip.  This MAC performs the actual
+electrical interfacing, and is the last piece of silicon before the wire. I
+started reading the datasheet and looking at the initialisation sequence in the
+driver, which configures the registers in the MAC on powerup.  I verified the
+correct register flags and values, but while I was reading I noticed there were
+some counter registers which collected counts of certain types of media
+(physical layer) errors.</p>
+
+<p>I added some code to my minimalist hand-crafted ping test to read these counters
+from the MAC registers, showing the values before and after the ping burst. Sure
+enough, the counters were 0 on powerup, and after the ping test one of the error
+counters had a very large number.  Ok, I think we&rsquo;re finally on to something&hellip;</p>
+
+<h2>Back on the wire</h2>
+
+<p>I modified the test program to send out hand-crafted <code>ARP</code> packets. The only
+other code in play was the driver.  I went back to Wireshark and captured
+another session.  This time, I exported the trace data to a file and analysed
+the timing information in the headers.</p>
+
+<p>I then stepped through and counted the number of successful packets sent before
+a failure.  Then the next, and the next.  And I started to notice a sort of
+pattern. The gaps were something like 9, 17, 33, 51&hellip; and eventually it would
+come back down and repeat.  A regular pattern is very interesting, but what
+could be causing this kind of failure?</p>
+
+<p>Stepping back and looking at the regular pattern of successes and failures over
+time was like looking at an interference pattern.  Like ripples in a pond,
+where the waves met, packets were dropped.  A colleague observed that this
+looked a bit like there were two slightly different frequencies involved&hellip;
+Wait a minute!</p>
+
+<h2>Don&rsquo;t blame the Hardware</h2>
+
+<p>It was nearly midnight, and I desperately wanted to talk to the Hardware
+Engineer who designed the system.  But it would have to wait until the morning.
+I fired off an email explaining what we had found, and went home exhausted.</p>
+
+<p>The next day, I walked up to the Hardware Engineer who had a big grin on his
+face. &ldquo;I think I found your problem&hellip;&rdquo;, he opened.  I was skeptical, but
+excited and urged him to explain.  &ldquo;In the last board spin, I rerouted the clock
+source of the MAC controller.  So the Microprocessor and the MAC were actually
+running off two different clocks!&rdquo;</p>
+
+<p>I was elated.  This perfectly explained the &ldquo;interference pattern&rdquo; we had
+observed. The frequencies of the two clocks were supposed to be the same, but
+were not perfectly aligned. Even a slight difference in frequency would cause a
+&lsquo;beating&rsquo; effect as they drifted in and out of phase.  Much like you can hear
+when tuning a guitar, and two strings are almost, but not quite, in tune and you
+hear a lower frequency &lsquo;wow&rsquo;.</p>
+
+<p>So &ndash; while the two clocks were aligned, the microprocessor and the MAC
+controller chip could reliably communicate, and the packets flowed normally. But
+as the clocks drifted slightly out of phase, their chip-to-chip communication
+was corrupted as the rising and falling signals between them became misaligned.
+This explained why packets appeared to be sent or received at the higher layers,
+but were in fact lost in the intermittently garbled transfers.  It&rsquo;s almost a
+marvel TCP/IP worked at all!</p>
+
+<h2>The fix</h2>
+
+<p>In the end, it was a simple matter of ensuring both chips used a common clock
+source &ndash; which required a modificaiton to the PCB routing.  But for now, to test
+the issue, the Hardware Engineer broke out the soldering iron and fixed the
+routing by hand on our development system. (We were fortunate that the clock
+signal was on an outer layer of the PCB!)  I started the test again, very
+nervous to see the results. After days of chasing ghosts, I didn&rsquo;t want to get
+my hopes up.</p>
+
+<p>It worked.  The hand-crafted arp and ping tests would run for as long as we
+liked, and never skipped a beat, running as fast as it could go.  Finally, full
+throughput was achieved.  I queried the registers for protocol and link errors,
+and it was all good.  I checked the TCP/IP layer diagnostics for errors and
+statistics, and there were no red flags. I went back to the original application
+firmware and tested out the protocol, monitoring the wire for good measure.</p>
+
+<p>This time, it took less than a second for a full status dump. Finally &ndash; success!</p>
+
+<h2>Wrapup</h2>
+
+<p>So &ndash; what began as a seemingly simple software performance problem eventually
+turned out to be caused by a hardware design fault.  And it revealed several
+other opportunities for improvement along the way.  This was a great learning
+experience, and a very satisfying puzzle to solve!</p>
+
+<p>Random thoughts:</p>
+
+<ol>
+<li>TCP/IP is <em>really, really</em> good at surviving unreliable hardware and problems in layers below.</li>
+<li>Don&rsquo;t mix clock sources between chips!</li>
+<li>Don&rsquo;t assume that the first problem you find is <em>causing</em> the problem.</li>
+<li>Don&rsquo;t assume the improvement you make is sufficient. Measure!</li>
+<li>Performance is relative. What can you reasonably expect from the system in front of you?</li>
+<li>Performance tuning is all about careful measurments and consistent tests. And changing
+one thing at a time!</li>
+<li>It&rsquo;s hardly ever the fault of the OS. But it could be. And it&rsquo;s hardly ever the fault of the
+hardware. But it could be.</li>
+<li>Don&rsquo;t be satisfied with a fix until you understand <em>how</em> it works and <em>why</em> it fixes the problem.</li>
+<li>It is sometimes possible to diagnose hardware problems through analysing software.</li>
+<li>Persistence usually pays off!</li>
+</ol>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Gavin Baker</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-12-24T18:24:00+11:00" pubdate data-updated="true">2011-12-24</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://antonym.org//2011/12/bug-of-the-year-2011.html" data-via="gavinb" data-counturl="http://antonym.org//2011/12/bug-of-the-year-2011.html" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/2011/03/good-code-gardening.html" title="Previous Post: Good Code Gardening">&laquo; Good Code Gardening</a>
+      
+      
+        <a class="basic-alignment right" href="/2013/10/what-is-rust.html" title="Next Post: What is Rust?">What is Rust? &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/2013/10/what-is-rust.html">What is Rust?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/12/bug-of-the-year-2011.html">Bug of the Year - 2011</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/03/good-code-gardening.html">Good Code Gardening</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2010/04/25-tips-for-intermediate-mercurial-users.html">25 Tips for Intermediate Mercurial Users</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2010/01/threading-with-boost---part-ii-threading-challenges.html">Threading with Boost - Part II: Threading Challenges</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Gavin Baker <br/>
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>, customized with <a href="https://github.com/mjhea0/whiterspace">whiterspace</a>.</span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'antonym';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://antonym.org//2011/12/bug-of-the-year-2011.html';
+        var disqus_url = 'http://antonym.org//2011/12/bug-of-the-year-2011.html';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
