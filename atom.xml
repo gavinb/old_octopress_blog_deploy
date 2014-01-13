@@ -4,7 +4,7 @@
   <title><![CDATA[Gavin Baker ~ antonym.org]]></title>
   <link href="http://antonym.org//atom.xml" rel="self"/>
   <link href="http://antonym.org//"/>
-  <updated>2013-11-13T15:23:31+11:00</updated>
+  <updated>2014-01-13T21:22:33+11:00</updated>
   <id>http://antonym.org//</id>
   <author>
     <name><![CDATA[Gavin Baker]]></name>
@@ -534,7 +534,7 @@ M utils.h
 
 <p>The following animation shows this process for a single file:</p>
 
-<p><img alt="Gardening.gif" src="http://antonym.org/Gardening.gif" width="393" height="385" class="mt-image-none" style="" /></p>
+<p><img src="http://antonym.org//img/Gardening.gif"></p>
 
 <p>If you&rsquo;re using <code>git</code>, there is a command that performs essentially the same thing.  You need first to add your desired changes to the &ldquo;index&rdquo; (or staging area).  You can even stage changes as you go, which is a very powerful (though potentially confusing) model.  This is performed with:</p>
 
@@ -604,7 +604,7 @@ ignore = version, help, update, serve, record
 
 <p>Mercurial stores its repository in the &ldquo;revlog&rdquo; format.  This is a tree of commits and their metadata, with each commit being uniquely identified by its the SHA-1 hash.</p>
 
-<p><span class="mt-enclosure mt-enclosure-image" style="display: inline;"><img alt="MercurialRevisionTreeExample.png" src="http://antonym.org/hg25/MercurialRevisionTreeExample.png" width="703" height="221" class="mt-image-none" style="" /></span></p>
+<p><img src="http://antonym.org//img/MercurialRevisionTreeExample.png"></p>
 
 <p>When you see a changeset in this format:</p>
 
@@ -726,7 +726,7 @@ $ hg outgoing exp
 <pre><code>$ hg tag -r 4a93 version_1_2_1
 </code></pre>
 
-<p><span class="mt-enclosure mt-enclosure-image" style="display: inline;"><img alt="MercurialTaggingExample.png" src="http://antonym.org/hg25/MercurialTaggingExample.png" width="702" height="248" class="mt-image-none" style="" /></span></p>
+<p><img src="http://antonym.org//img/MercurialTaggingExample.png"></p>
 
 <p>Once you have created a tag, you can use its name virtually anywhere you would normally specify a revision.  So after the above two operations, <code>hg tags</code> would show:</p>
 
@@ -761,7 +761,7 @@ version_1_2_1        22:4a93c0e1aa0b
 
 <p>The following example shows a feature branch for the GUI, and another for the database layer.  These branches are periodically merged with default, where releases are made:</p>
 
-<p><span class="mt-enclosure mt-enclosure-image" style="display: inline;"><img alt="MercurialBranchingExample.png" src="http://antonym.org/hg25/MercurialBranchingExample.png" width="904" height="291" class="mt-image-none" style="" /></span></p>
+<p><img src="http://antonym.org//img/MercurialBranchingExample.png"></p>
 
 <p>There are other types of branches too.  The simplest is an &ldquo;anonymous&rdquo; branch, which you can create simply by updating to an earlier revision, making some changes, and committing a new child revision.  This will result in a commit with two children &ndash; ie. a branch.  Steve Losh has written <a href="http://stevelosh.com/blog/2009/08/a-guide-to-branching-in-mercurial/">an excellent article on branching</a> which explains this in more detail.</p>
 
@@ -1271,7 +1271,7 @@ MyProject.xcodeproj/*.mode1v3
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p><img src="http://antonym.org/boost/DeadlockAnimation.gif" alt="DeadlockAnimation.gif" border="0" width="561" height="249" /></p>
+<p><img src="http://antonym.org//img/DeadlockAnimation.gif"></p>
 
 <p>Fortunately, the problem of deadlocks can largely be avoided by consistently locking mutexes in the same order, and unlocking them in reverse order.</p>
 
@@ -1602,7 +1602,7 @@ Thumbs up!</p>
 
 <p>The general structure of the examples below is shown in the following sequence diagram:</p>
 
-<p><span class="mt-enclosure mt-enclosure-image" style="display: inline;"><img alt="BoostThreadExample.png" src="http://antonym.org/boost/BoostThreadExample.png" width="410" height="462" class="mt-image-center" style="text-align: center; display: block; margin: 0 auto 20px;" /></span></p>
+<p><img src="http://antonym.org//img/BoostThreadExample.png"></p>
 
 <p>The application starts, and the main thread runs at (a).  Then at (b), the main thread spawns the worker thread by constructing a thread object with the worker function.  Right after, at &copy;, the main thread calls <code>join</code> on the thread, which means it will go to sleep (and not consume any CPU time) until the worker thread has completed.  As soon as the worker thread is created at (b), it will start execution.  At some point later at (d), the worker completes.  Since the main thread was joining on its completion, main wakes up and continues running.  It finishes at (e) and the process terminates.  Each of the examples below follow this general scheme &ndash; the difference lies in how the threads are created.</p>
 

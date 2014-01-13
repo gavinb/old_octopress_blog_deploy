@@ -157,7 +157,7 @@
 
 <p>The general structure of the examples below is shown in the following sequence diagram:</p>
 
-<p><span class="mt-enclosure mt-enclosure-image" style="display: inline;"><img alt="BoostThreadExample.png" src="http://antonym.org/boost/BoostThreadExample.png" width="410" height="462" class="mt-image-center" style="text-align: center; display: block; margin: 0 auto 20px;" /></span></p>
+<p><img src="/img/BoostThreadExample.png"></p>
 
 <p>The application starts, and the main thread runs at (a).  Then at (b), the main thread spawns the worker thread by constructing a thread object with the worker function.  Right after, at &copy;, the main thread calls <code>join</code> on the thread, which means it will go to sleep (and not consume any CPU time) until the worker thread has completed.  As soon as the worker thread is created at (b), it will start execution.  At some point later at (d), the worker completes.  Since the main thread was joining on its completion, main wakes up and continues running.  It finishes at (e) and the process terminates.  Each of the examples below follow this general scheme &ndash; the difference lies in how the threads are created.</p>
 
@@ -644,7 +644,7 @@ Cuong Bui</p>
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2013 - Gavin Baker <br/>
+  Copyright &copy; 2014 - Gavin Baker <br/>
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>, customized with <a href="https://github.com/mjhea0/whiterspace">whiterspace</a>.</span>
 </p>
 
