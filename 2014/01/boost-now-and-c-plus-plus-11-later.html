@@ -5,11 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>What went wrong? - antonym.org</title>
+  <title>Boost now and C++11 later - antonym.org</title>
   <meta name="author" content="Gavin Baker">
 
   
-  <meta name="description" content="Writing good diagnostic error messages is hard. But it&rsquo;s worth the effort. And there&rsquo;s also some side benefits if you take the time, and &hellip;">
+  <meta name="description" content="The C++11 standard has been around for a few years now (first published in
+XXXX). We are fortunate that both the gcc project and the clang project &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://antonym.org//2006/04/what-went-wrong.html">
+  <link rel="canonical" href="http://antonym.org//2014/01/boost-now-and-c-plus-plus-11-later.html">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="antonym.org" type="application/atom+xml">
@@ -81,7 +82,7 @@
   <header>
   
     
-      <h1 class="entry-title">What Went Wrong?</h1>
+      <h1 class="entry-title">Boost Now and C++11 Later</h1>
     
   
     
@@ -98,47 +99,30 @@
   
 
 
-<time datetime="2006-04-19T17:34:00+10:00" pubdate data-updated="true">2006-04-19</time>
+<time datetime="2014-01-14T20:16:00+11:00" pubdate data-updated="true">2014-01-14</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>Writing <em>good</em> diagnostic error messages is hard.  But it&rsquo;s worth the effort.  And there&rsquo;s also some side benefits if you take the time, and it&rsquo;s not just avoiding hate-mail from your users.</p>
+<div class="entry-content"><p>The C++11 standard has been around for a few years now (first published in
+XXXX).  We are fortunate that both the <code>gcc</code> project and the <code>clang</code> project
+have implemented comprehensive support for the new language and library
+features.  So if you&rsquo;re using the current versions of these tools, you can take
+advantage of all the new features right now.</p>
 
-<!--more-->
+<p>Unfortunately, some of the larger compiler vendors are still lagging in their
+support for the new, shiny C++11 features.  A thorough summary of major compiler
+support is available ***.</p>
 
+<p>Whether your project is constrained by toolchain support, 3rd party library
+support, or upgrading your toolchain isn&rsquo;t currently feasible, there are ways
+to get many of the new features &lsquo;for free&rsquo;.</p>
 
-<p>How many times have you run some software, only to have it fail with a message:</p>
-
-<pre><code>Unknown Error: -3
-
-[Abort] [Retry]
-</code></pre>
-
-<p>There should be a third button: &ldquo;Punch the developer who couldn&rsquo;t be bothered to put in a decent error message.&rdquo;</p>
-
-<p>But it&rsquo;s actually hard to write good error handling, and that&rsquo;s why so many people don&rsquo;t.  Either that, or they are coding demigods who are so confident in their code they know it will never fail.  But a quick browse of the <a href="http://www.userinterfacehallofshame.com">UI Hall of Shame</a> is enough to prove the point that even proprietary commercial developers goof up.</p>
-
-<p>I&rsquo;m just now writing a tool to import data into our software from CSV files.  And the variety of flavours of CSV, combined with different field labels, column ordering, field aliases, is staggering.  Add to that some fields are required, some optional, some should be ignored, then there are user-defined columns that come after the required ones we know about.  So a simple task as &ldquo;import from CSV&rdquo; turns out to be pretty complicated, and giving the user meaningful feedback to guide them to the problem is particularly tricky.</p>
-
-<p>So to make things easier for the user, I&rsquo;ve tried to be really friendly and provide comprehensive diagnostics.  This means checking every possible way things could go wrong, and ensuring that you have sufficient context in your code at each point to be able to provide <em>meaningful</em> errors.</p>
-
-<p>So &ndash; which error message would you prefer to see when importing your data?</p>
-
-<pre><code>Error: invalid field DS5301
-</code></pre>
-
-<p>or:</p>
-
-<pre><code>Unexpected field 'DS5301' in header line 1 at column 11.
-Looking for required fields, still haven't found: id, family.
-</code></pre>
-
-<p>It takes time to craft an error message that reads like an actual English sentence, and conveys not only what went wrong but where and why, and what the software was expecting to find instead.  Error codes might be useful for the developer, but it&rsquo;s useless for the user.</p>
-
-<p>So the bonus you get if you do write decent error messages?  It guides you to write your test cases, of course!  So after I added the above check to ensure all the required fields had been read before the user-defined fields, I wrote a data file that would trigger that error.  Now I have regression testing, I can make sure that the error gets picked up.  All this work for those ungrateful users&hellip;</p>
+<p>Fortunately, the <a href="http://www.boost.org/">Boost project</a> provides an unofficial
+staging ground for many new C++ library features.  So all the new goodness
+with <code>unique_ptr</code> and friends can be had right now, simply by using Boost.</p>
 </div>
 
 
@@ -161,15 +145,21 @@ Looking for required fields, still haven't found: id, family.
   
 
 
-<time datetime="2006-04-19T17:34:00+10:00" pubdate data-updated="true">2006-04-19</time>
+<time datetime="2014-01-14T20:16:00+11:00" pubdate data-updated="true">2014-01-14</time>
       
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/c-plus-plus-c-plus-plus-11-stl-programming-boost/'>c++,c++11,stl,programming,boost</a>
+  
+</span>
 
 
     </p>
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://antonym.org//2006/04/what-went-wrong.html" data-via="gavinb" data-counturl="http://antonym.org//2006/04/what-went-wrong.html" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://antonym.org//2014/01/boost-now-and-c-plus-plus-11-later.html" data-via="gavinb" data-counturl="http://antonym.org//2014/01/boost-now-and-c-plus-plus-11-later.html" >Tweet</a>
   
   
   
@@ -178,10 +168,8 @@ Looking for required fields, still haven't found: id, family.
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/2006/02/surface-plots-of-image-data-in-gnu-r.html" title="Previous Post: Surface plots of image data in GNU R">&laquo; Surface plots of image data in GNU R</a>
+        <a class="basic-alignment left" href="/2013/10/what-is-rust.html" title="Previous Post: What is Rust?">&laquo; What is Rust?</a>
       
-      
-        <a class="basic-alignment right" href="/2006/07/autoantonyms.html" title="Next Post: Autoantonyms">Autoantonyms &raquo;</a>
       
     </p>
   </footer>
@@ -247,8 +235,8 @@ Looking for required fields, still haven't found: id, family.
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://antonym.org//2006/04/what-went-wrong.html';
-        var disqus_url = 'http://antonym.org//2006/04/what-went-wrong.html';
+        var disqus_identifier = 'http://antonym.org//2014/01/boost-now-and-c-plus-plus-11-later.html';
+        var disqus_url = 'http://antonym.org//2014/01/boost-now-and-c-plus-plus-11-later.html';
         var disqus_script = 'embed.js';
       
     (function () {

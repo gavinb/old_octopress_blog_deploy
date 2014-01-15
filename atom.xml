@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Gavin Baker ~ antonym.org]]></title>
+  <title><![CDATA[antonym.org]]></title>
   <link href="http://antonym.org//atom.xml" rel="self"/>
   <link href="http://antonym.org//"/>
-  <updated>2014-01-13T21:22:33+11:00</updated>
+  <updated>2014-01-15T11:09:22+11:00</updated>
   <id>http://antonym.org//</id>
   <author>
     <name><![CDATA[Gavin Baker]]></name>
@@ -12,6 +12,35 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    
+    <title type="html"><![CDATA[Boost now and C++11 later]]></title>
+    <link href="http://antonym.org//2014/01/boost-now-and-c-plus-plus-11-later.html"/>
+    
+    <updated>2014-01-14T20:16:00+11:00</updated>
+    <id>http://antonym.org//2014/01/boost-now-and-c-plus-plus-11-later</id>
+    
+    <content type="html"><![CDATA[<p>The C++11 standard has been around for a few years now (first published in
+XXXX).  We are fortunate that both the <code>gcc</code> project and the <code>clang</code> project
+have implemented comprehensive support for the new language and library
+features.  So if you&rsquo;re using the current versions of these tools, you can take
+advantage of all the new features right now.</p>
+
+<p>Unfortunately, some of the larger compiler vendors are still lagging in their
+support for the new, shiny C++11 features.  A thorough summary of major compiler
+support is available ***.</p>
+
+<p>Whether your project is constrained by toolchain support, 3rd party library
+support, or upgrading your toolchain isn&rsquo;t currently feasible, there are ways
+to get many of the new features &lsquo;for free&rsquo;.</p>
+
+<p>Fortunately, the <a href="http://www.boost.org/">Boost project</a> provides an unofficial
+staging ground for many new C++ library features.  So all the new goodness
+with <code>unique_ptr</code> and friends can be had right now, simply by using Boost.</p>
+]]></content>
+    
+  </entry>
   
   <entry>
     
@@ -2947,52 +2976,6 @@ Hi Reid, you&rsquo;re right &ndash; I got the names back-to-front (the article i
     <content type="html"><![CDATA[<p>What is the antonym (word of opposite meaning) to the word &ldquo;resign&rdquo;?  One correct answer is &ldquo;resign&rdquo;.  What about the opposite of &ldquo;dust&rdquo;?  Yup, 10 points for &ldquo;dust&rdquo;.</p>
 
 <p>Confused?  These words are <strong>autoantonyms</strong>, one word that can have two opposite meanings!  See a full list of <a href="http://www.fun-with-words.com/nym_autoantonyms.html">autoantonyms at &ldquo;Fun With Words&rdquo;</a>.</p>
-]]></content>
-    
-  </entry>
-  
-  <entry>
-    
-    <title type="html"><![CDATA[What went wrong?]]></title>
-    <link href="http://antonym.org//2006/04/what-went-wrong.html"/>
-    
-    <updated>2006-04-19T17:34:00+10:00</updated>
-    <id>http://antonym.org//2006/04/what-went-wrong</id>
-    
-    <content type="html"><![CDATA[<p>Writing <em>good</em> diagnostic error messages is hard.  But it&rsquo;s worth the effort.  And there&rsquo;s also some side benefits if you take the time, and it&rsquo;s not just avoiding hate-mail from your users.</p>
-
-<!--more-->
-
-
-<p>How many times have you run some software, only to have it fail with a message:</p>
-
-<pre><code>Unknown Error: -3
-
-[Abort] [Retry]
-</code></pre>
-
-<p>There should be a third button: &ldquo;Punch the developer who couldn&rsquo;t be bothered to put in a decent error message.&rdquo;</p>
-
-<p>But it&rsquo;s actually hard to write good error handling, and that&rsquo;s why so many people don&rsquo;t.  Either that, or they are coding demigods who are so confident in their code they know it will never fail.  But a quick browse of the <a href="http://www.userinterfacehallofshame.com">UI Hall of Shame</a> is enough to prove the point that even proprietary commercial developers goof up.</p>
-
-<p>I&rsquo;m just now writing a tool to import data into our software from CSV files.  And the variety of flavours of CSV, combined with different field labels, column ordering, field aliases, is staggering.  Add to that some fields are required, some optional, some should be ignored, then there are user-defined columns that come after the required ones we know about.  So a simple task as &ldquo;import from CSV&rdquo; turns out to be pretty complicated, and giving the user meaningful feedback to guide them to the problem is particularly tricky.</p>
-
-<p>So to make things easier for the user, I&rsquo;ve tried to be really friendly and provide comprehensive diagnostics.  This means checking every possible way things could go wrong, and ensuring that you have sufficient context in your code at each point to be able to provide <em>meaningful</em> errors.</p>
-
-<p>So &ndash; which error message would you prefer to see when importing your data?</p>
-
-<pre><code>Error: invalid field DS5301
-</code></pre>
-
-<p>or:</p>
-
-<pre><code>Unexpected field 'DS5301' in header line 1 at column 11.
-Looking for required fields, still haven't found: id, family.
-</code></pre>
-
-<p>It takes time to craft an error message that reads like an actual English sentence, and conveys not only what went wrong but where and why, and what the software was expecting to find instead.  Error codes might be useful for the developer, but it&rsquo;s useless for the user.</p>
-
-<p>So the bonus you get if you do write decent error messages?  It guides you to write your test cases, of course!  So after I added the above check to ensure all the required fields had been read before the user-defined fields, I wrote a data file that would trigger that error.  Now I have regression testing, I can make sure that the error gets picked up.  All this work for those ungrateful users&hellip;</p>
 ]]></content>
     
   </entry>

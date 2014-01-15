@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Gavin Baker ~ antonym.org</title>
+  <title>antonym.org</title>
   <meta name="author" content="Gavin Baker">
 
   
-  <meta name="description" content="Sure, Tiger &ndash; the latest release of Apple&rsquo;s Mac OS X &ndash; has a huge array of new features. Sure, the Spotlight search features alone &hellip;">
+  <meta name="description" content="The Standard Template Library (STL) for C++ provides a set of powerful and flexible templated container classes. Never again will you have to hand- &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -21,16 +21,18 @@
   <link rel="canonical" href="http://antonym.org//blog/page/2/index.html">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <link href="/atom.xml" rel="alternate" title="Gavin Baker ~ antonym.org" type="application/atom+xml">
+  <link href="/atom.xml" rel="alternate" title="antonym.org" type="application/atom+xml">
   <script src="/javascripts/modernizr-2.0.js"></script>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
   <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
   <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!-- before custom head -->
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
 <link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 <link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
+  <!-- after custom head -->
   
   <script type="text/javascript">
     var _gaq = _gaq || [];
@@ -48,7 +50,9 @@
 </head>
 
 <body   class="collapse-sidebar sidebar-footer" >
-  <header role="banner">
+  <header role="banner"><h1>antonym.org</h1>
+<h2>Bits by Gavin Baker</h2>
+
 </header>
   <nav role="navigation"><ul class="subscription" data-subscription="rss">
   <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
@@ -73,6 +77,156 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+  
+    
+      <h1 class="entry-title"><a href="/2008/05/stl-iterators-and-performance.html">STL Iterators and Performance</a></h1>
+      
+      
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2008-05-30T11:02:00+10:00" pubdate data-updated="true">2008-05-30</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>The Standard Template Library (STL) for C++ provides a set of powerful and flexible templated container classes.  Never again will you have to hand-craft a doubly-linked list (and get your pointer arithmetic mixed up) &mdash; just use <code>std::list&lt;T&gt;</code>.</p>
+
+<p>Now most of the idiomatic C++ code I&rsquo;ve read that uses STL iterators uses the prefix <code>operator++</code> to move the iterator forward.  And so I had long ago adopted this too, with a vague recollection of having read somewhere that it performed better.  But why?  Good question&hellip; (Updated: fixed formatting, got numbers the right way around.)</p>
+
+<p>The use of the post-increment operator is well established idiomatic code for looping (in both C and C++):</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'>  <span class="k">for</span> <span class="p">(</span> <span class="kt">unsigned</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">array_length</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span> <span class="p">)</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// do something with array[i]</span>
+</span><span class='line'>    <span class="c1">// ...</span>
+</span><span class='line'>  <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>When the indexing variable is an ordinal type (usually an integer), the incrementing order makes no difference.  The expressions <code>++i</code> and <code>i++</code> are identical in this case.  And so many people developing in C++ simply use the same style in C++ with their iterator code.  Why would it matter?</p>
+
+<p>Well, it turns out that it does.  If the indexing variable is a class, such as an iterator, there are some subtle differences between the pre-increment and post-increment operators that may have a big impact on performance.</p>
+
+<p>Referring back to Scott Meyer&rsquo;s wonderful <a href="http://www.amazon.com/More-Effective-C%2B%2B-Addison-Wesley-Professional/dp/020163371X/ref=pd_bbs_sr_1/002-4241626-5806441?ie=UTF8&amp;s=books&amp;qid=1190249817&amp;sr=8-1">More Effective C++</a> book, I tracked down the explanation (item 6, page 31), which I will attempt to reproduce here in simplified form.  The signature of the pre-increment <code>operator++</code> for a class T is:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'>  <span class="n">T</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">++</span><span class="p">();</span> <span class="c1">// prefix</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>while the post-increment operator had a dummy parameter added to make the signature unique:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'>  <span class="k">const</span> <span class="n">T</span> <span class="k">operator</span><span class="o">++</span><span class="p">(</span> <span class="kt">int</span> <span class="p">);</span> <span class="c1">// postfix</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>But that isn&rsquo;t the only difference &ndash; notice that the prefix operator returns a <em>reference</em> to the object itself (permitting chaining of method calls), while the postfix operator returns a <em>const object</em>, semantically defined as the previous value.  (This is for consistency with the behaviour of ordinal types.)</p>
+
+<p>The result is that the pre-increment operator modifies the object in-place, whereas the post-increment operator will result in temporaries being created, invoking the constructor and destructor.  So something as simple as <code>++it</code> versus <code>it++</code> turns out to have some significant side-effects when applied to an object with overloaded operators.  Since this is the case with virtually all iterators in the STL, as well as many other similar objects, it is worth investigating.</p>
+
+<p>So I decided to quantify the difference, to see how much of a difference it made.  I wrote a test program that created a very large (5 million) array of integers, and iterated over the array.  I used a high-resolution timer to time two versions of the loop, identical save for one being pre-increment and one being post-increment.  After a warmup of 3 runs, I ran the test 10 times, collected the timings and compared them.</p>
+
+<p>The results were very interesting: on an Intel workstation, the pre-increment code took an average of 14.1ns per call, while the post-increment code took 27.6ns per call.  That&rsquo;s a significant difference of 49%, or nearly twice as fast!  A plot of 10 iterations each is shown below:</p>
+
+<p><span class="mt-enclosure mt-enclosure-image" style="display: inline;"><a href="http://antonym.org/assets_c/2009/05/results_ppc_g4.html" onclick="http://antonym.org/assets_c/2009/05/results_ppc_g4.html','popup','width=998,height=928,scrollbars=no,resizable=no,toolbar=no,directories=no,location=no,menubar=no,status=no,left=0,top=0'); return false"><img src="http://antonym.org/assets_c/2009/05/results_ppc_g4-thumb-200x185.png" width="200" height="185" alt="results_ppc_g4.png" class="mt-image-center" style="text-align: center; display: block; margin: 0 auto 20px;" /></a></span></p>
+
+<p>So &ndash; it really does improve the performance of your code to write:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'>  <span class="n">mylist</span><span class="o">::</span><span class="n">const_iterator</span> <span class="n">it</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">for</span> <span class="p">(</span> <span class="n">it</span> <span class="o">=</span> <span class="n">numbers</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span> <span class="n">it</span> <span class="o">!=</span> <span class="n">numbers</span><span class="p">.</span><span class="n">end</span><span class="p">();</span> <span class="o">++</span><span class="n">it</span> <span class="p">)</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// do something with *it</span>
+</span><span class='line'>  <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>For small arrays, it may not make much of a noticeable difference, but every cycle counts, and a little consistency goes a long way.  Using the prefix increment will enable your application to scale better.</p>
+
+<p>Using the prefix form won&rsquo;t make your actual loop run twice as fast, as the iterator increment is only one component contributing to the performance, and the looping overhead may indeed be swamped by the execution time of the body.  So as always, YMMV!</p>
+
+<p>I have provided the test source in C++, along with an R script to summarise and plot the output.  You can download it via the attachment linked at the end of this article.  The code should compile on any POSIX-conforming system with a decent C++ compiler.  And if you do your own performance tests, please drop me a line and let me know what you found.</p>
+
+<p>As one final note, the wonderful <a href="http://www.boost.org/">Boost++ library</a> provides the <code>foreach</code> module, which provides a powerful wrapper to iterate over containers with a nice clean simple syntax:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="kt">int</span> <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="n">foreach</span><span class="p">(</span> <span class="kt">int</span> <span class="n">num</span><span class="p">,</span> <span class="n">numbers</span> <span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">total</span> <span class="o">+=</span> <span class="n">num</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And yes, it uses the pre-increment operator for maximum performance.</p>
+
+<p>Download the source used for this article:</p>
+
+<p><span class="mt-enclosure mt-enclosure-file" style="display: inline;"><a href="http://antonym.org/iterperf/iterperf-0.1.zip">iterperf-0.1.zip</a></span></p>
+
+<p>Archived Comments</p>
+
+<p>AUTHOR: bynio
+DATE: 04/15/2009 03:17:24 AM
+&ldquo;the post-increment code took an average of 14.1ns per call, while the pre-increment code took 27.6ns per call&rdquo;, so actually post-increment is faster?</p>
+
+<p>AUTHOR: Reid Ellis
+DATE: 04/28/2009 01:48:50 AM</p>
+
+<blockquote><em>the post-increment code took an average of 14.1ns per call, while the pre-increment code took 27.6ns per call</em></blockquote>
+
+
+<p><p />
+Do you have these numbers backwards? Because otherwise you are saying that the post-increment code is faster than the pre-increment code.
+<p />
+Reid</p>
+
+<p>AUTHOR: Gavin Baker
+DATE: 05/02/2009 10:50:17 PM
+Hi Reid, you&rsquo;re right &ndash; I got the names back-to-front (the article is updated now).  The post-increment is definitely twice as fast, and I have repeated the test on other machines, with the same relative results.</p>
+
+<p>In the migration from my old blog setup, this article lost a plot of the data, as well as the source of the test code.  I&rsquo;ve added the plot and linked the source tarball in here.</p>
+
+<p>:: Gavin</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -716,49 +870,6 @@
 
     </article>
   
-  
-    <article>
-      
-  <header>
-  
-    
-      <h1 class="entry-title"><a href="/2006/04/what-went-wrong.html">What Went Wrong?</a></h1>
-      
-      
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2006-04-19T17:34:00+10:00" pubdate data-updated="true">2006-04-19</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Writing <em>good</em> diagnostic error messages is hard.  But it&rsquo;s worth the effort.  And there&rsquo;s also some side benefits if you take the time, and it&rsquo;s not just avoiding hate-mail from your users.</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/2006/04/what-went-wrong.html">Read more &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/3/">&larr; Older</a>
@@ -776,6 +887,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/2014/01/boost-now-and-c-plus-plus-11-later.html">Boost now and C++11 later</a>
+      </li>
+    
+      <li class="post">
         <a href="/2013/10/what-is-rust.html">What is Rust?</a>
       </li>
     
@@ -789,10 +904,6 @@
     
       <li class="post">
         <a href="/2010/04/25-tips-for-intermediate-mercurial-users.html">25 Tips for Intermediate Mercurial Users</a>
-      </li>
-    
-      <li class="post">
-        <a href="/2010/01/threading-with-boost---part-ii-threading-challenges.html">Threading with Boost - Part II: Threading Challenges</a>
       </li>
     
   </ul>
