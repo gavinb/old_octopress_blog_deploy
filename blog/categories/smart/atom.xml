@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: "smart | antonym.org]]></title>
+  <link href="http://antonym.org//blog/categories/smart/atom.xml" rel="self"/>
+  <link href="http://antonym.org//"/>
+  <updated>2014-02-14T09:40:11+11:00</updated>
+  <id>http://antonym.org//</id>
+  <author>
+    <name><![CDATA[Gavin Baker]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[C++11 Smart Pointers: Shared Pointer]]></title>
+    <link href="http://antonym.org//2014/02/c-plus-plus-11-shared-pointer.html"/>
+    <updated>2014-02-13T18:45:00+11:00</updated>
+    <id>http://antonym.org//2014/02/c-plus-plus-11-shared-pointer</id>
+    <content type="html"><![CDATA[<p>In the last article on smart pointers, we looked at <code>std::unique_ptr</code>, which
+provides a simple and safe smart pointer to wrap heap allocations.  This
+type explicitly cannot be shared, to preserve its integrity. However, if
+you need to share a resource between multiple threads, you cannot use a
+<code>std::unique_ptr</code>. Apart from the issue of unique ownership, the big question
+remains &ndash; how can you ensure that the memory is freed once all referring
+threads have finished with the resource?</p>
+
+<p>The solution to sharing allocations between threads is the <code>std::shared_ptr</code>.
+While it does <strong>not</strong> address race conditions (see mutexes et al), it does
+solve the problem of managing the lifecycle of a shared resource between
+multiple threads.</p>
+]]></content>
+  </entry>
+  
+</feed>

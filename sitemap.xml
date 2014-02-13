@@ -92,7 +92,7 @@
     </url>
     <url>
         <loc>http://antonym.org//2008/05/stl-iterators-and-performance.html</loc>
-        <lastmod>2014-01-14T20:11:47+11:00</lastmod>
+        <lastmod>2014-02-03T08:49:24+11:00</lastmod>
     </url>
     <url>
         <loc>http://antonym.org//2008/11/improve-your-c-plus-plus-const-correctness.html</loc>
@@ -129,8 +129,20 @@
         <lastmod>2014-01-14T20:11:47+11:00</lastmod>
     </url>
     <url>
+        <loc>http://antonym.org//2012/02/threading-with-boost---part-iii-mutexes.html</loc>
+        <lastmod>2014-02-04T18:27:01+11:00</lastmod>
+    </url>
+    <url>
         <loc>http://antonym.org//2013/10/what-is-rust.html</loc>
         <lastmod>2014-01-14T20:11:47+11:00</lastmod>
+    </url>
+    <url>
+        <loc>http://antonym.org//2014/01/c-plus-plus-11-unique-pointer.html</loc>
+        <lastmod>2014-02-13T22:58:33+11:00</lastmod>
+    </url>
+    <url>
+        <loc>http://antonym.org//2014/02/c-plus-plus-11-shared-pointer.html</loc>
+        <lastmod>2014-02-13T18:51:13+11:00</lastmod>
     </url>
     <url>
         <loc>http://antonym.org//about/</loc>
@@ -138,11 +150,15 @@
     </url>
     <url>
         <loc>http://antonym.org//blog/archives/</loc>
-        <lastmod>2014-01-14T20:11:47+11:00</lastmod>
+        <lastmod>2014-02-13T22:58:33+11:00</lastmod>
+    </url>
+    <url>
+        <loc>http://antonym.org//boost/</loc>
+        <lastmod>2014-02-03T08:59:44+11:00</lastmod>
     </url>
     <url>
         <loc>http://antonym.org//</loc>
-        <lastmod>2014-01-14T20:11:47+11:00</lastmod>
+        <lastmod>2014-02-13T22:58:33+11:00</lastmod>
     </url>
     <url>
         <loc>http://antonym.org//libfg/</loc>

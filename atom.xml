@@ -4,7 +4,7 @@
   <title><![CDATA[antonym.org]]></title>
   <link href="http://antonym.org//atom.xml" rel="self"/>
   <link href="http://antonym.org//"/>
-  <updated>2014-01-15T11:12:11+11:00</updated>
+  <updated>2014-02-14T09:40:11+11:00</updated>
   <id>http://antonym.org//</id>
   <author>
     <name><![CDATA[Gavin Baker]]></name>
@@ -12,6 +12,252 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    
+    <title type="html"><![CDATA[C++11 Smart Pointers: Shared Pointer]]></title>
+    <link href="http://antonym.org//2014/02/c-plus-plus-11-shared-pointer.html"/>
+    
+    <updated>2014-02-13T18:45:00+11:00</updated>
+    <id>http://antonym.org//2014/02/c-plus-plus-11-shared-pointer</id>
+    
+    <content type="html"><![CDATA[<p>In the last article on smart pointers, we looked at <code>std::unique_ptr</code>, which
+provides a simple and safe smart pointer to wrap heap allocations.  This
+type explicitly cannot be shared, to preserve its integrity. However, if
+you need to share a resource between multiple threads, you cannot use a
+<code>std::unique_ptr</code>. Apart from the issue of unique ownership, the big question
+remains &ndash; how can you ensure that the memory is freed once all referring
+threads have finished with the resource?</p>
+
+<p>The solution to sharing allocations between threads is the <code>std::shared_ptr</code>.
+While it does <strong>not</strong> address race conditions (see mutexes et al), it does
+solve the problem of managing the lifecycle of a shared resource between
+multiple threads.</p>
+]]></content>
+    
+  </entry>
+  
+  <entry>
+    
+    <title type="html"><![CDATA[C++11 Smart Pointers: Unique Pointer]]></title>
+    <link href="http://antonym.org//2014/01/c-plus-plus-11-unique-pointer.html"/>
+    
+    <updated>2014-01-31T18:29:00+11:00</updated>
+    <id>http://antonym.org//2014/01/c-plus-plus-11-unique-pointer</id>
+    
+    <content type="html"><![CDATA[<p>C++11 introduces many significant improvements to the language and runtime.
+One of the most important is to do with memory management &ndash; specifically,
+smart pointers.</p>
+
+<!--more-->
+
+
+<p>Instead of using a bare pointer type in C++, the modern C++11 style is now to
+use <code>std::unique_ptr</code>.  This class will automatically free the allocated memory
+once the variable goes out of scope.  This is the simplest of the new smart
+pointer types in C++11.</p>
+
+<p>Whereas before, you might write:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">Foo</span><span class="o">*</span> <span class="n">obj</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Foo</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">obj</span><span class="o">-&gt;</span><span class="n">process</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">delete</span> <span class="n">obj</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>you can now write:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">&gt;</span> <span class="n">obj</span><span class="p">(</span><span class="k">new</span> <span class="n">Foo</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">obj</span><span class="o">-&gt;</span><span class="n">process</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// obj will be automatically deleted</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The <code>std::unique_ptr</code> class enforces several useful properties:</p>
+
+<ul>
+<li>only a single unique reference to the allocated object can be active at a time</li>
+<li>the object will be deleted when the smart pointer goes out of scope</li>
+</ul>
+
+
+<p>The <code>unique_ptr</code> type is templated over the pointer type, and its constructor
+takes the allocated pointer returned from the <code>new</code> operator.  And because the
+pointer <code>operator-&gt;()</code> is overloaded, the smart pointer object can be used just
+like a regular pointer.</p>
+
+<p><strong>Note 1:</strong> For Boost users, this is almost the same as the <code>boost::scoped_ptr</code>
+class.</p>
+
+<p><strong>Note 2:</strong> This class supercedes the <code>std::auto_ptr</code>, which was deprecated in C++11.</p>
+
+<p><strong>Note 3:</strong> When invoking <code>std::unique_ptr</code> methods on the smart pointer itself,
+remember to use the dot <code>.</code> operator. When invoking methods on the object pointer,
+use the arrow <code>-&gt;</code> operator as you normally would (since it is overloaded to return the underlying object pointer).</p>
+
+<p>Once the variable goes out of scope, <code>delete</code> will be called to release the memory,
+and the destructor will be invoked as usual, as this simple example shows:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="cp">#include &lt;memory&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;iostream&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">Foo</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'><span class="k">public</span><span class="o">:</span>
+</span><span class='line'>    <span class="n">Foo</span><span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;+++ Foo::Foo()</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'>    <span class="o">~</span><span class="n">Foo</span><span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;--- Foo::~Foo()</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'>    <span class="kt">void</span> <span class="n">process</span><span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;... Foo::process()</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">*</span> <span class="n">argv</span><span class="p">[])</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;+++ main()</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">&gt;</span> <span class="n">obj</span><span class="p">(</span><span class="k">new</span> <span class="n">Foo</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">obj</span><span class="o">-&gt;</span><span class="n">process</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;--- main()</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The output is:</p>
+
+<pre><code>+++ main()
++++ Foo::Foo()
+... Foo::process()
+--- main()
+--- Foo::~Foo()
+</code></pre>
+
+<h2>Explcit release</h2>
+
+<p>If you wish to delete the object before the holding pointer goes out of scope,
+you can use the <code>reset()</code> method:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">&gt;</span> <span class="n">obj</span><span class="p">(</span><span class="k">new</span> <span class="n">Foo</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">obj</span><span class="o">-&gt;</span><span class="n">process</span><span class="p">();</span>
+</span><span class='line'><span class="n">obj</span><span class="o">-&gt;</span><span class="n">reset</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This results in the trace:</p>
+
+<pre><code>+++ main()
++++ Foo::Foo()
+... Foo::process()
+... obj: 0x7fb733c047c0
+--- Foo::~Foo()
+--- main()
+</code></pre>
+
+<h2>Unique for a reason</h2>
+
+<p>What happens if we try to assign this pointer to another smart pointer?</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">&gt;</span> <span class="n">obj</span><span class="p">(</span><span class="k">new</span> <span class="n">Foo</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">&gt;</span> <span class="n">obj2</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">obj2</span> <span class="o">=</span> <span class="n">obj</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We get a meaningful compiler error:</p>
+
+<pre><code>cpp11_unique_ptr_ex2.cpp:27:10: error: object of type 'std::__1::unique_ptr&lt;Foo,
+      std::__1::default_delete&lt;Foo&gt; &gt;' cannot be assigned because its copy
+      assignment operator is implicitly deleted
+    obj2 = obj;
+</code></pre>
+
+<h2>Arrays</h2>
+
+<p>The <code>std::unique_ptr</code> class also has explicit support for handling arrays of
+pointers. It is not a replacement for <code>std::vector</code>, but depending on your
+requirements, this array support can be very useful.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="k">const</span> <span class="kt">unsigned</span> <span class="n">N</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Foo</span><span class="p">[]</span><span class="o">&gt;</span> <span class="n">objarray</span><span class="p">(</span><span class="k">new</span> <span class="n">Foo</span> <span class="p">[</span><span class="n">N</span><span class="p">]);</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">for</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">N</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; &quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">objarray</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">process</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Other smart pointer types</h2>
+
+<p>Stay tuned for articles on:</p>
+
+<ul>
+<li><code>std::shared_ptr</code></li>
+<li><code>std::weak_ptr</code></li>
+</ul>
+
+]]></content>
+    
+  </entry>
   
   <entry>
     
@@ -126,6 +372,350 @@ see here is the garbage collection, which makes real-time systems impractical.</
 progress. There is a vibrant, friendly and smart community behind it, and a
 growing number of third-party libraries are supported. I am very optimistic
 about the future of Rust, and look forward to contributing.</p>
+]]></content>
+    
+  </entry>
+  
+  <entry>
+    
+    <title type="html"><![CDATA[Threading with Boost - Part III: Mutexes]]></title>
+    <link href="http://antonym.org//2012/02/threading-with-boost---part-iii-mutexes.html"/>
+    
+    <updated>2012-02-20T00:00:00+11:00</updated>
+    <id>http://antonym.org//2012/02/threading-with-boost&#8212;part-iii-mutexes</id>
+    
+    <content type="html"><![CDATA[<p>In <a href="http://antonym.org//2009/05/threading-with-boost---part-i-creating-threads.html">Part I</a> of this series on <a href="http://boost.org/">Boost</a> threading, we looked at the basics of how to create and run threads using the Boost libraries.  Then we reviewed the main issues encountered with multithreading code in <a href="http://antonym.org//2010/01/threading-with-boost---part-ii-threading-challenges.html">Part II: Threading Challenges</a>. One of the biggest challenges is safely managing concurrent access to a resource.  A Mutex provides a way to serialise access to a shared resource, such that only one thread is accessing the data at any given time, to ensure your data is consistent.  In this article, we look at how to create and use Boost mutexes.</p>
+
+<!--more-->
+
+
+<h1>Mutual exclusion &ndash; Mutex</h1>
+
+<p>One of the main solutions to race conditions and other threading problems is the <em>mutex</em>, short for &ldquo;mutual exclusion&rdquo;.  Think of it as a special kind of lock, which is used to protect shared resources.  A mutex is special because it is guaranteed to be held by <em>at most</em> one thread at a time.  While one thread holds a lock on a mutex, no other thread is able to.  Thus mutexes can be used as a protection mechanism for resources and data, by locking before using shared resources and unlocking when finished. A mutex can be used to avoid race conditions, and implement atomic operations.</p>
+
+<p>If a mutex is not locked by a thread, then any thread can potentially lock it.  Once it is locked, if any other thread attempts to lock it, it will typically block and wait until the mutex is unlocked by the owning thread.  It is also possible to return if the lock fails, or wait for a certain period of time before giving up.  These variations are discussed below.</p>
+
+<h2>Mutex Scope</h2>
+
+<p>A mutex is typically declared alongside the resource it protects.  The mutex should be in the same scope as the resource, or an enclosing scope.  For example, a data member in a C++ object that can potentially be accessed by more than one thread at a time should have a mutex declared alongside.  A class instance (static data member) should have a similarly class-scoped mutex.  The shared resource should never have a greater scope than the mutex, otherwise it may not always be protected.  Let us not speak of the blight known as global variables, surely a symptom of deficient design.</p>
+
+<p>In simple cases, a single mutex per object may be sufficient, but this is totally dependent on the algorithms used.  If there are multiple resources being accessed independently, having a single mutex may lead to too much contention.  In this case, a separate mutex for each resource may be more efficient.  Only analysis and performance tests will reveal the more efficient choice.</p>
+
+<p>Any time the resource is accessed (whether for reading or writing), the mutex should <em>always</em> be locked before use, and unlocked after the operation.</p>
+
+<h2>Types of Mutexes</h2>
+
+<p>There are four flavours of mutexes available in Boost, depending on your requirements.  Each are described in detail below, and feature a sample program illustrating its use.  The full source code is available for browsing, downloading or even cloning from my Boost Theading Examples Mercurial repository on <a href="http://www.bitbucket.org/gavinb/boost_examples/">BitBucket</a>.</p>
+
+<h3>Regular Mutex</h3>
+
+<p>The simplest form of mutex is a regular <code>boost::mutex</code>.  You lock and unlock it, and only one thread can lock the mutex at a time.  Any thread that calls <code>lock()</code> on a mutex held by another thread will block indefinitely (an important factor when considering synchronisation).  This is worth repeating: calling <code>lock()</code> can block <em>indefinitely</em>.  This may be the desired behaviour, as your thread may need to wait an undetermined time for something else to happen (but this then raises issues of interruption).  It should be obvious then that this must be carefully managed to avoid program hangs, a common symptom of concurrency failure.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">boost</span><span class="o">::</span><span class="n">mutex</span> <span class="n">work_queue_mutex</span><span class="p">;</span>
+</span><span class='line'><span class="n">queue</span><span class="o">&lt;</span><span class="n">item</span><span class="o">&gt;</span> <span class="n">work_queue</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// ...</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">work_queue_mutex</span><span class="p">.</span><span class="n">lock</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">auto</span> <span class="n">work_item</span> <span class="o">=</span> <span class="n">work_queue</span><span class="p">.</span><span class="n">pop</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">work_queue_mutex</span><span class="p">.</span><span class="n">unlock</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Regular mutexes also have a <code>try_lock()</code> method, which will return immediately with a failure status if the mutex cannot locked.  Since most threads run in a loop, it would be terribly inefficient to try to lock a mutex and then continue around the loop without performing anything else, especially when it is unlikely that the mutex will become immediately available.  In these cases, it <em>may</em> be appropriate to do a short sleep (but see below for a better solution).  Even then, this may be a sign that your algorithm needs improvement.  Unfortunately, there are no one-size-fits-all solutions.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">boost</span><span class="o">::</span><span class="n">mutex</span> <span class="n">work_queue_mutex</span><span class="p">;</span>
+</span><span class='line'><span class="n">queue</span><span class="o">&lt;</span><span class="n">item</span><span class="o">&gt;</span> <span class="n">work_queue</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// ...</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="n">work_queue_mutex</span><span class="p">.</span><span class="n">try_lock</span><span class="p">())</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">auto</span> <span class="n">work_item</span> <span class="o">=</span> <span class="n">work_queue</span><span class="p">.</span><span class="n">pop</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">work_queue_mutex</span><span class="p">.</span><span class="n">unlock</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">else</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">// Do something else...</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Timed Mutexes</h3>
+
+<p>The <code>boost::timed_mutex</code> class is a subtype of <code>boost::mutex</code>, which adds the ability to specify a timeout.  For example, you may wish to try to lock the mutex but give up after a certain time if you cannot obtain a lock.  This takes either an absolute time, or a relative time.  If the mutex cannot be obtained within the time specified, the call will return false and the mutex is not held.  If the mutex is locked within the timeout period, it returns true.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">boost</span><span class="o">::</span><span class="n">mutex</span> <span class="n">work_queue_mutex</span><span class="p">;</span>
+</span><span class='line'><span class="n">queue</span><span class="o">&lt;</span><span class="n">item</span><span class="o">&gt;</span> <span class="n">work_queue</span><span class="p">;</span>
+</span><span class='line'><span class="n">TimeDuration</span> <span class="n">mutex_timeout</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// ...</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="n">work_queue_mutex</span><span class="p">.</span><span class="n">timed_lock</span><span class="p">(</span><span class="n">mutex_timeout</span><span class="p">))</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">auto</span> <span class="n">work_item</span> <span class="o">=</span> <span class="n">work_queue</span><span class="p">.</span><span class="n">pop</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">work_queue_mutex</span><span class="p">.</span><span class="n">unlock</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Recursive Mutexes</h3>
+
+<p>Normally a mutex is locked only once, then unlocked.  Depending on the structure of your application, there may be times when it would be useful to be able to lock a mutex multiple times <em>on the one thread</em> (in very special circumstances, such as nested method calls).  For example, you have two (or more) methods which may be called independently, and another method which itself calls one of the other two.  If they all need the mutex held to function safely, this can cause complications when determining when the mutex needs to be locked and released.  However, by using a recursive mutex, it can be locked as many times as necessary, provided it is unlocked the same number of times.  Thus all these methods can be called individually, as they all lock the resources, and in a nested fashion, as the mutex can be locked multiple times.  Provided the mutex is unlocked the same number of times (which is a matter of care and thought), the mutex will be correctly released by the end of the nested operation.</p>
+
+<h3>Shared Mutexes</h3>
+
+<p>Some concurrency scenarios involve having one writer and many readers.  For example, one thread may be downloading data from the network, while another thread is displaying the data on the screen, and a third thread is saving the data to a database.  So the downloading thread will be locking for writing, and the other two only for reading.  There is therefore no reason why the display thread and the database thread (which both only read the shared resource) need to exclude the other; concurrent reading is perfectly safe.  It is only if the network updating thread needs to write to the shared data that the other two need to be locked out.  This process is shown below:</p>
+
+<!-- @todo Insert diagram here -->
+
+
+<p>Any time the reading threads need to read the resource, they obtain a read-lock.  This allows other read-locks to successfully access the resource, but will prevent a write-lock (since you don&rsquo;t want updates to occur while someone else is reading &ndash; the data must be consistent).  When an update comes in on the networking thread, it must wait until the readers have finished before it can obtain a write-lock.  This will prevent any readers from accessing the resource for the duration of the update.  In this way, concurrent access is increased, contention is reduced, and the resource is always consistent.</p>
+
+<!-- @todo Insert diagram here -->
+
+
+<p>One of the example programs shows this in action.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">boost</span><span class="o">::</span><span class="n">mutex</span> <span class="n">work_queue_mutex</span><span class="p">;</span>
+</span><span class='line'><span class="n">queue</span><span class="o">&lt;</span><span class="n">item</span><span class="o">&gt;</span> <span class="n">work_queue</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// Reader thread</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">work_queue_mutex</span><span class="p">.</span><span class="n">read_lock</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">auto</span> <span class="n">work_item</span> <span class="o">=</span> <span class="n">work_queue</span><span class="p">.</span><span class="n">head</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">work_queue_mutex</span><span class="p">.</span><span class="n">unlock</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// Writer thread</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">work_queue_mutex</span><span class="p">.</span><span class="n">write_lock</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">auto</span> <span class="n">work_item</span> <span class="o">=</span> <span class="n">work_queue</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">new_item</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">work_queue_mutex</span><span class="p">.</span><span class="n">unlock</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Summary</h3>
+
+<p>The table below summarises the difference mutex types, and their main distinguishing features:</p>
+
+<table>
+    <tr>
+        <td><tt>boost::mutex</tt></td>
+        <td>Normal mutex, most commonly used, blocking lock</td>
+        <td>has <tt>lock()</tt> and <tt>try_lock()</tt></td>
+    </tr>
+    <tr>
+        <td><tt>boost::timed_mutex</tt></td>
+        <td>Adds ability to timeout waiting for a lock</td>
+        <td>adds <tt>timed_lock()</tt> to wait for lock with a timeout</td>
+    </tr>
+    <tr>
+        <td><tt>boost::recursive_mutex</tt></td>
+        <td>`lock()` can be called multiple times on the *same* thread</td>
+    </tr>
+    <tr>
+        <td><tt>boost::shared_mutex</tt></td><td>lock can be upgraded to allow multiple readers or a single writer</td><td>can upgrade locks (R->W)</td>
+    </tr>
+</table>
+
+
+<h2>Lock duration</h2>
+
+<p>It is important that the mutex only be locked for the shortest possible time to ensure data integrity is maintained.  If a lock is held for too long, it may cause other threads to wait excessively, thus stalling processing and negating the benefits of concurrent processing.  Getting the granularity of threading right takes experience and judgement, so learning by studying existing multithreaded code is an excellent way to pick up design patterns.</p>
+
+<p>The next article shows some timing diagrams which illustrate lock contention in simple apps, so you can see just how much time a thread is waiting.</p>
+
+<h2>Lock/Unlock Pairing</h2>
+
+<p>If a mutex is not released due to a logical error (such as an uncaught exception), this may cause the program to lock up or behave strangely, and is probably not recoverable.  Thus it is vitally important that all lock/unlock operations appear in pairs.</p>
+
+<p>To protect against this class of problem, the <code>lock_guard</code> object was introduced.  It locks the mutex for you in its constructor, and unlocks it in the destructor.  (This safety-conscious approach is known as <a href="http://en.wikipedia.org/wiki/RAII">RAII</a>, or Resource Acquisition Is Initialisation, whereby the lifecycle of a resource is tied to the lifecycle of an owning object).</p>
+
+<p>This simple example code shows potentially unsafe method implementation.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="kt">void</span> <span class="n">writeTotalsToDatabase</span><span class="p">()</span> <span class="k">throw</span> <span class="p">(</span><span class="n">myapp</span><span class="o">::</span><span class="n">SQLException</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// does SQL stuff, and throws on error</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">unsigned</span> <span class="n">applyTotals</span><span class="p">(</span><span class="kt">unsigned</span> <span class="n">count</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">mTotalsMutex</span><span class="p">.</span><span class="n">lock</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">mTotals</span><span class="p">.</span><span class="n">globalCount</span> <span class="o">+=</span> <span class="n">count</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">writeTotalsToDatabase</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">mTotalsMutex</span><span class="p">.</span><span class="n">unlock</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This code looks at first glance to be safe.  It simply makes the updating and saving of the totals atomic, right?  Well, yes &ndash; except if there&rsquo;s an exception thrown by <code>writeTotalsToDatabase()</code>.  If that happens, the normal flow of execution goes out the window, and the program unwinds the stack in search of a suitable <code>catch</code> statement.  And the lock that we have acquired will never be released!  This is very dangerous, and can happen in seemingly &ldquo;safe&rdquo; code.  While you could certainly put a <code>try/catch</code> around the database method, a better way is to use a lock guard.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="kt">unsigned</span> <span class="n">applyTotals</span><span class="p">(</span><span class="kt">unsigned</span> <span class="n">count</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">boost</span><span class="o">::</span><span class="n">lock_guard</span>    <span class="n">totalsLock</span><span class="p">(</span><span class="n">mTotalsMutex</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">mTotals</span><span class="p">.</span><span class="n">globalCount</span> <span class="o">+=</span> <span class="n">count</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">writeTotalsToDatabase</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The <code>totalsLock</code> will acquire (or wait to acquire) the mutex at the start, and when it goes out of scope at the end of the method, it will unlock the mutex.  If an exception is thrown, the lock&rsquo;s destructor will be invoked as part of unwinding the stack, and there the mutex will be safely released.  This ensures the operation is atomic, and can safely handle error conditions.</p>
+
+<h2>Avoiding Deadlocks</h2>
+
+<p>So far, we&rsquo;ve looked at using one mutex at a time.  But a non-trivial application may involve many threads, and even more mutexes.  And what happens when there is contention for mutexes between threads?  There is a fatal error known as a deadlock, and in its simplest form, two threads are holding a resource each, which the other also wants.  Since neither will release one until it gets the other, the threads get stuck waiting forever (or at least until the user gets sick of waiting and kills the process).</p>
+
+<h2>Shared Object with One Mutex</h2>
+
+<p>Imagine you have a shared object, such as a singleton, that may be accessed by multiple threads in the system.  A simple solution to ensure consistent data is returned is to give the object a mutex, and use a lock guard in every method.  For example:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="k">class</span> <span class="nc">Baz</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span><span class="o">:</span>
+</span><span class='line'>        <span class="n">Baz</span><span class="p">();</span>
+</span><span class='line'>        <span class="kt">void</span> <span class="n">accumulate</span><span class="p">(</span><span class="k">const</span> <span class="n">Foo</span><span class="o">&amp;</span> <span class="n">foo</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>          <span class="n">boost</span><span class="o">::</span><span class="n">lock_guard</span> <span class="n">lock</span><span class="p">(</span><span class="n">m_mutex</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>          <span class="n">m_total</span> <span class="o">+=</span> <span class="n">foo</span><span class="p">.</span><span class="n">value</span><span class="p">();</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="kt">float</span> <span class="n">getTotal</span><span class="p">()</span> <span class="k">const</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>          <span class="n">boost</span><span class="o">::</span><span class="n">lock_guard</span> <span class="n">lock</span><span class="p">(</span><span class="n">m_mutex</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>          <span class="k">return</span> <span class="n">m_total</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="k">private</span><span class="o">:</span>
+</span><span class='line'>        <span class="n">boost</span><span class="o">::</span><span class="n">mutex</span> <span class="n">m_mutex</span><span class="p">;</span>
+</span><span class='line'>        <span class="kt">double</span>        <span class="n">m_total</span><span class="p">;</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>A note on performance</h2>
+
+<p>Under Linux, the Boost threads implementation uses pthreads and pthread mutexes.  These may use a spinlock at the kernel level, for optimal performance.</p>
+
+<p>Under Windows, a real &ldquo;Mutex&rdquo; object at the operating system level is actually a fairly expensive, heavyweight and slow construct (relatively speaking), mainly intended for intra-process synchronisation.  If you only need serialisation within your process, a &ldquo;critical section&rdquo; is a far better choice, as it is significantly faster.  Fortunately, Boost uses a CritSec for process-level mutexes.  If you need inter-process mutexes, look at the <a href="http://boost.org/">Boost IPC library</a>.</p>
+
+<h2>Other types of Mutexes</h2>
+
+<p>There are a few different flavours of Mutexes, which can be used in more sophisticated scenarios. These are beyond the scope of this article (which is already long enough!).</p>
+
+<h2>Up Next</h2>
+
+<p>The next article will focus on <a href="http://antonym.org//2012/02/threading-with-boost---part-iv-mutex-examples.html">a series of examples showing the use of different mutex types</a>. The source has been published on BitBucket in my <a href="http://bitbucket.org/gavinb/boost_samples/">Boost Sample Code</a> repository.  Feel free to use, fork, and share!</p>
 ]]></content>
     
   </entry>
@@ -2309,7 +2899,10 @@ Date: 07/09/2009 03:26:30 PM</p>
     
     <content type="html"><![CDATA[<p>The Standard Template Library (STL) for C++ provides a set of powerful and flexible templated container classes.  Never again will you have to hand-craft a doubly-linked list (and get your pointer arithmetic mixed up) &mdash; just use <code>std::list&lt;T&gt;</code>.</p>
 
-<p>Now most of the idiomatic C++ code I&rsquo;ve read that uses STL iterators uses the prefix <code>operator++</code> to move the iterator forward.  And so I had long ago adopted this too, with a vague recollection of having read somewhere that it performed better.  But why?  Good question&hellip; (Updated: fixed formatting, got numbers the right way around.)</p>
+<p>Now most of the idiomatic C++ code I&rsquo;ve read that uses STL iterators uses the prefix <code>operator++</code> to move the iterator forward.  And so I had long ago adopted this too, with a vague recollection of having read somewhere that it performed better.  But why?  Good question&hellip;</p>
+
+<!--more-->
+
 
 <p>The use of the post-increment operator is well established idiomatic code for looping (in both C and C++):</p>
 
@@ -2352,9 +2945,9 @@ Date: 07/09/2009 03:26:30 PM</p>
 
 <p>The results were very interesting: on an Intel workstation, the pre-increment code took an average of 14.1ns per call, while the post-increment code took 27.6ns per call.  That&rsquo;s a significant difference of 49%, or nearly twice as fast!  A plot of 10 iterations each is shown below:</p>
 
-<p><span class="mt-enclosure mt-enclosure-image" style="display: inline;"><a href="http://antonym.org/assets_c/2009/05/results_ppc_g4.html" onclick="http://antonym.org/assets_c/2009/05/results_ppc_g4.html','popup','width=998,height=928,scrollbars=no,resizable=no,toolbar=no,directories=no,location=no,menubar=no,status=no,left=0,top=0'); return false"><img src="http://antonym.org/assets_c/2009/05/results_ppc_g4-thumb-200x185.png" width="200" height="185" alt="results_ppc_g4.png" class="mt-image-center" style="text-align: center; display: block; margin: 0 auto 20px;" /></a></span></p>
+<p><img src="http://antonym.org//img/results_ppc_g4.png"></p>
 
-<p>So &ndash; it really does improve the performance of your code to write:</p>
+<p>So &ndash; it really can improve the performance of your code to write:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -2392,34 +2985,12 @@ Date: 07/09/2009 03:26:30 PM</p>
 
 <p>And yes, it uses the pre-increment operator for maximum performance.</p>
 
-<p>Download the source used for this article:</p>
+<p>The source used for this article:</p>
 
-<p><span class="mt-enclosure mt-enclosure-file" style="display: inline;"><a href="http://antonym.org/iterperf/iterperf-0.1.zip">iterperf-0.1.zip</a></span></p>
+<ul>
+<li><a href="http://www.github.com/gavinb/iterperf/">iterperf source on GitHub</a></li>
+</ul>
 
-<p>Archived Comments</p>
-
-<p>AUTHOR: bynio
-DATE: 04/15/2009 03:17:24 AM
-&ldquo;the post-increment code took an average of 14.1ns per call, while the pre-increment code took 27.6ns per call&rdquo;, so actually post-increment is faster?</p>
-
-<p>AUTHOR: Reid Ellis
-DATE: 04/28/2009 01:48:50 AM</p>
-
-<blockquote><em>the post-increment code took an average of 14.1ns per call, while the pre-increment code took 27.6ns per call</em></blockquote>
-
-
-<p><p />
-Do you have these numbers backwards? Because otherwise you are saying that the post-increment code is faster than the pre-increment code.
-<p />
-Reid</p>
-
-<p>AUTHOR: Gavin Baker
-DATE: 05/02/2009 10:50:17 PM
-Hi Reid, you&rsquo;re right &ndash; I got the names back-to-front (the article is updated now).  The post-increment is definitely twice as fast, and I have repeated the test on other machines, with the same relative results.</p>
-
-<p>In the migration from my old blog setup, this article lost a plot of the data, as well as the source of the test code.  I&rsquo;ve added the plot and linked the source tarball in here.</p>
-
-<p>:: Gavin</p>
 ]]></content>
     
   </entry>
@@ -2855,144 +3426,6 @@ Hi Reid, you&rsquo;re right &ndash; I got the names back-to-front (the article i
 <p>And R isn&rsquo;t just a <a href="http://www.r-project.org/screenshots/screenshots.html">publication-quality plotting tool</a> &mdash; it is a fully-blown <a href="http://www.r-project.org/about.html">programming language</a>, with a massive array of statistical libraries.  There&rsquo;s an excellent stats book that uses R (or S Plus) and shows how to get the most out of it &ndash; <a href="ttp://www.amazon.com/Statistical-Computing-Introduction-Analysis-S-Plus/dp/0471560405/sr=1-2/qid=1167731672/ref=pd_bbs_sr_2/103-8385460-2747869?ie=UTF8&amp;amp;s=books">Statistical Computing by Crawley</a>.</p>
 
 <p>Oh, and I can&rsquo;t wait for <a href="http://www.apple.com/macosx/leopard/xcode.html">X-Ray</a>.  Wow.  I&rsquo;ve used <a href="http://www.opensolaris.org/os/community/dtrace/">DTrace</a> a few times, and it&rsquo;s awesomely powerful; it just takes a fair effort to learn, and even longer to learn how to use it <i>effectively</i>.  It looks like Apple&rsquo;s sexy front-end will make this an incredibly useful tool.</p>
-]]></content>
-    
-  </entry>
-  
-  <entry>
-    
-    <title type="html"><![CDATA[The Happy Coder's Toolkit Part I: mtrace]]></title>
-    <link href="http://antonym.org//2007/01/the-happy-coders-toolkit-part-i-mtrace.html"/>
-    
-    <updated>2007-01-02T20:32:00+11:00</updated>
-    <id>http://antonym.org//2007/01/the-happy-coders-toolkit-part-i-mtrace</id>
-    
-    <content type="html"><![CDATA[<p>I have been doing some serious hacking, fixing and refactoring on a codebase for genetics analysis.  And I&rsquo;ve needed tools to go beyond just sprinkling the usual calls to <code>printf</code> around the place to see what&rsquo;s going on.  Hell, I&rsquo;ve even fired up <code>gdb</code> once &ndash; but just to get a stack trace!  This is the first of a sporadically released series on tools I&rsquo;ve found useful.  Hopefully they will distill the essential steps of using these tools, as well as expose some extremely useful but lesser known tricks to a wider audience (like the huge number of readers of this blog).</p>
-
-<h2>mtrace: Debugging malloc</h2>
-
-<p>The memory management provided by the standard <code>libc</code> library with GCC provides a very useful debugging mode, which can be used to detect memory leaks.</p>
-
-<p>To start with, add:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &lt;mtrace.h&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>to the includes list at the top of your main module.  Then add a call to <code>mtrace()</code> right at the very top of main, conditionally compiled, like:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span> <span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">*</span> <span class="n">argv</span><span class="p">[],</span> <span class="kt">char</span><span class="o">*</span> <span class="n">envp</span><span class="p">[]</span> <span class="p">)</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="cm">/* locals etc ... */</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#ifdef MYAPP_DEBUG_ALLOC</span>
-</span><span class='line'>    <span class="n">mtrace</span><span class="p">();</span>
-</span><span class='line'><span class="cp">#endif </span><span class="cm">/* MYAPP_DEBUG_ALLOC */</span><span class="cp"></span>
-</span><span class='line'>
-</span><span class='line'>    <span class="cm">/* do something funky... */</span>
-</span><span class='line'>    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>This will install special handlers to intercept calls to <code>malloc/free</code> et al.  Then you can enable this feature as required.</p>
-
-<p>At runtime, the <code>MALLOC_TRACE</code> environment variable must be set to the name of the output file to store the extra trace data.  If this is not set, <code>mtrace</code> will do <strong>nothing</strong>!</p>
-
-<p>You can run your program like this:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="o">%</span> <span class="n">MALLOC_TRACE</span><span class="o">=</span><span class="n">myapp</span><span class="p">.</span><span class="n">mtrace</span> <span class="p">.</span><span class="o">/</span><span class="n">myapp</span> <span class="o">-</span><span class="n">f</span> <span class="mi">123</span> <span class="n">foo</span><span class="p">.</span><span class="n">dat</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Once your program has terminated, you can then go ahead and analyse the output using the supplied <code>mtrace</code> tool.  You point it to your binary (so it can pull out the symbol table) and to the saved <code>.mtrace</code> file (from above) and &ndash; behold! &ndash; a big list of all your leakage.</p>
-
-<p>Now all you have to do is tidy up those calls to <code>free</code>!</p>
-
-<p>Stay tuned for the next exciting installments on:</p>
-
-<ul>
-<li>gcov</li>
-<li>gprof</li>
-<li>cflow</li>
-<li>Valgrind</li>
-<li>and probably not many more&hellip;</li>
-</ul>
-
-]]></content>
-    
-  </entry>
-  
-  <entry>
-    
-    <title type="html"><![CDATA[Autoantonyms]]></title>
-    <link href="http://antonym.org//2006/07/autoantonyms.html"/>
-    
-    <updated>2006-07-04T10:10:00+10:00</updated>
-    <id>http://antonym.org//2006/07/autoantonyms</id>
-    
-    <content type="html"><![CDATA[<p>What is the antonym (word of opposite meaning) to the word &ldquo;resign&rdquo;?  One correct answer is &ldquo;resign&rdquo;.  What about the opposite of &ldquo;dust&rdquo;?  Yup, 10 points for &ldquo;dust&rdquo;.</p>
-
-<p>Confused?  These words are <strong>autoantonyms</strong>, one word that can have two opposite meanings!  See a full list of <a href="http://www.fun-with-words.com/nym_autoantonyms.html">autoantonyms at &ldquo;Fun With Words&rdquo;</a>.</p>
-]]></content>
-    
-  </entry>
-  
-  <entry>
-    
-    <title type="html"><![CDATA[What went wrong?]]></title>
-    <link href="http://antonym.org//2006/04/what-went-wrong.html"/>
-    
-    <updated>2006-04-19T17:34:00+10:00</updated>
-    <id>http://antonym.org//2006/04/what-went-wrong</id>
-    
-    <content type="html"><![CDATA[<p>Writing <em>good</em> diagnostic error messages is hard.  But it&rsquo;s worth the effort.  And there&rsquo;s also some side benefits if you take the time, and it&rsquo;s not just avoiding hate-mail from your users.</p>
-
-<!--more-->
-
-
-<p>How many times have you run some software, only to have it fail with a message:</p>
-
-<pre><code>Unknown Error: -3
-
-[Abort] [Retry]
-</code></pre>
-
-<p>There should be a third button: &ldquo;Punch the developer who couldn&rsquo;t be bothered to put in a decent error message.&rdquo;</p>
-
-<p>But it&rsquo;s actually hard to write good error handling, and that&rsquo;s why so many people don&rsquo;t.  Either that, or they are coding demigods who are so confident in their code they know it will never fail.  But a quick browse of the <a href="http://www.userinterfacehallofshame.com">UI Hall of Shame</a> is enough to prove the point that even proprietary commercial developers goof up.</p>
-
-<p>I&rsquo;m just now writing a tool to import data into our software from CSV files.  And the variety of flavours of CSV, combined with different field labels, column ordering, field aliases, is staggering.  Add to that some fields are required, some optional, some should be ignored, then there are user-defined columns that come after the required ones we know about.  So a simple task as &ldquo;import from CSV&rdquo; turns out to be pretty complicated, and giving the user meaningful feedback to guide them to the problem is particularly tricky.</p>
-
-<p>So to make things easier for the user, I&rsquo;ve tried to be really friendly and provide comprehensive diagnostics.  This means checking every possible way things could go wrong, and ensuring that you have sufficient context in your code at each point to be able to provide <em>meaningful</em> errors.</p>
-
-<p>So &ndash; which error message would you prefer to see when importing your data?</p>
-
-<pre><code>Error: invalid field DS5301
-</code></pre>
-
-<p>or:</p>
-
-<pre><code>Unexpected field 'DS5301' in header line 1 at column 11.
-Looking for required fields, still haven't found: id, family.
-</code></pre>
-
-<p>It takes time to craft an error message that reads like an actual English sentence, and conveys not only what went wrong but where and why, and what the software was expecting to find instead.  Error codes might be useful for the developer, but it&rsquo;s useless for the user.</p>
-
-<p>So the bonus you get if you do write decent error messages?  It guides you to write your test cases, of course!  So after I added the above check to ensure all the required fields had been read before the user-defined fields, I wrote a data file that would trigger that error.  Now I have regression testing, I can make sure that the error gets picked up.  All this work for those ungrateful users&hellip;</p>
 ]]></content>
     
   </entry>

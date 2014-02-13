@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: smartpointers | antonym.org]]></title>
+  <link href="http://antonym.org//blog/categories/smartpointers/atom.xml" rel="self"/>
+  <link href="http://antonym.org//"/>
+  <updated>2014-02-14T09:40:11+11:00</updated>
+  <id>http://antonym.org//</id>
+  <author>
+    <name><![CDATA[Gavin Baker]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[C++11 Smart Pointers: Unique Pointer]]></title>
+    <link href="http://antonym.org//2014/01/c-plus-plus-11-unique-pointer.html"/>
+    <updated>2014-01-31T18:29:00+11:00</updated>
+    <id>http://antonym.org//2014/01/c-plus-plus-11-unique-pointer</id>
+    <content type="html"><![CDATA[<p>C++11 introduces many significant improvements to the language and runtime.
+One of the most important is to do with memory management &ndash; specifically,
+smart pointers.</p>
+
+<!--more-->
+
+
+<p>Instead of using a bare pointer type in C++, the modern C++11 style is now to
+use <code>std::unique_ptr</code>.  This class will automatically free the allocated memory
+once the variable goes out of scope.  This is the simplest of the new smart
+pointer types in C++11.</p>
+
+<p>Whereas before, you might write:</p>
+
+<p>```c++</p>
+
+<pre><code>Foo* obj = new Foo;
+
+obj-&gt;process();
+
+delete obj;
+</code></pre>
+
+<p>```</p>
+
+<p>you can now write:</p>
+
+<p>```c++</p>
+
+<pre><code>std::unique_ptr&lt;Foo&gt; obj(new Foo);
+
+obj-&gt;process();
+
+// obj will be automatically deleted
+</code></pre>
+
+<p>```</p>
+
+<p>The <code>std::unique_ptr</code> class enforces several useful properties:</p>
+
+<ul>
+<li>only a single unique reference to the allocated object can be active at a time</li>
+<li>the object will be deleted when the smart pointer goes out of scope</li>
+</ul>
+
+
+<p>The <code>unique_ptr</code> type is templated over the pointer type, and its constructor
+takes the allocated pointer returned from the <code>new</code> operator.  And because the
+pointer <code>operator-&gt;()</code> is overloaded, the smart pointer object can be used just
+like a regular pointer.</p>
+
+<p><strong>Note 1:</strong> For Boost users, this is almost the same as the <code>boost::scoped_ptr</code>
+class.</p>
+
+<p><strong>Note 2:</strong> This class supercedes the <code>std::auto_ptr</code>, which was deprecated in C++11.</p>
+
+<p><strong>Note 3:</strong> When invoking <code>std::unique_ptr</code> methods on the smart pointer itself,
+remember to use the dot <code>.</code> operator. When invoking methods on the object pointer,
+use the arrow <code>-&gt;</code> operator as you normally would (since it is overloaded to return the underlying object pointer).</p>
+
+<p>Once the variable goes out of scope, <code>delete</code> will be called to release the memory,
+and the destructor will be invoked as usual, as this simple example shows:</p>
+
+<p>```c++</p>
+
+<h1>include <memory></h1>
+
+<h1>include <iostream></h1>
+
+<p>class Foo
+{
+public:</p>
+
+<pre><code>Foo() { std::cout &lt;&lt; "+++ Foo::Foo()\n"; }
+~Foo() { std::cout &lt;&lt; "--- Foo::~Foo()\n"; }
+void process() { std::cout &lt;&lt; "... Foo::process()\n"; }
+</code></pre>
+
+<p>};</p>
+
+<p>int main(int argc, char* argv[])
+{</p>
+
+<pre><code>std::cout &lt;&lt; "+++ main()\n";
+
+std::unique_ptr&lt;Foo&gt; obj(new Foo);
+obj-&gt;process();
+
+std::cout &lt;&lt; "--- main()\n";
+
+return 0;
+</code></pre>
+
+<p>}
+```</p>
+
+<p>The output is:</p>
+
+<pre><code>+++ main()
++++ Foo::Foo()
+... Foo::process()
+--- main()
+--- Foo::~Foo()
+</code></pre>
+
+<h2>Explcit release</h2>
+
+<p>If you wish to delete the object before the holding pointer goes out of scope,
+you can use the <code>reset()</code> method:</p>
+
+<p>```c++</p>
+
+<pre><code>std::unique_ptr&lt;Foo&gt; obj(new Foo);
+
+obj-&gt;process();
+obj-&gt;reset();
+</code></pre>
+
+<p>```</p>
+
+<p>This results in the trace:</p>
+
+<pre><code>+++ main()
++++ Foo::Foo()
+... Foo::process()
+... obj: 0x7fb733c047c0
+--- Foo::~Foo()
+--- main()
+</code></pre>
+
+<h2>Unique for a reason</h2>
+
+<p>What happens if we try to assign this pointer to another smart pointer?</p>
+
+<p>```c++</p>
+
+<pre><code>std::unique_ptr&lt;Foo&gt; obj(new Foo);
+
+std::unique_ptr&lt;Foo&gt; obj2;
+
+obj2 = obj;
+</code></pre>
+
+<p>```</p>
+
+<p>We get a meaningful compiler error:</p>
+
+<pre><code>cpp11_unique_ptr_ex2.cpp:27:10: error: object of type 'std::__1::unique_ptr&lt;Foo,
+      std::__1::default_delete&lt;Foo&gt; &gt;' cannot be assigned because its copy
+      assignment operator is implicitly deleted
+    obj2 = obj;
+</code></pre>
+
+<h2>Arrays</h2>
+
+<p>The <code>std::unique_ptr</code> class also has explicit support for handling arrays of
+pointers. It is not a replacement for <code>std::vector</code>, but depending on your
+requirements, this array support can be very useful.</p>
+
+<p>```c++
+const unsigned N = 10;</p>
+
+<p>std::unique_ptr&lt;Foo[]> objarray(new Foo [N]);</p>
+
+<p>for (unsigned i = 0; i &lt; N; i++)
+{</p>
+
+<pre><code>std::cout &lt;&lt; i &lt;&lt; " ";
+objarray[i].process();
+</code></pre>
+
+<p>}
+```</p>
+
+<h2>Other smart pointer types</h2>
+
+<p>Stay tuned for articles on:</p>
+
+<ul>
+<li><code>std::shared_ptr</code></li>
+<li><code>std::weak_ptr</code></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>

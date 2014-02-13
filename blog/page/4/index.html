@@ -9,7 +9,7 @@
   <meta name="author" content="Gavin Baker">
 
   
-  <meta name="description" content="Working on some code for my research tonight, I wasted a lot of time looking for some information on a particlar STL function. Since I couldn&rsquo;t &hellip;">
+  <meta name="description" content="I&rsquo;m using Python and C in one of the rather large projects I&rsquo;m working on, and I&rsquo;m using Pyrex to provide the bridging code. Once I &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +77,143 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+  
+    
+      <h1 class="entry-title"><a href="/2005/02/pyrex-and-sharing-extension-modules.html">Pyrex and Sharing Extension Modules</a></h1>
+      
+      
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2005-02-16T22:21:00+11:00" pubdate data-updated="true">2005-02-16</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I&rsquo;m using <a href="http://www.python.org/">Python</a> and C in one of the rather large projects I&rsquo;m working on, and I&rsquo;m using <a href="http://nz.cosc.canterbury.ac.nz/~greg/python/Pyrex/">Pyrex</a> to provide the bridging code.  Once I got over some of the tricks involved in sharing types between extension modules, it was cooking with gas.</p>
+
+<p>Now I have a <a href="http://www.linux1394.org/">Firewire</a> camera running live in a <a href="http://www.wxpython.org/">wxPython</a> window being displayed using <a href="http://pyopengl.sourceforge.net/">PyOpenGL</a>.  Very cool indeed&hellip;  Now all I have to do is hack in YUV support into <a href="http://gandalf-library.sourceforge.net/">Gandalf</a>, and I&rsquo;ll be set!</p>
+
+<p>Writing extension modules in Pyrex is dead easy, sharing them just takes a little extra know-how.  You have to declare the <tt>cdef</tt> functions along with the data members in your <tt>.pxd</tt> file.  Then the implementation goes into the <tt>.pyx</tt> module, which is compiled.  The trouble I came across was calling <tt>cdef</tt>ed functions between modules that used a common C type defined in another module.  Clear as mud?</p>
+
+<p>The solution was to declare the C <tt>typedef</tt>s in their own <tt>.pxd</tt> and import those into both, thus putting all the C types in their own namespace.  Then two different extension modules can use the same C types from Pyrex code and all&rsquo;s well.</p>
+
+<h2>2013 Update</h2>
+
+<p>These days, you would likely use the <a href="http://www.python.org/lib/ctypes/"><code>ctypes</code> module</a>, which allows you to transparently
+invoke C functions from Python code.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+  
+    
+      <h1 class="entry-title"><a href="/2004/12/how-not-to-give-a-talk.html">How Not to Give a Talk</a></h1>
+      
+      
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2004-12-13T14:27:00+11:00" pubdate data-updated="true">2004-12-13</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I just got back from the Artificial Intelligence &lsquo;04 conference in Cairns.  It was a great conference, met lots of people, went to some interesting talks, saw some fantastic keynote talks, and generally had a good time.  I even got to go for a swim and soak up some sun on the last day.</p>
+
+<p>But I am writing this particular entry to capture some points I think are worth recording, based on some of what most people would agree were the less successful talks.  If anyone is giving a technical talk, maybe some of the following will be useful&hellip;</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/2004/12/how-not-to-give-a-talk.html">Read more &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+  
+    
+      <h1 class="entry-title"><a href="/2003/10/verisign-vs-the-rest-of-the-world.html">VeriSign vs the Rest of the World</a></h1>
+      
+      
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2003-10-08T21:25:00+10:00" pubdate data-updated="true">2003-10-08</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>On the 15th of September, the top-level Domain Name Service (DNS) for <code>.net</code> and <code>.com</code>, fundamental to the entire Internet, was hijacked &ndash; by the very custodian entrusted with its upkeep.</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/2003/10/verisign-vs-the-rest-of-the-world.html">Read more &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -223,23 +360,23 @@ with my own 2 cents.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/2014/02/c-plus-plus-11-shared-pointer.html">C++11 Smart Pointers: Shared Pointer</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2014/01/c-plus-plus-11-unique-pointer.html">C++11 Smart Pointers: Unique Pointer</a>
+      </li>
+    
+      <li class="post">
         <a href="/2013/10/what-is-rust.html">What is Rust?</a>
       </li>
     
       <li class="post">
+        <a href="/2012/02/threading-with-boost---part-iii-mutexes.html">Threading with Boost - Part III: Mutexes</a>
+      </li>
+    
+      <li class="post">
         <a href="/2011/12/bug-of-the-year-2011.html">Bug of the Year - 2011</a>
-      </li>
-    
-      <li class="post">
-        <a href="/2011/03/good-code-gardening.html">Good Code Gardening</a>
-      </li>
-    
-      <li class="post">
-        <a href="/2010/04/25-tips-for-intermediate-mercurial-users.html">25 Tips for Intermediate Mercurial Users</a>
-      </li>
-    
-      <li class="post">
-        <a href="/2010/01/threading-with-boost---part-ii-threading-challenges.html">Threading with Boost - Part II: Threading Challenges</a>
       </li>
     
   </ul>

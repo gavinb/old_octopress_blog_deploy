@@ -1,0 +1,465 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>C++11 Smart Pointers: Unique Pointer - antonym.org</title>
+  <meta name="author" content="Gavin Baker">
+
+  
+  <meta name="description" content="C++11 introduces many significant improvements to the language and runtime.
+One of the most important is to do with memory management &ndash; &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://antonym.org//2014/01/c-plus-plus-11-unique-pointer.html">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="antonym.org" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!-- before custom head -->
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
+  <!-- after custom head -->
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-6131956-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="collapse-sidebar sidebar-footer" >
+  <header role="banner"><h1>antonym.org</h1>
+<h2>Bits by Gavin Baker</h2>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:antonym.org/" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+  
+    
+      <h1 class="entry-title">C++11 Smart Pointers: Unique Pointer</h1>
+    
+  
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-01-31T18:29:00+11:00" pubdate data-updated="true">2014-01-31</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>C++11 introduces many significant improvements to the language and runtime.
+One of the most important is to do with memory management &ndash; specifically,
+smart pointers.</p>
+
+<!--more-->
+
+
+<p>Instead of using a bare pointer type in C++, the modern C++11 style is now to
+use <code>std::unique_ptr</code>.  This class will automatically free the allocated memory
+once the variable goes out of scope.  This is the simplest of the new smart
+pointer types in C++11.</p>
+
+<p>Whereas before, you might write:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">Foo</span><span class="o">*</span> <span class="n">obj</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Foo</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">obj</span><span class="o">-&gt;</span><span class="n">process</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">delete</span> <span class="n">obj</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>you can now write:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">&gt;</span> <span class="n">obj</span><span class="p">(</span><span class="k">new</span> <span class="n">Foo</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">obj</span><span class="o">-&gt;</span><span class="n">process</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// obj will be automatically deleted</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The <code>std::unique_ptr</code> class enforces several useful properties:</p>
+
+<ul>
+<li>only a single unique reference to the allocated object can be active at a time</li>
+<li>the object will be deleted when the smart pointer goes out of scope</li>
+</ul>
+
+
+<p>The <code>unique_ptr</code> type is templated over the pointer type, and its constructor
+takes the allocated pointer returned from the <code>new</code> operator.  And because the
+pointer <code>operator-&gt;()</code> is overloaded, the smart pointer object can be used just
+like a regular pointer.</p>
+
+<p><strong>Note 1:</strong> For Boost users, this is almost the same as the <code>boost::scoped_ptr</code>
+class.</p>
+
+<p><strong>Note 2:</strong> This class supercedes the <code>std::auto_ptr</code>, which was deprecated in C++11.</p>
+
+<p><strong>Note 3:</strong> When invoking <code>std::unique_ptr</code> methods on the smart pointer itself,
+remember to use the dot <code>.</code> operator. When invoking methods on the object pointer,
+use the arrow <code>-&gt;</code> operator as you normally would (since it is overloaded to return the underlying object pointer).</p>
+
+<p>Once the variable goes out of scope, <code>delete</code> will be called to release the memory,
+and the destructor will be invoked as usual, as this simple example shows:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="cp">#include &lt;memory&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;iostream&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">Foo</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'><span class="k">public</span><span class="o">:</span>
+</span><span class='line'>    <span class="n">Foo</span><span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;+++ Foo::Foo()</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'>    <span class="o">~</span><span class="n">Foo</span><span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;--- Foo::~Foo()</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'>    <span class="kt">void</span> <span class="n">process</span><span class="p">()</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;... Foo::process()</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">*</span> <span class="n">argv</span><span class="p">[])</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;+++ main()</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">&gt;</span> <span class="n">obj</span><span class="p">(</span><span class="k">new</span> <span class="n">Foo</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">obj</span><span class="o">-&gt;</span><span class="n">process</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;--- main()</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The output is:</p>
+
+<pre><code>+++ main()
++++ Foo::Foo()
+... Foo::process()
+--- main()
+--- Foo::~Foo()
+</code></pre>
+
+<h2>Explcit release</h2>
+
+<p>If you wish to delete the object before the holding pointer goes out of scope,
+you can use the <code>reset()</code> method:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">&gt;</span> <span class="n">obj</span><span class="p">(</span><span class="k">new</span> <span class="n">Foo</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">obj</span><span class="o">-&gt;</span><span class="n">process</span><span class="p">();</span>
+</span><span class='line'><span class="n">obj</span><span class="o">-&gt;</span><span class="n">reset</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This results in the trace:</p>
+
+<pre><code>+++ main()
++++ Foo::Foo()
+... Foo::process()
+... obj: 0x7fb733c047c0
+--- Foo::~Foo()
+--- main()
+</code></pre>
+
+<h2>Unique for a reason</h2>
+
+<p>What happens if we try to assign this pointer to another smart pointer?</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">&gt;</span> <span class="n">obj</span><span class="p">(</span><span class="k">new</span> <span class="n">Foo</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">&gt;</span> <span class="n">obj2</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">obj2</span> <span class="o">=</span> <span class="n">obj</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We get a meaningful compiler error:</p>
+
+<pre><code>cpp11_unique_ptr_ex2.cpp:27:10: error: object of type 'std::__1::unique_ptr&lt;Foo,
+      std::__1::default_delete&lt;Foo&gt; &gt;' cannot be assigned because its copy
+      assignment operator is implicitly deleted
+    obj2 = obj;
+</code></pre>
+
+<h2>Arrays</h2>
+
+<p>The <code>std::unique_ptr</code> class also has explicit support for handling arrays of
+pointers. It is not a replacement for <code>std::vector</code>, but depending on your
+requirements, this array support can be very useful.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="k">const</span> <span class="kt">unsigned</span> <span class="n">N</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Foo</span><span class="p">[]</span><span class="o">&gt;</span> <span class="n">objarray</span><span class="p">(</span><span class="k">new</span> <span class="n">Foo</span> <span class="p">[</span><span class="n">N</span><span class="p">]);</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">for</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">N</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; &quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">objarray</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">process</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Other smart pointer types</h2>
+
+<p>Stay tuned for articles on:</p>
+
+<ul>
+<li><code>std::shared_ptr</code></li>
+<li><code>std::weak_ptr</code></li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Gavin Baker</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-01-31T18:29:00+11:00" pubdate data-updated="true">2014-01-31</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/c-plus-plus/'>c++</a>, <a class='category' href='/blog/categories/c-plus-plus-11/'>c++11</a>, <a class='category' href='/blog/categories/memory/'>memory</a>, <a class='category' href='/blog/categories/smartpointers/'>smartpointers</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://antonym.org//2014/01/c-plus-plus-11-unique-pointer.html" data-via="gavinb" data-counturl="http://antonym.org//2014/01/c-plus-plus-11-unique-pointer.html" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/2013/10/what-is-rust.html" title="Previous Post: What is Rust?">&laquo; What is Rust?</a>
+      
+      
+        <a class="basic-alignment right" href="/2014/02/c-plus-plus-11-shared-pointer.html" title="Next Post: C++11 Smart Pointers: Shared Pointer">C++11 Smart Pointers: Shared Pointer &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/2014/02/c-plus-plus-11-shared-pointer.html">C++11 Smart Pointers: Shared Pointer</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2014/01/c-plus-plus-11-unique-pointer.html">C++11 Smart Pointers: Unique Pointer</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2013/10/what-is-rust.html">What is Rust?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2012/02/threading-with-boost---part-iii-mutexes.html">Threading with Boost - Part III: Mutexes</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/12/bug-of-the-year-2011.html">Bug of the Year - 2011</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Gavin Baker <br/>
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>, customized with <a href="https://github.com/mjhea0/whiterspace">whiterspace</a>.</span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'antonym';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://antonym.org//2014/01/c-plus-plus-11-unique-pointer.html';
+        var disqus_url = 'http://antonym.org//2014/01/c-plus-plus-11-unique-pointer.html';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
