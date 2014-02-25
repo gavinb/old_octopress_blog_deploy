@@ -232,7 +232,7 @@ and the destructor will be invoked as usual, as this simple example shows:</p>
 <h2>Explcit release</h2>
 
 <p>If you wish to delete the object before the holding pointer goes out of scope,
-you can use the <code>reset()</code> method:</p>
+you can use the <code>reset()</code> method on the smart pointer:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -241,9 +241,12 @@ you can use the <code>reset()</code> method:</p>
 </pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">&gt;</span> <span class="n">obj</span><span class="p">(</span><span class="k">new</span> <span class="n">Foo</span><span class="p">);</span>
 </span><span class='line'>
 </span><span class='line'><span class="n">obj</span><span class="o">-&gt;</span><span class="n">process</span><span class="p">();</span>
-</span><span class='line'><span class="n">obj</span><span class="o">-&gt;</span><span class="n">reset</span><span class="p">();</span>
+</span><span class='line'><span class="n">obj</span><span class="p">.</span><span class="n">reset</span><span class="p">();</span>
 </span></code></pre></td></tr></table></div></figure>
 
+
+<p>(Notice that methods invoked on the smart pointer itself use <code>.</code> whereas
+methods on the target object use the overloaded dereference operator <code>-&gt;</code>).</p>
 
 <p>This results in the trace:</p>
 
@@ -254,6 +257,11 @@ you can use the <code>reset()</code> method:</p>
 --- Foo::~Foo()
 --- main()
 </code></pre>
+
+<p>The simple difference here is that the object&rsquo;s destructor is called <em>before</em>
+the end of <code>main</code>, since we invoke <code>resset()</code> explicitly.  Above, the destructor
+is invoked <em>after</em> the end of <code>main</code>, since the smart pointer is going out of
+scope.  This is a subtle but important point.</p>
 
 <h2>Unique for a reason</h2>
 
@@ -279,6 +287,41 @@ you can use the <code>reset()</code> method:</p>
       assignment operator is implicitly deleted
     obj2 = obj;
 </code></pre>
+
+<p>So if we can&rsquo;t assign these unique pointers, how do we move them around? Using
+the new explicit <em>move</em> support in C++11 (which is itself a large and complex
+topic). This transfers ownership of the pointer from one <code>unique_ptr</code> instance
+to another:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">&gt;</span> <span class="n">obj1</span><span class="p">(</span><span class="k">new</span> <span class="n">Foo</span><span class="p">);</span>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">&gt;</span> <span class="n">obj2</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">obj2</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">obj1</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The output of the test program shows the result (we can access the enclosed pointer
+using the <code>get()</code> method):</p>
+
+<pre><code>+++ main()
++++ Foo::Foo()
+Before move:
+     obj1:0x7fa8b9d00000
+     obj2:0x0
+After move:
+     obj1:0x0
+     obj2:0x7fa8b9d00000
+--- main()
+--- Foo::~Foo()
+</code></pre>
+
+<p>Notice how only one <code>Foo</code> instance was created, and that its pointer value moved
+from <code>obj1</code> to <code>obj2</code>? After the <code>move</code> operation, the pointer in <code>obj1</code> is null.
+Thus move semantics preserve the single owner invariant.</p>
 
 <h2>Arrays</h2>
 
@@ -343,7 +386,7 @@ requirements, this array support can be very useful.</p>
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/c-plus-plus/'>c++</a>, <a class='category' href='/blog/categories/c-plus-plus-11/'>c++11</a>, <a class='category' href='/blog/categories/memory/'>memory</a>, <a class='category' href='/blog/categories/smartpointers/'>smartpointers</a>
+    <a class='category' href='/blog/categories/c-plus-plus/'>c++</a>, <a class='category' href='/blog/categories/c-plus-plus-11/'>c++11</a>, <a class='category' href='/blog/categories/memory/'>memory</a>, <a class='category' href='/blog/categories/smart-pointers/'>smart pointers</a>
   
 </span>
 
@@ -385,6 +428,10 @@ requirements, this array support can be very useful.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/2014/02/c-plus-plus-11-futures.html">C++11 Futures</a>
+      </li>
+    
+      <li class="post">
         <a href="/2014/02/c-plus-plus-11-shared-pointer.html">C++11 Smart Pointers: Shared Pointer</a>
       </li>
     
@@ -398,10 +445,6 @@ requirements, this array support can be very useful.</p>
     
       <li class="post">
         <a href="/2012/02/threading-with-boost---part-iii-mutexes.html">Threading with Boost - Part III: Mutexes</a>
-      </li>
-    
-      <li class="post">
-        <a href="/2011/12/bug-of-the-year-2011.html">Bug of the Year - 2011</a>
       </li>
     
   </ul>

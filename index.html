@@ -9,8 +9,8 @@
   <meta name="author" content="Gavin Baker">
 
   
-  <meta name="description" content="In the last article on smart pointers, we looked at std::unique_ptr, which
-provides a simple and safe smart pointer to wrap heap allocations. This &hellip;">
+  <meta name="description" content="Concurrency is one of the most significant challenges facing software
+development today. As the gains in processor performance diminish year over &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -85,6 +85,58 @@ provides a simple and safe smart pointer to wrap heap allocations. This &hellip;
   <header>
   
     
+      <h1 class="entry-title"><a href="/2014/02/c-plus-plus-11-futures.html">C++11 Futures</a></h1>
+      
+      
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-25T08:44:00+11:00" pubdate data-updated="true">2014-02-25</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Concurrency is one of the most significant challenges facing software
+development today.  As the gains in processor performance diminish year over
+year, additional cores have become the norm.  For some years now, multicore
+processors have become the norm.</p>
+
+<p>Taking advantage of multiple cores has usually required writing multithreaded
+code, which can be complex to design and debug.  One of my favourite new
+features in the C++11 standard library is the <code>future</code> module.  This provides
+an extra layer of abstraction over threads, providing a simple mechanism
+for asynchronous (ie. concurrent) processing.</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/2014/02/c-plus-plus-11-futures.html">Read more &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+  
+    
       <h1 class="entry-title"><a href="/2014/02/c-plus-plus-11-shared-pointer.html">C++11 Smart Pointers: Shared Pointer</a></h1>
       
       
@@ -110,19 +162,19 @@ provides a simple and safe smart pointer to wrap heap allocations. This &hellip;
 
 
   <div class="entry-content"><p>In the last article on smart pointers, we looked at <code>std::unique_ptr</code>, which
-provides a simple and safe smart pointer to wrap heap allocations.  This
-type explicitly cannot be shared, to preserve its integrity. However, if
-you need to share a resource between multiple threads, you cannot use a
-<code>std::unique_ptr</code>. Apart from the issue of unique ownership, the big question
-remains &ndash; how can you ensure that the memory is freed once all referring
-threads have finished with the resource?</p>
+provides a simple and safe smart pointer to wrap heap allocations.  As the name
+implies, this smart pointer type cannot be shared between multiple threads.</p>
 
-<p>The solution to sharing allocations between threads is the <code>std::shared_ptr</code>.
-While it does <strong>not</strong> address race conditions (see mutexes et al), it does
-solve the problem of managing the lifecycle of a shared resource between
-multiple threads.</p>
+<p>So then how can you ensure that the memory is freed once all referring threads
+have finished with the resource?  This is especially difficult when the thread
+lifecycle is non-deterministic.</p>
+
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/2014/02/c-plus-plus-11-shared-pointer.html">Read more &rarr;</a>
+    </footer>
   
 
 
@@ -490,51 +542,6 @@ What could possibly go wrong?</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-  
-    
-      <h1 class="entry-title"><a href="/2009/05/threading-with-boost---part-i-creating-threads.html">Threading With Boost - Part I: Creating Threads</a></h1>
-      
-      
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2009-05-13T22:16:00+10:00" pubdate data-updated="true">2009-05-13</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><a href="http://www.boost.org/">Boost</a> is an incredibly powerful collection of portable class libraries for C++.  There are classes for such tasks as date/time manipulation, filesystem interfaces, networking, numerical programming, interprocess communication and <a href="http://www.boost.org/doc/libs">much more</a>.</p>
-
-<p>The Boost documentation is substantial, but can still be daunting to new users.  So this article is the first of a series on using Boost, starting with basic threading.  It aims to provide an accessible introduction, with complete working examples.</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/2009/05/threading-with-boost---part-i-creating-threads.html">Read more &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -550,6 +557,10 @@ What could possibly go wrong?</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/2014/02/c-plus-plus-11-futures.html">C++11 Futures</a>
+      </li>
+    
+      <li class="post">
         <a href="/2014/02/c-plus-plus-11-shared-pointer.html">C++11 Smart Pointers: Shared Pointer</a>
       </li>
     
@@ -563,10 +574,6 @@ What could possibly go wrong?</p>
     
       <li class="post">
         <a href="/2012/02/threading-with-boost---part-iii-mutexes.html">Threading with Boost - Part III: Mutexes</a>
-      </li>
-    
-      <li class="post">
-        <a href="/2011/12/bug-of-the-year-2011.html">Bug of the Year - 2011</a>
       </li>
     
   </ul>

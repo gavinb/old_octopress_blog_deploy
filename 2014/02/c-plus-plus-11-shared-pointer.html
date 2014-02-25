@@ -10,7 +10,7 @@
 
   
   <meta name="description" content="In the last article on smart pointers, we looked at std::unique_ptr, which
-provides a simple and safe smart pointer to wrap heap allocations. This &hellip;">
+provides a simple and safe smart pointer to wrap heap allocations. As the &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -107,17 +107,109 @@ provides a simple and safe smart pointer to wrap heap allocations. This &hellip;
 
 
 <div class="entry-content"><p>In the last article on smart pointers, we looked at <code>std::unique_ptr</code>, which
-provides a simple and safe smart pointer to wrap heap allocations.  This
-type explicitly cannot be shared, to preserve its integrity. However, if
-you need to share a resource between multiple threads, you cannot use a
-<code>std::unique_ptr</code>. Apart from the issue of unique ownership, the big question
-remains &ndash; how can you ensure that the memory is freed once all referring
-threads have finished with the resource?</p>
+provides a simple and safe smart pointer to wrap heap allocations.  As the name
+implies, this smart pointer type cannot be shared between multiple threads.</p>
 
-<p>The solution to sharing allocations between threads is the <code>std::shared_ptr</code>.
-While it does <strong>not</strong> address race conditions (see mutexes et al), it does
-solve the problem of managing the lifecycle of a shared resource between
-multiple threads.</p>
+<p>So then how can you ensure that the memory is freed once all referring threads
+have finished with the resource?  This is especially difficult when the thread
+lifecycle is non-deterministic.</p>
+
+<!--more-->
+
+
+<p>The solution to sharing heap-allocated memory between threads is the
+<code>std::shared_ptr</code>. While it does <strong>not</strong> address race conditions (see mutexes et
+al), it does solve the problem of managing the lifecycle of a shared resource
+between multiple threads.</p>
+
+<h2>Reference Counting</h2>
+
+<p>The <code>shared_ptr</code> implementation uses reference counting to keep track of how
+many references to the object exist. Each time the smart pointer is replicated,
+the reference count is increased. Each time a smart pointer goes out of scope,
+the reference count is decreased. Once the final reference is gone (ie. the
+reference count reaches zero), the object is deleted (and the destructor
+called).</p>
+
+<h2>Example</h2>
+
+<p>Imagine we have a worker thread function which needs to use a shared resource.
+We can pass the worker thread a shared pointer:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="kt">void</span> <span class="n">worker</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">&gt;&amp;</span> <span class="n">obj</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;tid %p worker: running, obj %p use_count %ld</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="n">std</span><span class="o">::</span><span class="n">this_thread</span><span class="o">::</span><span class="n">get_id</span><span class="p">(),</span>
+</span><span class='line'>        <span class="n">obj</span><span class="p">.</span><span class="n">get</span><span class="p">(),</span>
+</span><span class='line'>        <span class="n">obj</span><span class="p">.</span><span class="n">use_count</span><span class="p">());</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// Do something useful with obj</span>
+</span><span class='line'>    <span class="n">obj</span><span class="o">-&gt;</span><span class="n">process</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We can use the object in as many threads as we need, and they can all terminate
+at an arbitrary time. The object will stay alive until the last thread has
+finished, and releases its reference.</p>
+
+<p>In this example, the <code>main()</code> function creates an instance, then passes the
+smart pointer to several worker threads:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">&gt;</span> <span class="n">obj</span><span class="p">(</span><span class="k">new</span> <span class="n">Foo</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="kr">thread</span> <span class="n">w1</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="n">worker</span><span class="p">,</span> <span class="n">obj</span><span class="p">));</span>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="kr">thread</span> <span class="n">w2</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="n">worker</span><span class="p">,</span> <span class="n">obj</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">w1</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+</span><span class='line'><span class="n">w2</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Note the use of <code>std::bind</code> to pass the <code>obj</code> pointer as a reference parameter
+to the thread function;  normally thread function parameters are passed by
+value.</p>
+
+<p>The output will resemble something like:</p>
+
+<pre><code>+++ main()
++++ Foo::Foo()
+main:   spawning, obj use_count 1
+main:   joining,  obj use_count 3
+worker: running,  obj use_count 3
+worker: running,  obj use_count 2
+main:   leaving,  obj use_count 1
+--- main()
+--- Foo::~Foo()
+</code></pre>
+
+<p>We clearly see the lifecycle of the <code>Foo</code> instance.  In <code>main</code>, it is created
+and thus the <code>use_count</code> is 1 (before the threads are spawned).  Then two
+threads are spawned, increasing the <code>use_count</code> to 3, which remains while the
+threads are running. Main joins (or waits) to block on each thread terminating,
+so once <code>main</code> continues, both threads have completed, thus the <code>use_count</code> is
+back down to 1. Finally, the smart pointer goes out of scope at the end of main,
+and is destroyed after main completes.</p>
+
+<p>The new <code>std::shared_ptr</code> support makes it easy to share heap-allocated memory
+between threads, or throughout code that has complex lifetime requirements.</p>
 </div>
 
 
@@ -145,7 +237,7 @@ multiple threads.</p>
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/smart/'>"smart</a>, <a class='category' href='/blog/categories/c-plus-plus/'>c++</a>, <a class='category' href='/blog/categories/c-plus-plus-11/'>c++11</a>, <a class='category' href='/blog/categories/memory/'>memory</a>, <a class='category' href='/blog/categories/pointers/'>pointers"</a>
+    <a class='category' href='/blog/categories/c-plus-plus/'>c++</a>, <a class='category' href='/blog/categories/c-plus-plus-11/'>c++11</a>, <a class='category' href='/blog/categories/memory/'>memory</a>, <a class='category' href='/blog/categories/smart-pointers/'>smart pointers</a>
   
 </span>
 
@@ -166,6 +258,8 @@ multiple threads.</p>
         <a class="basic-alignment left" href="/2014/01/c-plus-plus-11-unique-pointer.html" title="Previous Post: C++11 Smart Pointers: Unique Pointer">&laquo; C++11 Smart Pointers: Unique Pointer</a>
       
       
+        <a class="basic-alignment right" href="/2014/02/c-plus-plus-11-futures.html" title="Next Post: C++11 Futures">C++11 Futures &raquo;</a>
+      
     </p>
   </footer>
 </article>
@@ -185,6 +279,10 @@ multiple threads.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/2014/02/c-plus-plus-11-futures.html">C++11 Futures</a>
+      </li>
+    
+      <li class="post">
         <a href="/2014/02/c-plus-plus-11-shared-pointer.html">C++11 Smart Pointers: Shared Pointer</a>
       </li>
     
@@ -198,10 +296,6 @@ multiple threads.</p>
     
       <li class="post">
         <a href="/2012/02/threading-with-boost---part-iii-mutexes.html">Threading with Boost - Part III: Mutexes</a>
-      </li>
-    
-      <li class="post">
-        <a href="/2011/12/bug-of-the-year-2011.html">Bug of the Year - 2011</a>
       </li>
     
   </ul>

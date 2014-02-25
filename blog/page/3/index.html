@@ -9,7 +9,7 @@
   <meta name="author" content="Gavin Baker">
 
   
-  <meta name="description" content="I have been doing some serious hacking, fixing and refactoring on a codebase for genetics analysis. And I&rsquo;ve needed tools to go beyond just &hellip;">
+  <meta name="description" content="Need to do some performance analysis on the cheap? Add some debug code to your app to write out the raw numbers you&rsquo;re interested in to a &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +77,51 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+  
+    
+      <h1 class="entry-title"><a href="/2007/01/the-happy-coders-toolkit-part-ii-profiling-and-r.html">The Happy Coder&#8217;s Toolkit Part II: Profiling and R</a></h1>
+      
+      
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2007-01-02T21:01:00+11:00" pubdate data-updated="true">2007-01-02</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Need to do some performance analysis on the cheap?</p>
+
+<p>Add some debug code to your app to write out the raw numbers you&rsquo;re interested in to a simple text file. Then you post-process the data file. How?</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/2007/01/the-happy-coders-toolkit-part-ii-profiling-and-r.html">Read more &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -767,289 +812,6 @@ and never realized it was wrong until I saw that video.&rdquo;</p></blockquote>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-  
-    
-      <h1 class="entry-title"><a href="/2005/03/a-real-python-logging-example.html">A Real Python Logging Example</a></h1>
-      
-      
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2005-03-15T10:56:00+11:00" pubdate data-updated="true">2005-03-15</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>For some reason, all the examples of the configuration files for the Python logging framework are artificial ones, with names like <code>handler01, handler02</code> and so on.  This makes it a little difficult to figure out how to apply it to a real world example.  So after a bit of fiddling around, here is a real example of using the Python <code>logging</code> module in a non-trivial application (ie. with multiple hierarchical modules) with an associated configuration file.</p>
-
-<p>The Python logging framework is extremely useful and powerful, but the documentation is somewhat lacking.  It is dead easy to use in its simplest form:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">os</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">math</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">logging</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">def</span> <span class="nf">frobnicate</span><span class="p">(</span><span class="n">foo</span><span class="p">,</span> <span class="n">baz</span><span class="p">):</span>
-</span><span class='line'>    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;Processing </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">foo</span><span class="p">)</span>
-</span><span class='line'>    <span class="k">if</span> <span class="n">baz</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-</span><span class='line'>        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;This could get complex!&#39;</span><span class="p">)</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">baz</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">()</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>So you really do nothing more than import the module, then make logging calls with the appropriate severity level.  But if you have a project with lots of different modules, and you want more control over how things are handled, what do you do?</p>
-
-<p>The first thing is to get a logger instance for each module.  You can use the same name as the module hierarchy, which gives you a lot of flexibility.  Thus, at the top of each module, we have something like:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">logging</span>
-</span><span class='line'><span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;pi.basil.gui.widgets&#39;</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The <code>logging.getLogger()</code> call will return us a logger for just that module, which we can then use throughout.  Thus:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">CalibrationCanvas</span><span class="p">:</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c">#... some stuff</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">_on_draw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;ImageCanvas._on_draw&#39;</span><span class="p">)</span>
-</span><span class='line'>        <span class="c"># do some funky stuff</span>
-</span><span class='line'>        <span class="n">glBegin</span><span class="p">()</span>
-</span><span class='line'>        <span class="c"># ...</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">if</span> <span class="ow">not</span> <span class="n">model</span><span class="p">:</span>
-</span><span class='line'>            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;update: No model specified&#39;</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>So note the use of the logging instance <code>log</code> instead of <code>logging</code>.  By using a different <code>Logger</code> for each module, we have very fine-grained control.</p>
-
-<p>It is important to use the right severity levels when you write you log calls.  I tend to use <code>INFO</code> for generally useful stuff that I like to see traced while developing, but not at runtime, while I reserve <code>DEBUG</code> for the extra detailed information that is only useful when something is going wrong.  The <code>WARNING</code> and lower I always have on at runtime, and in production are sent to an operator console.</p>
-
-<p>So now we need to set up the logging configuration.  Don&rsquo;t bother trying to do this programmatically (although you could) &ndash; use a configuration file.  This is the part that isn&rsquo;t documented so well.  Here is a snippet from a real file:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="p">[</span><span class="n">formatters</span><span class="p">]</span>
-</span><span class='line'><span class="n">keys</span><span class="p">:</span> <span class="n">detailed</span><span class="p">,</span><span class="n">simple</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">[</span><span class="n">handlers</span><span class="p">]</span>
-</span><span class='line'><span class="n">keys</span><span class="p">:</span> <span class="n">console</span><span class="p">,</span><span class="n">syslog</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">[</span><span class="n">loggers</span><span class="p">]</span>
-</span><span class='line'><span class="n">keys</span><span class="p">:</span> <span class="n">root</span><span class="p">,</span><span class="n">gui</span><span class="p">,</span><span class="n">engine</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">[</span><span class="n">formatter_simple</span><span class="p">]</span>
-</span><span class='line'><span class="n">format</span><span class="p">:</span> <span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="n">s</span><span class="p">:</span><span class="o">%</span><span class="p">(</span><span class="n">levelname</span><span class="p">)</span><span class="n">s</span><span class="p">:</span>  <span class="o">%</span><span class="p">(</span><span class="n">message</span><span class="p">)</span><span class="n">s</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">[</span><span class="n">formatter_detailed</span><span class="p">]</span>
-</span><span class='line'><span class="n">format</span><span class="p">:</span> <span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="n">s</span><span class="p">:</span><span class="o">%</span><span class="p">(</span><span class="n">levelname</span><span class="p">)</span><span class="n">s</span> <span class="o">%</span><span class="p">(</span><span class="n">module</span><span class="p">)</span><span class="n">s</span><span class="p">:</span><span class="o">%</span><span class="p">(</span><span class="n">lineno</span><span class="p">)</span><span class="n">d</span><span class="p">:</span>  <span class="o">%</span><span class="p">(</span><span class="n">message</span><span class="p">)</span><span class="n">s</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">[</span><span class="n">handler_console</span><span class="p">]</span>
-</span><span class='line'><span class="n">class</span><span class="p">:</span> <span class="n">StreamHandler</span>
-</span><span class='line'><span class="n">args</span><span class="p">:</span> <span class="p">[]</span>
-</span><span class='line'><span class="n">formatter</span><span class="p">:</span> <span class="n">simple</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">[</span><span class="n">handler_syslog</span><span class="p">]</span>
-</span><span class='line'><span class="n">class</span><span class="p">:</span> <span class="n">handlers</span><span class="o">.</span><span class="n">SysLogHandler</span>
-</span><span class='line'><span class="n">args</span><span class="p">:</span> <span class="p">[(</span><span class="s">&#39;myhost.mycorp.net&#39;</span><span class="p">,</span> <span class="n">handlers</span><span class="o">.</span><span class="n">SYSLOG_UDP_PORT</span><span class="p">),</span> <span class="n">handlers</span><span class="o">.</span><span class="n">SysLogHandler</span><span class="o">.</span><span class="n">LOG_USER</span><span class="p">]</span>
-</span><span class='line'><span class="n">formatter</span><span class="p">:</span> <span class="n">detailed</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">[</span><span class="n">logger_root</span><span class="p">]</span>
-</span><span class='line'><span class="n">level</span><span class="p">:</span> <span class="n">INFO</span>
-</span><span class='line'><span class="n">handlers</span><span class="p">:</span> <span class="n">syslog</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">[</span><span class="n">logger_gui</span><span class="p">]</span>
-</span><span class='line'><span class="n">level</span><span class="p">:</span> <span class="n">WARNING</span>
-</span><span class='line'><span class="n">qualname</span><span class="p">:</span> <span class="n">pi</span><span class="o">.</span><span class="n">basil</span><span class="o">.</span><span class="n">gui</span>
-</span><span class='line'><span class="n">handlers</span><span class="p">:</span> <span class="n">console</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">[</span><span class="n">logger_engine</span><span class="p">]</span>
-</span><span class='line'><span class="n">level</span><span class="p">:</span> <span class="n">INFO</span>
-</span><span class='line'><span class="n">qualname</span><span class="p">:</span> <span class="n">pi</span><span class="o">.</span><span class="n">basil</span>
-</span><span class='line'><span class="n">handlers</span><span class="p">:</span> <span class="n">console</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>A few notes: First, you must list all of the loggers, formatters and handlers in a section up front.  This is a bit odd, since each has their own section with a unique name anyway, but it appears to be due to a limitation of the <code>ConfigParser</code>.  So if you have formatters called <code>root</code> and <code>engine</code>, you must declare them in a section:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="p">[</span><span class="n">formatters</span><span class="p">]</span>
-</span><span class='line'><span class="n">keys</span><span class="p">:</span> <span class="n">simple</span><span class="p">,</span><span class="n">detailed</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Then the details of each formatter are supplied like this:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="p">[</span><span class="n">formatter_simple</span><span class="p">]</span>
-</span><span class='line'><span class="n">format</span><span class="p">:</span> <span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="n">s</span><span class="p">:</span><span class="o">%</span><span class="p">(</span><span class="n">levelname</span><span class="p">)</span><span class="n">s</span><span class="p">:</span>  <span class="o">%</span><span class="p">(</span><span class="n">message</span><span class="p">)</span><span class="n">s</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>And so on, for each instance of each type.</p>
-
-<p>Second, be careful not to add any spaces in the comma-separated list of keys (I think this is a bug) as you can end up with a Logger with a leading space in the name.  So &lsquo;keys:root,db,gui&rsquo; is not the same as &lsquo;keys:root, db, gui&rsquo;.</p>
-
-<p>Third, I have configured one of the handlers above to send logging information to a separate host using the SysLog facility.  Note that you will need to make sure <code>syslogd</code> is listening for remote calls for this to work, as it does not by default.  Under Debian, this involved adding the &ldquo;-r&rdquo; option to the SYSLOGD settings at the top of <code>/etc/init.d/sysklogd</code>.  Also note there are security implications for doing this, so some careful firewall rules are appropriate here.</p>
-
-<p>The trick is the <code>qualname</code> setting &ndash; this allows us to specify different loggers, and associate the name that we use to get a logger instance with particular settings in the config file.  So the <code>root</code> logger above is the default for the system, but we have separate settings for the engine and GUI components.  This <code>qualname</code> corresponds to the <code>getLogger()</code> call in our code.</p>
-
-<p>The configuration file is loaded at app startup time like this:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c"># ...</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kn">import</span> <span class="nn">logging.config</span>
-</span><span class='line'>    <span class="n">logging</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">fileConfig</span><span class="p">(</span><span class="s">&#39;logging_basil.conf&#39;</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Once you get the hang of it, the logging framework can save you a lot of time and effort, and you will be able to stop the bad habit of adding <code>print</code> statements all over the place, only to forget them or have to come back later and remove them.  The logging calls become a part of the code, you leave them in for production code, and can turn up the level of detail for diagnosing problems.  Fortunately, the performance penalty for leaving the logging code in is <em>very</em> small, and it is definitely worth a few extra cycles for that peace of mind.</p>
-
-<h2>Archived Comments</h2>
-
-<p>AUTHOR: Anonymous
-DATE: 08/02/2005 07:00:29 AM</p>
-
-<p>Typo in config file
-Thanks for clearing up this mistery! I encountered a small typo in the config file. In section
- [logger_root]
- level: INFO
- handlers: root
-the handlers value should be syslog instead of root.</p>
-
-<p>Joost van Lawick
-<a href="&#x6d;&#97;&#x69;&#108;&#x74;&#111;&#58;&#x6a;&#111;&#111;&#x73;&#x74;&#64;&#x6c;&#x61;&#119;&#x69;&#99;&#x6b;&#x2e;&#110;&#108;">&#x6a;&#111;&#111;&#x73;&#x74;&#x40;&#x6c;&#x61;&#119;&#105;&#x63;&#x6b;&#46;&#110;&#108;</a></p>
-
-<p>AUTHOR: Chris Lambacher
-DATE: 03/17/2006 09:07:37 AM
-You are missing an closing pre tag
-After the first code block you are missing a closing pre tag.  It makes the article kind of hard to read.</p>
-
-<p>AUTHOR: gavinb
-DATE: 06/07/2006 11:40:57 AM
-d&#8217;oh
-Thanks, fixed!</p>
-
-<p>AUTHOR: Pokerbot
-DATE: 08/21/2007 03:23:32 PM
-it must be difficult being a
-it must be difficult being a python logging &ndash; do they wrap around the logs or swallow them in order to move them?</p>
-
-<p>AUTHOR: Kirk Strauser
-DATE: 12/25/2007 05:17:45 AM
-Reason for listing all the elements
-A few notes: First, you must list all of the loggers, formatters and handlers in a section up front. This is a bit odd, since each has their own section with a unique name anyway, but it appears to be due to a limitation of the ConfigParser.</p>
-
-<p>That&rsquo;s not so odd when you consider larger deployments where many applications are configured from the same config file.  This is the case in my company where a master &ldquo;mycompany.conf&rdquo; holds all settings used throughout our entire codebase.  In theory, you could run every piece of our software on your own system just by tweaking that one file.  With this setup, the logger details will occupy just one tiny corner; it&rsquo;s not as if the whole config file is dedicated to it.</p>
-
-<p>AUTHOR: dramenbejs
-DATE: 05/07/2008 11:07:44 PM</p>
-
-<p>The font configured for the PRE tag in this article is too small: 0.8em.
-It forces me to process the article by hand to read it.
-Why you don&rsquo;t leave it on the default settings, which are at least readable?</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/4/">&larr; Older</a>
@@ -1067,6 +829,10 @@ Why you don&rsquo;t leave it on the default settings, which are at least readabl
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/2014/02/c-plus-plus-11-futures.html">C++11 Futures</a>
+      </li>
+    
+      <li class="post">
         <a href="/2014/02/c-plus-plus-11-shared-pointer.html">C++11 Smart Pointers: Shared Pointer</a>
       </li>
     
@@ -1080,10 +846,6 @@ Why you don&rsquo;t leave it on the default settings, which are at least readabl
     
       <li class="post">
         <a href="/2012/02/threading-with-boost---part-iii-mutexes.html">Threading with Boost - Part III: Mutexes</a>
-      </li>
-    
-      <li class="post">
-        <a href="/2011/12/bug-of-the-year-2011.html">Bug of the Year - 2011</a>
       </li>
     
   </ul>

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: asynchronous | antonym.org]]></title>
+  <link href="http://antonym.org//blog/categories/asynchronous/atom.xml" rel="self"/>
+  <link href="http://antonym.org//"/>
+  <updated>2014-02-25T18:42:50+11:00</updated>
+  <id>http://antonym.org//</id>
+  <author>
+    <name><![CDATA[Gavin Baker]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[C++11 Futures]]></title>
+    <link href="http://antonym.org//2014/02/c-plus-plus-11-futures.html"/>
+    <updated>2014-02-25T08:44:00+11:00</updated>
+    <id>http://antonym.org//2014/02/c-plus-plus-11-futures</id>
+    <content type="html"><![CDATA[<p>Concurrency is one of the most significant challenges facing software
+development today.  As the gains in processor performance diminish year over
+year, additional cores have become the norm.  For some years now, multicore
+processors have become the norm.</p>
+
+<p>Taking advantage of multiple cores has usually required writing multithreaded
+code, which can be complex to design and debug.  One of my favourite new
+features in the C++11 standard library is the <code>future</code> module.  This provides
+an extra layer of abstraction over threads, providing a simple mechanism
+for asynchronous (ie. concurrent) processing.</p>
+
+<!-- more -->
+
+
+<h2>What is a &lsquo;future&rsquo;?</h2>
+
+<p>A <code>std::future</code> is an object that represents the future return value of a
+function; it is the result of a computation which you need but do not yet have.
+A <code>std::future</code> object also represents the current processing state of this
+computation; whether or not it has completed, for example.</p>
+
+<p>An asynchronous task (which is generally created on its own thread) makes a
+<em>promise</em> that it will process a result at some time in the <em>future</em> and
+eventually return this result to the caller.</p>
+
+<h2>When are futures useful?</h2>
+
+<p>If your application needs to perform a non-trivial computation which could take
+quite some time to complete, it is frequently preferrable to perform this
+computation asynchronously; that is, in another thread, so the calling or main
+function can continue processing, perform other tasks, remain responsive to the
+user, and so on.</p>
+
+<p>Futures can also be very useful when there are multiple computations to perform,
+and it is not known which will complete first.  They can all be initiated at the
+same time, and the results picked up as each finishes.</p>
+
+<h2>How do I perform an async call?</h2>
+
+<p>Imagine we have a boring function which will take an undetermined but long time
+to complete:</p>
+
+<p>```c++
+unsigned boring()
+{</p>
+
+<pre><code>// Consume many CPU cycles...
+// ...then eventually...
+return boring_result;
+</code></pre>
+
+<p>}
+```</p>
+
+<p>Rather than calling this function directly and waiting for its result, we can
+invoke it asynchronously:</p>
+
+<p><code>c++
+std::future&lt;unsigned&gt; ans = std::async(boring);
+</code></p>
+
+<p>What is returned <em>immediately</em> is a <code>future</code> object or token (templated over the
+return type of the function we are calling), which allows us to query the status
+of the computation, and (once complete) retrieve the result of the <code>boring()</code>
+function.</p>
+
+<p>Processing in the calling thread (in this case, <code>main</code>) continues, as the
+<code>boring</code> function is spun off into its own thread (an implementation detail) to
+be scheduled independently.  In this way, we can continue to perform other
+processing while this boring work is being done in the background.</p>
+
+<p>To retrieve the answer, we simply call <code>get()</code> on the <code>future</code> object when we
+need to access the result:</p>
+
+<p><code>c++
+unsigned result = ans.get();
+</code></p>
+
+<p>This will block until the result of the <code>future</code> is ready, and then return
+the value from <code>boring()</code>.</p>
+
+<p>To avoid blocking on the result, you can use the <code>wait_for()</code> or <code>wait_until()</code>
+methods to check on the status of the <code>future</code>.</p>
+
+<h2>How do I monitor the future&rsquo;s status?</h2>
+
+<p>While the calling process is performing other work, it might be useful to check
+if the asynchronous processing has completed yet.  We can either wait for
+a certain time to elapse (<code>wait_for()</code>) or wait until a clock time is reached
+(<code>wait_until()</code>).  This fragment shows how you can wait 5ms for a result,
+retrieving it if available, and continuing if not:</p>
+
+<p>```c++
+std::chrono::milliseconds wait_time_ms(5);</p>
+
+<p>std::future_status status = ans.wait_for(wait_time_ms);</p>
+
+<p>if (status == std::future_status::ready)
+{</p>
+
+<pre><code>unsigned result = ans.get();
+</code></pre>
+
+<p>}
+```</p>
+
+<p>A more complete example shows monitoring the status of multiple <code>async</code> calls,
+displaying the result as each finishes.</p>
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: smart pointers | antonym.org]]></title>
+  <link href="http://antonym.org//blog/categories/smart-pointers/atom.xml" rel="self"/>
+  <link href="http://antonym.org//"/>
+  <updated>2014-02-25T18:42:50+11:00</updated>
+  <id>http://antonym.org//</id>
+  <author>
+    <name><![CDATA[Gavin Baker]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[C++11 Smart Pointers: Shared Pointer]]></title>
+    <link href="http://antonym.org//2014/02/c-plus-plus-11-shared-pointer.html"/>
+    <updated>2014-02-13T18:45:00+11:00</updated>
+    <id>http://antonym.org//2014/02/c-plus-plus-11-shared-pointer</id>
+    <content type="html"><![CDATA[<p>In the last article on smart pointers, we looked at <code>std::unique_ptr</code>, which
+provides a simple and safe smart pointer to wrap heap allocations.  As the name
+implies, this smart pointer type cannot be shared between multiple threads.</p>
+
+<p>So then how can you ensure that the memory is freed once all referring threads
+have finished with the resource?  This is especially difficult when the thread
+lifecycle is non-deterministic.</p>
+
+<!--more-->
+
+
+<p>The solution to sharing heap-allocated memory between threads is the
+<code>std::shared_ptr</code>. While it does <strong>not</strong> address race conditions (see mutexes et
+al), it does solve the problem of managing the lifecycle of a shared resource
+between multiple threads.</p>
+
+<h2>Reference Counting</h2>
+
+<p>The <code>shared_ptr</code> implementation uses reference counting to keep track of how
+many references to the object exist. Each time the smart pointer is replicated,
+the reference count is increased. Each time a smart pointer goes out of scope,
+the reference count is decreased. Once the final reference is gone (ie. the
+reference count reaches zero), the object is deleted (and the destructor
+called).</p>
+
+<h2>Example</h2>
+
+<p>Imagine we have a worker thread function which needs to use a shared resource.
+We can pass the worker thread a shared pointer:</p>
+
+<p>```c++
+void worker(std::shared_ptr<Foo>&amp; obj)
+{</p>
+
+<pre><code>printf("tid %p worker: running, obj %p use_count %ld\n",
+    std::this_thread::get_id(),
+    obj.get(),
+    obj.use_count());
+
+// Do something useful with obj
+obj-&gt;process();
+</code></pre>
+
+<p>}
+```</p>
+
+<p>We can use the object in as many threads as we need, and they can all terminate
+at an arbitrary time. The object will stay alive until the last thread has
+finished, and releases its reference.</p>
+
+<p>In this example, the <code>main()</code> function creates an instance, then passes the
+smart pointer to several worker threads:</p>
+
+<p>```c++</p>
+
+<pre><code>std::shared_ptr&lt;Foo&gt; obj(new Foo);
+
+std::thread w1(std::bind(worker, obj));
+std::thread w2(std::bind(worker, obj));
+
+w1.join();
+w2.join();
+</code></pre>
+
+<p>```</p>
+
+<p>Note the use of <code>std::bind</code> to pass the <code>obj</code> pointer as a reference parameter
+to the thread function;  normally thread function parameters are passed by
+value.</p>
+
+<p>The output will resemble something like:</p>
+
+<pre><code>+++ main()
++++ Foo::Foo()
+main:   spawning, obj use_count 1
+main:   joining,  obj use_count 3
+worker: running,  obj use_count 3
+worker: running,  obj use_count 2
+main:   leaving,  obj use_count 1
+--- main()
+--- Foo::~Foo()
+</code></pre>
+
+<p>We clearly see the lifecycle of the <code>Foo</code> instance.  In <code>main</code>, it is created
+and thus the <code>use_count</code> is 1 (before the threads are spawned).  Then two
+threads are spawned, increasing the <code>use_count</code> to 3, which remains while the
+threads are running. Main joins (or waits) to block on each thread terminating,
+so once <code>main</code> continues, both threads have completed, thus the <code>use_count</code> is
+back down to 1. Finally, the smart pointer goes out of scope at the end of main,
+and is destroyed after main completes.</p>
+
+<p>The new <code>std::shared_ptr</code> support makes it easy to share heap-allocated memory
+between threads, or throughout code that has complex lifetime requirements.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[C++11 Smart Pointers: Unique Pointer]]></title>
+    <link href="http://antonym.org//2014/01/c-plus-plus-11-unique-pointer.html"/>
+    <updated>2014-01-31T18:29:00+11:00</updated>
+    <id>http://antonym.org//2014/01/c-plus-plus-11-unique-pointer</id>
+    <content type="html"><![CDATA[<p>C++11 introduces many significant improvements to the language and runtime.
+One of the most important is to do with memory management &ndash; specifically,
+smart pointers.</p>
+
+<!--more-->
+
+
+<p>Instead of using a bare pointer type in C++, the modern C++11 style is now to
+use <code>std::unique_ptr</code>.  This class will automatically free the allocated memory
+once the variable goes out of scope.  This is the simplest of the new smart
+pointer types in C++11.</p>
+
+<p>Whereas before, you might write:</p>
+
+<p>```c++</p>
+
+<pre><code>Foo* obj = new Foo;
+
+obj-&gt;process();
+
+delete obj;
+</code></pre>
+
+<p>```</p>
+
+<p>you can now write:</p>
+
+<p>```c++</p>
+
+<pre><code>std::unique_ptr&lt;Foo&gt; obj(new Foo);
+
+obj-&gt;process();
+
+// obj will be automatically deleted
+</code></pre>
+
+<p>```</p>
+
+<p>The <code>std::unique_ptr</code> class enforces several useful properties:</p>
+
+<ul>
+<li>only a single unique reference to the allocated object can be active at a time</li>
+<li>the object will be deleted when the smart pointer goes out of scope</li>
+</ul>
+
+
+<p>The <code>unique_ptr</code> type is templated over the pointer type, and its constructor
+takes the allocated pointer returned from the <code>new</code> operator.  And because the
+pointer <code>operator-&gt;()</code> is overloaded, the smart pointer object can be used just
+like a regular pointer.</p>
+
+<p><strong>Note 1:</strong> For Boost users, this is almost the same as the <code>boost::scoped_ptr</code>
+class.</p>
+
+<p><strong>Note 2:</strong> This class supercedes the <code>std::auto_ptr</code>, which was deprecated in C++11.</p>
+
+<p><strong>Note 3:</strong> When invoking <code>std::unique_ptr</code> methods on the smart pointer itself,
+remember to use the dot <code>.</code> operator. When invoking methods on the object pointer,
+use the arrow <code>-&gt;</code> operator as you normally would (since it is overloaded to return the underlying object pointer).</p>
+
+<p>Once the variable goes out of scope, <code>delete</code> will be called to release the memory,
+and the destructor will be invoked as usual, as this simple example shows:</p>
+
+<p>```c++</p>
+
+<h1>include <memory></h1>
+
+<h1>include <iostream></h1>
+
+<p>class Foo
+{
+public:</p>
+
+<pre><code>Foo() { std::cout &lt;&lt; "+++ Foo::Foo()\n"; }
+~Foo() { std::cout &lt;&lt; "--- Foo::~Foo()\n"; }
+void process() { std::cout &lt;&lt; "... Foo::process()\n"; }
+</code></pre>
+
+<p>};</p>
+
+<p>int main(int argc, char* argv[])
+{</p>
+
+<pre><code>std::cout &lt;&lt; "+++ main()\n";
+
+std::unique_ptr&lt;Foo&gt; obj(new Foo);
+obj-&gt;process();
+
+std::cout &lt;&lt; "--- main()\n";
+
+return 0;
+</code></pre>
+
+<p>}
+```</p>
+
+<p>The output is:</p>
+
+<pre><code>+++ main()
++++ Foo::Foo()
+... Foo::process()
+--- main()
+--- Foo::~Foo()
+</code></pre>
+
+<h2>Explcit release</h2>
+
+<p>If you wish to delete the object before the holding pointer goes out of scope,
+you can use the <code>reset()</code> method on the smart pointer:</p>
+
+<p>```c++</p>
+
+<pre><code>std::unique_ptr&lt;Foo&gt; obj(new Foo);
+
+obj-&gt;process();
+obj.reset();
+</code></pre>
+
+<p>```</p>
+
+<p>(Notice that methods invoked on the smart pointer itself use <code>.</code> whereas
+methods on the target object use the overloaded dereference operator <code>-&gt;</code>).</p>
+
+<p>This results in the trace:</p>
+
+<pre><code>+++ main()
++++ Foo::Foo()
+... Foo::process()
+... obj: 0x7fb733c047c0
+--- Foo::~Foo()
+--- main()
+</code></pre>
+
+<p>The simple difference here is that the object&rsquo;s destructor is called <em>before</em>
+the end of <code>main</code>, since we invoke <code>resset()</code> explicitly.  Above, the destructor
+is invoked <em>after</em> the end of <code>main</code>, since the smart pointer is going out of
+scope.  This is a subtle but important point.</p>
+
+<h2>Unique for a reason</h2>
+
+<p>What happens if we try to assign this pointer to another smart pointer?</p>
+
+<p>```c++</p>
+
+<pre><code>std::unique_ptr&lt;Foo&gt; obj(new Foo);
+
+std::unique_ptr&lt;Foo&gt; obj2;
+
+obj2 = obj;
+</code></pre>
+
+<p>```</p>
+
+<p>We get a meaningful compiler error:</p>
+
+<pre><code>cpp11_unique_ptr_ex2.cpp:27:10: error: object of type 'std::__1::unique_ptr&lt;Foo,
+      std::__1::default_delete&lt;Foo&gt; &gt;' cannot be assigned because its copy
+      assignment operator is implicitly deleted
+    obj2 = obj;
+</code></pre>
+
+<p>So if we can&rsquo;t assign these unique pointers, how do we move them around? Using
+the new explicit <em>move</em> support in C++11 (which is itself a large and complex
+topic). This transfers ownership of the pointer from one <code>unique_ptr</code> instance
+to another:</p>
+
+<p>```c++</p>
+
+<pre><code>std::unique_ptr&lt;Foo&gt; obj1(new Foo);
+std::unique_ptr&lt;Foo&gt; obj2;
+
+obj2 = std::move(obj1);
+</code></pre>
+
+<p>```</p>
+
+<p>The output of the test program shows the result (we can access the enclosed pointer
+using the <code>get()</code> method):</p>
+
+<pre><code>+++ main()
++++ Foo::Foo()
+Before move:
+     obj1:0x7fa8b9d00000
+     obj2:0x0
+After move:
+     obj1:0x0
+     obj2:0x7fa8b9d00000
+--- main()
+--- Foo::~Foo()
+</code></pre>
+
+<p>Notice how only one <code>Foo</code> instance was created, and that its pointer value moved
+from <code>obj1</code> to <code>obj2</code>? After the <code>move</code> operation, the pointer in <code>obj1</code> is null.
+Thus move semantics preserve the single owner invariant.</p>
+
+<h2>Arrays</h2>
+
+<p>The <code>std::unique_ptr</code> class also has explicit support for handling arrays of
+pointers. It is not a replacement for <code>std::vector</code>, but depending on your
+requirements, this array support can be very useful.</p>
+
+<p>```c++
+const unsigned N = 10;</p>
+
+<p>std::unique_ptr&lt;Foo[]> objarray(new Foo [N]);</p>
+
+<p>for (unsigned i = 0; i &lt; N; i++)
+{</p>
+
+<pre><code>std::cout &lt;&lt; i &lt;&lt; " ";
+objarray[i].process();
+</code></pre>
+
+<p>}
+```</p>
+
+<h2>Other smart pointer types</h2>
+
+<p>Stay tuned for articles on:</p>
+
+<ul>
+<li><code>std::shared_ptr</code></li>
+<li><code>std::weak_ptr</code></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>

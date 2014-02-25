@@ -4,7 +4,7 @@
   <title><![CDATA[antonym.org]]></title>
   <link href="http://antonym.org//atom.xml" rel="self"/>
   <link href="http://antonym.org//"/>
-  <updated>2014-02-14T09:40:11+11:00</updated>
+  <updated>2014-02-25T18:42:50+11:00</updated>
   <id>http://antonym.org//</id>
   <author>
     <name><![CDATA[Gavin Baker]]></name>
@@ -15,6 +15,136 @@
   
   <entry>
     
+    <title type="html"><![CDATA[C++11 Futures]]></title>
+    <link href="http://antonym.org//2014/02/c-plus-plus-11-futures.html"/>
+    
+    <updated>2014-02-25T08:44:00+11:00</updated>
+    <id>http://antonym.org//2014/02/c-plus-plus-11-futures</id>
+    
+    <content type="html"><![CDATA[<p>Concurrency is one of the most significant challenges facing software
+development today.  As the gains in processor performance diminish year over
+year, additional cores have become the norm.  For some years now, multicore
+processors have become the norm.</p>
+
+<p>Taking advantage of multiple cores has usually required writing multithreaded
+code, which can be complex to design and debug.  One of my favourite new
+features in the C++11 standard library is the <code>future</code> module.  This provides
+an extra layer of abstraction over threads, providing a simple mechanism
+for asynchronous (ie. concurrent) processing.</p>
+
+<!-- more -->
+
+
+<h2>What is a &lsquo;future&rsquo;?</h2>
+
+<p>A <code>std::future</code> is an object that represents the future return value of a
+function; it is the result of a computation which you need but do not yet have.
+A <code>std::future</code> object also represents the current processing state of this
+computation; whether or not it has completed, for example.</p>
+
+<p>An asynchronous task (which is generally created on its own thread) makes a
+<em>promise</em> that it will process a result at some time in the <em>future</em> and
+eventually return this result to the caller.</p>
+
+<h2>When are futures useful?</h2>
+
+<p>If your application needs to perform a non-trivial computation which could take
+quite some time to complete, it is frequently preferrable to perform this
+computation asynchronously; that is, in another thread, so the calling or main
+function can continue processing, perform other tasks, remain responsive to the
+user, and so on.</p>
+
+<p>Futures can also be very useful when there are multiple computations to perform,
+and it is not known which will complete first.  They can all be initiated at the
+same time, and the results picked up as each finishes.</p>
+
+<h2>How do I perform an async call?</h2>
+
+<p>Imagine we have a boring function which will take an undetermined but long time
+to complete:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="kt">unsigned</span> <span class="n">boring</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// Consume many CPU cycles...</span>
+</span><span class='line'>    <span class="c1">// ...then eventually...</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">boring_result</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Rather than calling this function directly and waiting for its result, we can
+invoke it asynchronously:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">future</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="o">&gt;</span> <span class="n">ans</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">async</span><span class="p">(</span><span class="n">boring</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>What is returned <em>immediately</em> is a <code>future</code> object or token (templated over the
+return type of the function we are calling), which allows us to query the status
+of the computation, and (once complete) retrieve the result of the <code>boring()</code>
+function.</p>
+
+<p>Processing in the calling thread (in this case, <code>main</code>) continues, as the
+<code>boring</code> function is spun off into its own thread (an implementation detail) to
+be scheduled independently.  In this way, we can continue to perform other
+processing while this boring work is being done in the background.</p>
+
+<p>To retrieve the answer, we simply call <code>get()</code> on the <code>future</code> object when we
+need to access the result:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="kt">unsigned</span> <span class="n">result</span> <span class="o">=</span> <span class="n">ans</span><span class="p">.</span><span class="n">get</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This will block until the result of the <code>future</code> is ready, and then return
+the value from <code>boring()</code>.</p>
+
+<p>To avoid blocking on the result, you can use the <code>wait_for()</code> or <code>wait_until()</code>
+methods to check on the status of the <code>future</code>.</p>
+
+<h2>How do I monitor the future&rsquo;s status?</h2>
+
+<p>While the calling process is performing other work, it might be useful to check
+if the asynchronous processing has completed yet.  We can either wait for
+a certain time to elapse (<code>wait_for()</code>) or wait until a clock time is reached
+(<code>wait_until()</code>).  This fragment shows how you can wait 5ms for a result,
+retrieving it if available, and continuing if not:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">milliseconds</span> <span class="n">wait_time_ms</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">future_status</span> <span class="n">status</span> <span class="o">=</span> <span class="n">ans</span><span class="p">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">wait_time_ms</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="n">status</span> <span class="o">==</span> <span class="n">std</span><span class="o">::</span><span class="n">future_status</span><span class="o">::</span><span class="n">ready</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="kt">unsigned</span> <span class="n">result</span> <span class="o">=</span> <span class="n">ans</span><span class="p">.</span><span class="n">get</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>A more complete example shows monitoring the status of multiple <code>async</code> calls,
+displaying the result as each finishes.</p>
+]]></content>
+    
+  </entry>
+  
+  <entry>
+    
     <title type="html"><![CDATA[C++11 Smart Pointers: Shared Pointer]]></title>
     <link href="http://antonym.org//2014/02/c-plus-plus-11-shared-pointer.html"/>
     
@@ -22,17 +152,109 @@
     <id>http://antonym.org//2014/02/c-plus-plus-11-shared-pointer</id>
     
     <content type="html"><![CDATA[<p>In the last article on smart pointers, we looked at <code>std::unique_ptr</code>, which
-provides a simple and safe smart pointer to wrap heap allocations.  This
-type explicitly cannot be shared, to preserve its integrity. However, if
-you need to share a resource between multiple threads, you cannot use a
-<code>std::unique_ptr</code>. Apart from the issue of unique ownership, the big question
-remains &ndash; how can you ensure that the memory is freed once all referring
-threads have finished with the resource?</p>
+provides a simple and safe smart pointer to wrap heap allocations.  As the name
+implies, this smart pointer type cannot be shared between multiple threads.</p>
 
-<p>The solution to sharing allocations between threads is the <code>std::shared_ptr</code>.
-While it does <strong>not</strong> address race conditions (see mutexes et al), it does
-solve the problem of managing the lifecycle of a shared resource between
-multiple threads.</p>
+<p>So then how can you ensure that the memory is freed once all referring threads
+have finished with the resource?  This is especially difficult when the thread
+lifecycle is non-deterministic.</p>
+
+<!--more-->
+
+
+<p>The solution to sharing heap-allocated memory between threads is the
+<code>std::shared_ptr</code>. While it does <strong>not</strong> address race conditions (see mutexes et
+al), it does solve the problem of managing the lifecycle of a shared resource
+between multiple threads.</p>
+
+<h2>Reference Counting</h2>
+
+<p>The <code>shared_ptr</code> implementation uses reference counting to keep track of how
+many references to the object exist. Each time the smart pointer is replicated,
+the reference count is increased. Each time a smart pointer goes out of scope,
+the reference count is decreased. Once the final reference is gone (ie. the
+reference count reaches zero), the object is deleted (and the destructor
+called).</p>
+
+<h2>Example</h2>
+
+<p>Imagine we have a worker thread function which needs to use a shared resource.
+We can pass the worker thread a shared pointer:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="kt">void</span> <span class="n">worker</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">&gt;&amp;</span> <span class="n">obj</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;tid %p worker: running, obj %p use_count %ld</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="n">std</span><span class="o">::</span><span class="n">this_thread</span><span class="o">::</span><span class="n">get_id</span><span class="p">(),</span>
+</span><span class='line'>        <span class="n">obj</span><span class="p">.</span><span class="n">get</span><span class="p">(),</span>
+</span><span class='line'>        <span class="n">obj</span><span class="p">.</span><span class="n">use_count</span><span class="p">());</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// Do something useful with obj</span>
+</span><span class='line'>    <span class="n">obj</span><span class="o">-&gt;</span><span class="n">process</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We can use the object in as many threads as we need, and they can all terminate
+at an arbitrary time. The object will stay alive until the last thread has
+finished, and releases its reference.</p>
+
+<p>In this example, the <code>main()</code> function creates an instance, then passes the
+smart pointer to several worker threads:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">&gt;</span> <span class="n">obj</span><span class="p">(</span><span class="k">new</span> <span class="n">Foo</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="kr">thread</span> <span class="n">w1</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="n">worker</span><span class="p">,</span> <span class="n">obj</span><span class="p">));</span>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="kr">thread</span> <span class="n">w2</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="n">worker</span><span class="p">,</span> <span class="n">obj</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">w1</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+</span><span class='line'><span class="n">w2</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Note the use of <code>std::bind</code> to pass the <code>obj</code> pointer as a reference parameter
+to the thread function;  normally thread function parameters are passed by
+value.</p>
+
+<p>The output will resemble something like:</p>
+
+<pre><code>+++ main()
++++ Foo::Foo()
+main:   spawning, obj use_count 1
+main:   joining,  obj use_count 3
+worker: running,  obj use_count 3
+worker: running,  obj use_count 2
+main:   leaving,  obj use_count 1
+--- main()
+--- Foo::~Foo()
+</code></pre>
+
+<p>We clearly see the lifecycle of the <code>Foo</code> instance.  In <code>main</code>, it is created
+and thus the <code>use_count</code> is 1 (before the threads are spawned).  Then two
+threads are spawned, increasing the <code>use_count</code> to 3, which remains while the
+threads are running. Main joins (or waits) to block on each thread terminating,
+so once <code>main</code> continues, both threads have completed, thus the <code>use_count</code> is
+back down to 1. Finally, the smart pointer goes out of scope at the end of main,
+and is destroyed after main completes.</p>
+
+<p>The new <code>std::shared_ptr</code> support makes it easy to share heap-allocated memory
+between threads, or throughout code that has complex lifetime requirements.</p>
 ]]></content>
     
   </entry>
@@ -171,7 +393,7 @@ and the destructor will be invoked as usual, as this simple example shows:</p>
 <h2>Explcit release</h2>
 
 <p>If you wish to delete the object before the holding pointer goes out of scope,
-you can use the <code>reset()</code> method:</p>
+you can use the <code>reset()</code> method on the smart pointer:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -180,9 +402,12 @@ you can use the <code>reset()</code> method:</p>
 </pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">&gt;</span> <span class="n">obj</span><span class="p">(</span><span class="k">new</span> <span class="n">Foo</span><span class="p">);</span>
 </span><span class='line'>
 </span><span class='line'><span class="n">obj</span><span class="o">-&gt;</span><span class="n">process</span><span class="p">();</span>
-</span><span class='line'><span class="n">obj</span><span class="o">-&gt;</span><span class="n">reset</span><span class="p">();</span>
+</span><span class='line'><span class="n">obj</span><span class="p">.</span><span class="n">reset</span><span class="p">();</span>
 </span></code></pre></td></tr></table></div></figure>
 
+
+<p>(Notice that methods invoked on the smart pointer itself use <code>.</code> whereas
+methods on the target object use the overloaded dereference operator <code>-&gt;</code>).</p>
 
 <p>This results in the trace:</p>
 
@@ -193,6 +418,11 @@ you can use the <code>reset()</code> method:</p>
 --- Foo::~Foo()
 --- main()
 </code></pre>
+
+<p>The simple difference here is that the object&rsquo;s destructor is called <em>before</em>
+the end of <code>main</code>, since we invoke <code>resset()</code> explicitly.  Above, the destructor
+is invoked <em>after</em> the end of <code>main</code>, since the smart pointer is going out of
+scope.  This is a subtle but important point.</p>
 
 <h2>Unique for a reason</h2>
 
@@ -218,6 +448,41 @@ you can use the <code>reset()</code> method:</p>
       assignment operator is implicitly deleted
     obj2 = obj;
 </code></pre>
+
+<p>So if we can&rsquo;t assign these unique pointers, how do we move them around? Using
+the new explicit <em>move</em> support in C++11 (which is itself a large and complex
+topic). This transfers ownership of the pointer from one <code>unique_ptr</code> instance
+to another:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">&gt;</span> <span class="n">obj1</span><span class="p">(</span><span class="k">new</span> <span class="n">Foo</span><span class="p">);</span>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">&gt;</span> <span class="n">obj2</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">obj2</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">obj1</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The output of the test program shows the result (we can access the enclosed pointer
+using the <code>get()</code> method):</p>
+
+<pre><code>+++ main()
++++ Foo::Foo()
+Before move:
+     obj1:0x7fa8b9d00000
+     obj2:0x0
+After move:
+     obj1:0x0
+     obj2:0x7fa8b9d00000
+--- main()
+--- Foo::~Foo()
+</code></pre>
+
+<p>Notice how only one <code>Foo</code> instance was created, and that its pointer value moved
+from <code>obj1</code> to <code>obj2</code>? After the <code>move</code> operation, the pointer in <code>obj1</code> is null.
+Thus move semantics preserve the single owner invariant.</p>
 
 <h2>Arrays</h2>
 
@@ -3356,76 +3621,6 @@ Date: 07/09/2009 03:26:30 PM</p>
 <p>I guess this explains why there&rsquo;s a bunch of font/text utility libraries for OpenGL &ndash; it&rsquo;s non-trivial.  But if all you want is a quick and dirty text-drawing function, go for glut.</p>
 
 <p>One day I&rsquo;ll figure out how to properly render accelerated Quartz text into an OpenGL context, and write an article about it.</p>
-]]></content>
-    
-  </entry>
-  
-  <entry>
-    
-    <title type="html"><![CDATA[The Happy Coder's Toolkit Part II: Profiling and R]]></title>
-    <link href="http://antonym.org//2007/01/the-happy-coders-toolkit-part-ii-profiling-and-r.html"/>
-    
-    <updated>2007-01-02T21:01:00+11:00</updated>
-    <id>http://antonym.org//2007/01/the-happy-coders-toolkit-part-ii-profiling-and-r</id>
-    
-    <content type="html"><![CDATA[<p>Need to do some performance analysis on the cheap?</p>
-
-<p>Add some debug code to your app to write out the raw numbers you&rsquo;re interested in to a simple text file. Then you post-process the data file. How?</p>
-
-<!--more-->
-
-
-<p>It&rsquo;s as simple as:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'>  <span class="kt">FILE</span><span class="o">*</span> <span class="n">perfdata</span> <span class="o">=</span> <span class="n">fopen</span><span class="p">(</span><span class="s">&quot;foo_perf.dat&quot;</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="cm">/* Simple header */</span>
-</span><span class='line'>  <span class="n">fprintf</span><span class="p">(</span><span class="s">&quot;# Generated by myapp at %s&quot;</span><span class="p">,</span> <span class="n">asctime</span><span class="p">(</span><span class="n">localtime</span><span class="p">(</span><span class="nb">NULL</span><span class="p">)));</span>
-</span><span class='line'>  <span class="n">fprintf</span><span class="p">(</span><span class="s">&quot;count rank score delta&quot;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">for</span> <span class="p">(</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="p">...</span> <span class="p">)</span>
-</span><span class='line'>  <span class="p">{</span>
-</span><span class='line'>    <span class="cm">/* something intensive here ... */</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">fprintf</span><span class="p">(</span> <span class="n">perfdata</span><span class="p">,</span> <span class="s">&quot;%u %d %f %f&quot;</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">gen</span><span class="o">-&gt;</span><span class="n">rank</span><span class="p">,</span> <span class="n">gen</span><span class="o">-&gt;</span><span class="n">score</span><span class="p">,</span> <span class="n">gen</span><span class="o">-&gt;</span><span class="n">delta</span> <span class="p">);</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>  <span class="n">fclose</span><span class="p">(</span> <span class="n">fp</span> <span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Then you can use <a href="http://www.r-project.org/">GNU R</a> to plot the numbers over time, and quickly visualise what your code is doing.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='r'><span class='line'><span class="o">&gt;</span> perf <span class="o">&lt;-</span> read.table<span class="p">(</span><span class="s">&quot;foo_perf.dat&quot;</span><span class="p">,</span> header<span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span>
-</span><span class='line'><span class="o">&gt;</span> plot<span class="p">(</span>perf<span class="p">)</span>
-</span><span class='line'><span class="o">&gt;</span> plot<span class="p">(</span>perf<span class="o">$</span>score <span class="o">~</span> perf<span class="o">$</span>delta<span class="p">)</span>
-</span><span class='line'><span class="o">&gt;</span> plot<span class="p">(</span>perf<span class="o">$</span>rank<span class="p">,</span> type<span class="o">=</span><span class="s">&#39;l&#39;</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Enlightment!</p>
-
-<p>You can also write out a timestamp (the canonical float time since epoch will do fine) and use the powerful time series tools too.  Or simply subtract the value of the first timestamp entry from the column (eg. <code>attach perf ; tstamp &lt;- tstamp - tstamp[1]</code>) and you have a convenient &ldquo;zero time&rdquo; and your x-axis becomes a measure of milliseconds since the event.  Why, there&rsquo;s no end to the fun! :)</p>
-
-<p>And R isn&rsquo;t just a <a href="http://www.r-project.org/screenshots/screenshots.html">publication-quality plotting tool</a> &mdash; it is a fully-blown <a href="http://www.r-project.org/about.html">programming language</a>, with a massive array of statistical libraries.  There&rsquo;s an excellent stats book that uses R (or S Plus) and shows how to get the most out of it &ndash; <a href="ttp://www.amazon.com/Statistical-Computing-Introduction-Analysis-S-Plus/dp/0471560405/sr=1-2/qid=1167731672/ref=pd_bbs_sr_2/103-8385460-2747869?ie=UTF8&amp;amp;s=books">Statistical Computing by Crawley</a>.</p>
-
-<p>Oh, and I can&rsquo;t wait for <a href="http://www.apple.com/macosx/leopard/xcode.html">X-Ray</a>.  Wow.  I&rsquo;ve used <a href="http://www.opensolaris.org/os/community/dtrace/">DTrace</a> a few times, and it&rsquo;s awesomely powerful; it just takes a fair effort to learn, and even longer to learn how to use it <i>effectively</i>.  It looks like Apple&rsquo;s sexy front-end will make this an incredibly useful tool.</p>
 ]]></content>
     
   </entry>
