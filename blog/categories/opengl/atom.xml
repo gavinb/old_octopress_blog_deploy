@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: rust | antonym.org]]></title>
-  <link href="http://antonym.org//blog/categories/rust/atom.xml" rel="self"/>
+  <title><![CDATA[Category: opengl | antonym.org]]></title>
+  <link href="http://antonym.org//blog/categories/opengl/atom.xml" rel="self"/>
   <link href="http://antonym.org//"/>
   <updated>2014-02-26T09:06:01+11:00</updated>
   <id>http://antonym.org//</id>
@@ -95,108 +95,6 @@ language, and hide all the glue.</p>
 </code></pre></li>
 </ul>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[What is Rust?]]></title>
-    <link href="http://antonym.org//2013/10/what-is-rust.html"/>
-    <updated>2013-10-08T20:50:00+11:00</updated>
-    <id>http://antonym.org//2013/10/what-is-rust</id>
-    <content type="html"><![CDATA[<p><a href="http://www.rust-lang.org/">Rust</a> is a compiled, hybrid imperative/object-
-oriented/functional language. It appeals directly to any C++ developer who has
-battled with memory management, and Python developers who long for faster code.
-So why might you be interested in learning Rust?</p>
-
-<!--more-->
-
-
-<p>It&rsquo;s <strong>compiled</strong>, so it&rsquo;s fast. Rust uses <a href="http://www.llvm.org/">LLVM</a> as the
-compilation engine, and benefits from all its optimisation and native code
-generation support that targets ARM and Intel processors.</p>
-
-<p>Rust uses <strong>type inference</strong>, so you can write cleaner, simpler code while
-retaining the benefits of strong static typing. It also supports <strong>generic</strong> and
-<strong>algebraic types</strong>, which offers a far richer type system than C++.</p>
-
-<p>There are no <code>NULL</code> pointers, thus rendering an entire class of bugs impossible.
-This alone is worth a serious look, as the security and reliability implications
-are huge.</p>
-
-<p>Rust is a brace-oriented like C/C++, so many aspects of the syntax will be
-immediately familiar to existing developers.</p>
-
-<p>Memory ownership semantics are rich, strict and enforced. There are owned
-pointers, shared pointers and <em>optional</em> garbage-collection.</p>
-
-<p>Rust has first-class <strong>concurrency</strong> support, featuring lightweight tasks
-and message passing.</p>
-
-<p>What does it look like? I would describe it as terse &ndash; or rather, minimalist.</p>
-
-<p>``` rust
-fn main() {</p>
-
-<pre><code>println!("Hello, world");
-</code></pre>
-
-<p>}
-```</p>
-
-<p>Ok, that&rsquo;s not very useful. How about a naïve Fibonacci function:</p>
-
-<p>``` rust
-fn fib(n: uint) &ndash;> uint {</p>
-
-<pre><code>match n {
-    0..1    =&gt; 1,
-    _       =&gt; fib(n-1) + fib(n-2)
-}
-</code></pre>
-
-<p>}
-```</p>
-
-<p>Yes, Rust has <strong>pattern matching</strong> just like Haskell. Forget about the simple
-<code>switch</code> statement &ndash; <code>match</code> is super-powerful and flexible, supporting ranges,
-options and destructuring fields from <code>struct</code>s.</p>
-
-<p>What about some tasks:</p>
-
-<p>``` rust
-fn test_tasks() {</p>
-
-<pre><code>println("About to spawn...");
-
-do spawn {
-    println("Hello from the first subtask!");
-}
-
-do spawn {
-    println("Hello from another subtask!");
-}
-</code></pre>
-
-<p>}
-```</p>
-
-<p>Despite having spent years working in C++, I have often lamented its
-shortcomings. Yet until recently, no other language seems to have come close to
-competing with C++ as a systems language.</p>
-
-<p>The <a href="http://dlang.org">D programming language</a> looks very interesting, and aims
-to provide a worthy alternative to C++.  However, last time I looked, there was
-a schism over the runtime libraries which made adoption difficult. Uncertainty
-about such a fundamental aspect is not reassuring for potential users.</p>
-
-<p>The <a href="http://www.go-lang.org/">Go programming language</a> from Google is fantastic,
-and I have already used it on a number of small projects. The only shortcoming I
-see here is the garbage collection, which makes real-time systems impractical.</p>
-
-<p>Rust has great promise, and also has both Mozilla and Samsung backing its
-progress. There is a vibrant, friendly and smart community behind it, and a
-growing number of third-party libraries are supported. I am very optimistic
-about the future of Rust, and look forward to contributing.</p>
 ]]></content>
   </entry>
   

@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Coding | antonym.org]]></title>
+  <link href="http://antonym.org//blog/categories/coding/atom.xml" rel="self"/>
+  <link href="http://antonym.org//"/>
+  <updated>2014-02-26T09:06:01+11:00</updated>
+  <id>http://antonym.org//</id>
+  <author>
+    <name><![CDATA[Gavin Baker]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Converting an application to Unicode]]></title>
+    <link href="http://antonym.org//2012/02/converting-an-application-to-unicode.html"/>
+    <updated>2012-02-22T00:00:00+11:00</updated>
+    <id>http://antonym.org//2012/02/converting-an-application-to-unicode</id>
+    <content type="html"><![CDATA[<p>So you need to convert your C/C++ application to <a href="http://en.wikipedia.org/wiki/Unicode">Unicode</a>?  It&rsquo;s harder than you think.</p>
+
+<p>For many years, there has been one assumption that underlies the biggest problem in modernising code:</p>
+
+<ul>
+<li><strong>One character is equivalent to One Byte</strong></li>
+</ul>
+
+
+<p>If the world only spoke English and limited all written communication to the 127 code points enshrined in 7-bit ASCII, this assumption might be reasonable.  Fortunately, Unicode was invented many years ago to solve the problem of having a standardised means for encoding the thousands of written languages used around the world today.</p>
+
+<p>But this means that you can&rsquo;t assume that you can safely take input from the user and treat it simplistically like this:</p>
+
+<p>{%highlight c%}
+void printEachCharacter(const char* msg)
+{</p>
+
+<pre><code>unsigned msg_len = strlen(msg);
+
+for (unsigned i = 0; i &lt; msg_len; i++)
+{
+    unsigned char c = msg[i];
+    printf("%u: %hhu %c\n", i, c, c);
+}
+</code></pre>
+
+<p>}
+{%endhighlight%}</p>
+
+<p>This will work just fine for 7-bit ASCII.  So if we call this function like:</p>
+
+<p>{%highlight c%}
+printEachCharacter(&ldquo;Unicode is great!&rdquo;);
+{%endhighlight%}</p>
+
+<p>we will see each letter of the message, one per line as you would expect.  But if the input were taken from a French speaker who likes the taste of , we would see something like this:</p>
+
+<pre><code>_0:   0x4c   L
+_1:   0x65   e
+_2:   0x20    
+_3:   0x67   g
+_4:   0x6f   o
+_5:   0xc3   ?
+_6:   0xbc   ?
+_7:   0x74   t
+_8:   0x20    
+_9:   0x64   d
+10:   0x65   e
+11:   0x20    
+12:   0x42   B
+13:   0x72   r
+14:   0x61   a
+15:   0x74   t
+16:   0x77   w
+17:   0xc3   ?
+18:   0xb8   ?
+19:   0x72   r
+20:   0x73   s
+21:   0x74   t
+22:   0x20    
+23:   0x65   e
+24:   0x73   s
+25:   0x74   t
+26:   0x20    
+27:   0x67   g
+28:   0xc3   ?
+29:   0xa9   ?
+30:   0x6e   n
+31:   0x69   i
+32:   0x61   a
+33:   0x6c   l
+34:   0x21   !
+</code></pre>
+
+<p>Various modern development environments such as Java, .NET and Python 3 support Unicode by default, out of the box.  But there are possibly millions of lines of C and C++ code out there which assume that 1 character is stored in 1 byte.  And modernising these codebases is a potentially huge task.  Everwhere you have a <code>const char*</code> or <code>std::string</code> variable, you have to not only update their types, but you also have to review every function or method and parameter to ensure the</p>
+
+<p>This list is a starting point (but by no means a comprehensive list!) for all of the aspects that need review:</p>
+
+<ul>
+<li>Literal strings, messages</li>
+<li>Localised filenames</li>
+<li>File I/O</li>
+<li>Data</li>
+<li>Network I/O</li>
+<li>Interfacing with non-Unicode libraries and APIs</li>
+<li>User input</li>
+<li>User interface widgets</li>
+</ul>
+
+
+<h2>Encodings</h2>
+
+<p>One of the big decisions you will need to make is <em>which</em> flavour of Unicode you&rsquo;re actually going to use.  There&rsquo;s at least three, although there are two primary encodings in widespread use:</p>
+
+<ul>
+<li><strong>UTF8</strong>: one or more bytes per character. Used by Mac OS X, Linux and most Unixen.</li>
+<li><strong>UTF16</strong>: two bytes per character. Used by Windows.</li>
+</ul>
+
+
+<p>(UTF = Universal Transformation Format)</p>
+
+<p>There are several other encodings (such as UCS)</p>
+
+<h2>Briefly &ndash; UTF-8</h2>
+
+<p>This encoding is probably the easiest to support, as UTF-8 is a superset of the 7-bit ASCII encoding you are most likely already using.  (Apologies to IBMers &ndash; I know EBCDIC is still out there too.)  All 7-bit sequences are interpreted as per ASCII.  The 8th bit is used as an escape bit to indicate the sequence is a multi-byte sequence.</p>
+
+<h2>Briefly &ndash; UCS-16</h2>
+
+<p>ALl recent Windows versions uses this two-byte encoding internally, regardless of&hellip;</p>
+
+<h2>Literal strings &amp; messages</h2>
+
+<p>Literal strings crop up in many contexts. Whether part of a message to the user, foo baz bar, and so on,</p>
+
+<h2>Localised filenames</h2>
+
+<p>The majority of modern operating systems support extended character sets for naming files in the filesystem.  So there is no good reason to prevent your French users from saving their thoughts on &ldquo;Pensées à &rdquo;</p>
+
+<h2>File I/O</h2>
+
+<p>When reading and writing data from files, you will invariably be specifying a number of bytes to the file I/O APIs.</p>
+
+<h2>Data</h2>
+
+<h2>Network I/O</h2>
+
+<p>Just as the Berkeley sockets API for TCP/IP has functions for converting between host and network byte order, you need to ensure that any textual data transmitted over a network channel has the correct encoding and is specified with the correct byte length.</p>
+
+<ul>
+<li>Windows: <code>CreateFile</code></li>
+<li>iOS and OS X: <code>CFNetwork</code> supports UTF-8</li>
+<li>Linux: <code>send()</code> and <code>recv()</code> on a socket need to use</li>
+</ul>
+
+
+<h2>Interfacing with non-Unicode libraries and APIs</h2>
+
+<h2>User input</h2>
+
+<h2>User interface widgets</h2>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Improve your C++: Casting]]></title>
+    <link href="http://antonym.org//2012/02/improve-your-c-casting.html"/>
+    <updated>2012-02-20T00:00:00+11:00</updated>
+    <id>http://antonym.org//2012/02/improve-your-c-casting</id>
+    <content type="html"><![CDATA[<p>{% include JB/setup %}</p>
+
+<p>Along with a host of other improvements &ndash; and complexities! &ndash;  over regular C, the C++ language introduces several features in the type system worth reviewing.  By taking advantage of these features while working with types, you can improve your C++ code and hopefully make it more readable and robust.</p>
+
+<h1>Sample Classes</h1>
+
+<p>For the following example code, we will assume the following class declarations:</p>
+
+<p>{% highlight c++ %}
+class Base
+{</p>
+
+<pre><code>public:
+    virtual void foo();
+    virtual void baz();
+</code></pre>
+
+<p>};</p>
+
+<p>class Derived : public Base
+{</p>
+
+<pre><code>public:
+    virtual void foo();
+</code></pre>
+
+<p>};</p>
+
+<p>class Related
+{</p>
+
+<pre><code>public:
+    void        bar();
+
+private:
+    Derived*    d;
+</code></pre>
+
+<p>};
+{% endhighlight %}</p>
+
+<h1>Static and Dynamic Pointer Types</h1>
+
+<p>The <em>static</em> type of a variable is determined at compile time, and is simply the type according to the variable declaration.  For example:</p>
+
+<p>{% highlight c++ %}
+Base<em>       basePtr;
+Derived</em>    derivedPtr;
+Related*    relatedPtr;
+{% endhighlight %}</p>
+
+<p>The <em>dynamic</em> type of a variable is determined at run time, and is the type of the instance to which the pointer refers.  This is often &ndash; but by no means always &ndash; the same, as in these examples:</p>
+
+<p>{% highlight c++ %}
+Base<em>       basePtr = new Base;
+Derived</em>    derivedPtr = new Derived;
+Related*    relatedPtr = new Related;
+{% endhighlight %}</p>
+
+<p>Clearly these all have the same static and dynamic type.  So when can they be different?  Well, a variable can be assigned (almost!) anything, provided the types are compatible, or can be <em>coerced</em> (such as from <code>int</code> to <code>float</code>).</p>
+
+<p>In the example classes above, any instance of <code>Derived</code> is also an instance of <code>Base</code>.  So we should be able to treat a <code>Derived</code> instance as if it were a <code>Base</code> instance &ndash; it is a compatible type.  And sure enough, that is exactly what happens when the static type is <code>Base*</code> and the dynamic type is <code>Derived*</code>:</p>
+
+<p>{% highlight c++ %}
+Base* basePtr = new Derived;
+{% endhighlight %}</p>
+
+<p>We can assign a derived pointer to a base pointer, but not the other way around.  It is invalid, because a <code>Derived</code> instance is a superset of a <code>Base</code> pointer.</p>
+
+<p>{% highlight c++ %}
+Derived* invalidPtr = new Base; // This will not work!
+{% endhighlight %}</p>
+
+<p>So what happens when we start calling some methods?  In the case of virtual methods, such as defined in the sample code, the correct method will be invoked at runtime according to the <em>dynamic</em> type, thus:</p>
+
+<p>{% highlight c++ %}
+Base<em> basePtr1 = new Base;
+basePtr1->foo(); // calls Base::foo
+Base</em> basePtr2 = new Derived;
+basePtr2->foo(); // calls Derived::foo
+{% endhighlight %}</p>
+
+<p>Even though we are only holding a <code>Base</code> pointer, the runtime is clever enough to figure out (through the magic of virtual method tables or v-tables) the correct virtual method to call.  (If the methods were not declared <code>virtual</code>, it would use the static type.)  This of course is the wonderful world of <em>polymorphism</em>.</p>
+
+<p>So, what does all this have to do with casting?</p>
+
+<h1>Static Cast</h1>
+
+<p>A <code>static_cast</code> converts between pointers or references of related classes.  You can cast both up and down the inheritance hierarchy, provided you know it is safe to do so.  You can, as you would expect, cast a derived class to its base class.  However, you can also cast a base class to a derived type.  Because this is one of those &ldquo;trust me, I know what I&rsquo;m doing&rdquo; things, the compiler will not complain, nor are there any runtime checks to see if you really did cast to the right type (see <code>dynamic_cast</code> below if you want this).</p>
+
+<p>A common feature of frameworks, especially GUIs that employ callbacks, is to allow the caller to pass some form of user data to the callback, which is supplied when the event is triggered, along with the rest of the data.  So passing an object&rsquo;s <code>this</code> pointer as the &ldquo;user data&rdquo; for a callback lets you manage the event with an object (often with the aid of a glue method to reflect the call).  This is a common (but not necessarily the most elegant) technique in C++.  For example:</p>
+
+<p>{% highlight c++ %}
+void MyController::init()
+{
+  myButton->setClickedHandler(MyController::buttonClickedReflector, this);
+  //&hellip;
+}
+static void MyController::buttonClickedReflector(unsigned buttonId, unsigned eventFlags, void<em> userData)
+{
+  MyController</em> obj = static_cast&lt;MyController*>(userData);
+  obj->buttonClicked(buttonId, eventFlags);
+}
+void MyController::buttonClicked(unsigned buttonId, unsigned eventFlags)
+{
+  // &hellip; do something sensible
+}
+{% endhighlight %}</p>
+
+<p>Because the framework knows nothing about our application types, it simply uses a <code>void*</code> to carry around a pointer to whatever data we like.  This is convenient, but requires a certain level of care to ensure you put in what you expect to get out!  (And also that the lifecycle of the objects ensures that the receiver is still around when the event is triggered &ndash; but that is for another article.)</p>
+
+<p>A <code>static_cast</code> can also be used anywhere you would have used an explicit cast in C; for example, between ordinal types, like this:</p>
+
+<p>{% highlight c++ %}
+const float PHI = 1.718&hellip;;
+uint16_t scaled = static_cast<unsigned int>(PHI * 65535);
+{% endhighlight %}</p>
+
+<h1>Dynamic Cast</h1>
+
+<p>The <code>dynamic_cast</code> uses Run Time Type Information (RTTI) to check the validity of the cast at runtime.  This incurs an extra runtime cost for the checking, and also extra space in the binary for storing all the additional metadata, so it is not without cost.  It will return <code>NULL</code> if the cast is invalid.</p>
+
+<p>A <code>dynamic_cast</code> will always successed when casting a pointer or reference of a class to one of its base classes:</p>
+
+<p>{% highlight c++ %}
+void process(Base* obj)
+{</p>
+
+<pre><code>Derived d = dynamic_cast&lt;Derived*&gt;(obj);
+if (d)
+{
+    // treat obj as Derived
+}
+// whatever
+</code></pre>
+
+<p>}
+{% endhighlight %}</p>
+
+<p>However, if the types are determined at run-time to be incompatible, a <code>dynamic_cast</code> will return NULL.  As mentioned above, this is safer than a <code>static_cast</code> but incurs a performance penalty.</p>
+
+<p>There are a few other subtleties&hellip;</p>
+
+<h1>Const Cast</h1>
+
+<h1>Link: improve-your-c-const-correctness</h1>
+
+<p>An earlier article (TODO add LINK!) extolls the virtues of the appropriate use of <code>const</code>.  The <code>const_cast</code> operator breaks the rules, allowing you to add or remove &ldquo;constness&rdquo; as you wish.  This is most useful when you have a constant reference and need to pass it to a function or method which takes a non-constant pointer or reference, but you can&rsquo;t change the interface.  For example:</p>
+
+<p>{%highlight c++%}
+void process(Derived* d)
+{</p>
+
+<pre><code>d-&gt;foo();
+</code></pre>
+
+<p>}</p>
+
+<p>int main(void)
+{</p>
+
+<pre><code>const Derived* cd = new Derived;
+
+process(const_cast&lt;Derived*&gt;(cd));
+
+return 0;
+</code></pre>
+
+<p>}
+{%endhighlight%}</p>
+
+<p>(It would be breaking the contract with the user if you actually modified a const reference, which is very poor form indeed.)</p>
+
+<p>Casting away (or casting in) const-ness has its uses, but should be used sparingly.  If the code is your own, you are usually better off using <code>const</code> wherever appropriate and refactoring accordingly.  For those times when you cannot, judicious use of <code>const_cast</code> makes your intention explicit.</p>
+
+<h1>Reinterpret Cast</h1>
+
+<p>This is the ultimate &ldquo;trust me&rdquo; casting operation.  No checking whatsoever is performed, and the compiler will let you cast just about anything to anything (even classes to integers, provided they are big enough to hold a pointer).  All this really does is a straight copy of the binary value of the pointer.</p>
+
+<p>It is exceedingly rare that you would need to use this feature &ndash; you would almost always use <code>static_cast</code> instead.  So before resorting to this, make sure it is <em>really</em> what you need.</p>
+
+<p>{%highlight c++%}
+void network_error_callback(const Error&amp; e, void* userData)
+{</p>
+
+<pre><code>Manager* mgr = reinterpret_cast&lt;Manager*&gt;(userData);
+
+mgr-&gt;handleNetworkError(e.code, e.message);
+</code></pre>
+
+<p>}
+{%endhighlight%}</p>
+
+<h1>Type Information</h1>
+
+<p>If you build your app with RTTI enabled, you can use the <code>typeid</code> operator to provide type information at runtime.  While you would ordinarily use polymorphism to adapt runtime behaviour, there are (very!) occasionally situations when this might come in handy.  This feature is much more likely to crop up in framework code than application code.</p>
+
+<p>The <code>typeid</code> operator returns a string which can identify either the static or dynamic type.  If you pass a pointer or reference, it returns the static type.  If you pass a dereferenced pointer, it will return the dynamic type.</p>
+
+<p>The string returned from <code>typeid</code> is implementation-specific, so you cannot rely on it being any particular value for a given class.  Defensive programming is in order&hellip;</p>
+
+<h1>Summary</h1>
+
+<p>Modern C++ has many new features that make for more readable, solid code.  Some of the casting features above should be used with caution, but the static and dynamic casts are very useful, and can be used to replace virtually all existing C-style casts in your C++ code.</p>
+
+<h1>Advanced</h1>
+
+<p>Down-casting can be is dangerous.  Try to avoid wherever possible.  It may be a sign of poor design, and you need to rethink it.  Cross-Casting is probably evil.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Speed and Discipline]]></title>
+    <link href="http://antonym.org//2009/03/speed-and-discipline.html"/>
+    <updated>2009-03-02T00:00:00+11:00</updated>
+    <id>http://antonym.org//2009/03/speed-and-discipline</id>
+    <content type="html"><![CDATA[<p>{% include JB/setup %}</p>
+
+<p>The faster your computer, the more productive you are, right?  You can compile your project more quickly, run more unit tests in the same amount of time, find bugs more quickly&hellip; Or will it make you lazy and rot your brain?</p>
+
+<p>Fast computers have made us lazy.  Fast compilers and IDEs have made developers particularly lazy.  While much of this has been in response to the increasing complexity of APIs we have to remember&hellip;</p>
+
+<p>Calculators degrade mental numeracy</p>
+
+<p>Device driver dev has a cost
+Higher the cost, the more you think</p>
+
+<p>When the cost of an action is negligible&hellip;</p>
+
+<p>Digital cameras reduced the cost of taking photo to near zero. So instead of planning shots and thinking about composition and framing, we reel off hundreds of shots in a session and hope that 2 or 3 turn out to be good.  (Of course, the instant feedback certainly helps.)</p>
+]]></content>
+  </entry>
+  
+</feed>

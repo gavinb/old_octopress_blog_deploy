@@ -4,7 +4,7 @@
   <title><![CDATA[Category: smart pointers | antonym.org]]></title>
   <link href="http://antonym.org//blog/categories/smart-pointers/atom.xml" rel="self"/>
   <link href="http://antonym.org//"/>
-  <updated>2014-02-25T18:42:50+11:00</updated>
+  <updated>2014-02-26T09:06:01+11:00</updated>
   <id>http://antonym.org//</id>
   <author>
     <name><![CDATA[Gavin Baker]]></name>
@@ -119,9 +119,10 @@ between threads, or throughout code that has complex lifetime requirements.</p>
     <link href="http://antonym.org//2014/01/c-plus-plus-11-unique-pointer.html"/>
     <updated>2014-01-31T18:29:00+11:00</updated>
     <id>http://antonym.org//2014/01/c-plus-plus-11-unique-pointer</id>
-    <content type="html"><![CDATA[<p>C++11 introduces many significant improvements to the language and runtime.
-One of the most important is to do with memory management &ndash; specifically,
-smart pointers.</p>
+    <content type="html"><![CDATA[<p>C++11 introduces many significant improvements to the language and runtime. One
+of the most important is to do with memory management &ndash; specifically, smart
+pointers.  The <code>unique_ptr</code> makes managing dynamically allocated memory safe and
+simple.</p>
 
 <!--more-->
 
@@ -157,11 +158,14 @@ obj-&gt;process();
 
 <p>```</p>
 
+<h2>Properties</h2>
+
 <p>The <code>std::unique_ptr</code> class enforces several useful properties:</p>
 
 <ul>
-<li>only a single unique reference to the allocated object can be active at a time</li>
+<li>only a single reference to the allocated object can be active at any given time</li>
 <li>the object will be deleted when the smart pointer goes out of scope</li>
+<li>the object will be deleted if an exception is thrown</li>
 </ul>
 
 
@@ -178,6 +182,8 @@ class.</p>
 <p><strong>Note 3:</strong> When invoking <code>std::unique_ptr</code> methods on the smart pointer itself,
 remember to use the dot <code>.</code> operator. When invoking methods on the object pointer,
 use the arrow <code>-&gt;</code> operator as you normally would (since it is overloaded to return the underlying object pointer).</p>
+
+<h2>Sample</h2>
 
 <p>Once the variable goes out of scope, <code>delete</code> will be called to release the memory,
 and the destructor will be invoked as usual, as this simple example shows:</p>
@@ -253,11 +259,11 @@ methods on the target object use the overloaded dereference operator <code>-&gt;
 </code></pre>
 
 <p>The simple difference here is that the object&rsquo;s destructor is called <em>before</em>
-the end of <code>main</code>, since we invoke <code>resset()</code> explicitly.  Above, the destructor
+the end of <code>main</code>, since we invoke <code>reset()</code> explicitly.  Above, the destructor
 is invoked <em>after</em> the end of <code>main</code>, since the smart pointer is going out of
 scope.  This is a subtle but important point.</p>
 
-<h2>Unique for a reason</h2>
+<h2>Uniqueness</h2>
 
 <p>What happens if we try to assign this pointer to another smart pointer?</p>
 
@@ -280,7 +286,10 @@ obj2 = obj;
     obj2 = obj;
 </code></pre>
 
-<p>So if we can&rsquo;t assign these unique pointers, how do we move them around? Using
+<p>The compiler is enforcing the unique ownership semantics, so we can&rsquo;t
+accidentally do the wrong thing.</p>
+
+<p>But if we can&rsquo;t assign these unique pointers, how do we move them around? Using
 the new explicit <em>move</em> support in C++11 (which is itself a large and complex
 topic). This transfers ownership of the pointer from one <code>unique_ptr</code> instance
 to another:</p>
@@ -334,6 +343,67 @@ objarray[i].process();
 
 <p>}
 ```</p>
+
+<h2>Returning objects from functions</h2>
+
+<p>The <code>unique_ptr</code> idiom is especially useful when you need to return an allocated
+resource from a function or method, but don&rsquo;t want to worry about having to free
+the object later.  This sample function returns a unique pointer to the caller,
+transferring ownership by implicitly moving the result:</p>
+
+<p>```c++
+std::unique_ptr<Foo> make_foo()
+{</p>
+
+<pre><code>std::unique_ptr&lt;Foo&gt; obj(new Foo);
+
+// prepare obj
+
+return obj;
+</code></pre>
+
+<p>}
+```</p>
+
+<p>The object will be freed when the caller stops referencing it.</p>
+
+<h2>Storing in Containers</h2>
+
+<p>The <em>move</em> support enables efficient storage of <code>unique_ptr</code> managed objects in
+containers (one of the limitations of the deprecated <code>std::auto_ptr</code>).  If you
+have a vector of pointers to objects, you need to carefully manage ownership
+(eg. does the creator or the container own the allocations?) and manually free
+them. But with <code>unique_ptr</code>, instead of:</p>
+
+<p><code>c++
+std::vector&lt;Foo*&gt; v;
+</code></p>
+
+<p>we can write:</p>
+
+<p><code>c++
+std::vector&lt; std::unique_ptr&lt;Foo&gt; &gt; v;
+</code></p>
+
+<p>then when creating the object, we use the explicit <em>move</em> support to pass
+ownership of the object to the container (and avoid any reallocations or
+temporaries):</p>
+
+<p><code>c++
+std::unique_ptr&lt;Foo&gt; q(new Foo(i));
+v.push_back(std::move(q));
+</code></p>
+
+<p>When the <code>vector</code> goes out of scope, its destructor will in turn release all
+the <code>unique_ptr</code> instances it owns.  This automatic releasing of resources
+can save a great deal of debugging pain and potential memory leaks.</p>
+
+<h2>Overheads</h2>
+
+<p>The benefits of using <code>std::unique_ptr</code> are many.  And fortunately, the cost of
+using this support is minimal.  The is an overhead of one word per instance (8
+bytes on a 64-bit architecture).  The code generated for a method invocation
+involves an extra pointer indirection, which might cost a few percent.</p>
 
 <h2>Other smart pointer types</h2>
 

@@ -151,8 +151,9 @@ pointer types in C++11.</p>
 <p>The <code>std::unique_ptr</code> class enforces several useful properties:</p>
 
 <ul>
-<li>only a single unique reference to the allocated object can be active at a time</li>
+<li>only a single reference to the allocated object can be active at any given time</li>
 <li>the object will be deleted when the smart pointer goes out of scope</li>
+<li>the object will be deleted if an exception is thrown</li>
 </ul>
 
 
@@ -259,11 +260,11 @@ methods on the target object use the overloaded dereference operator <code>-&gt;
 </code></pre>
 
 <p>The simple difference here is that the object&rsquo;s destructor is called <em>before</em>
-the end of <code>main</code>, since we invoke <code>resset()</code> explicitly.  Above, the destructor
+the end of <code>main</code>, since we invoke <code>reset()</code> explicitly.  Above, the destructor
 is invoked <em>after</em> the end of <code>main</code>, since the smart pointer is going out of
 scope.  This is a subtle but important point.</p>
 
-<h2>Unique for a reason</h2>
+<h2>Uniqueness</h2>
 
 <p>What happens if we try to assign this pointer to another smart pointer?</p>
 
@@ -288,7 +289,10 @@ scope.  This is a subtle but important point.</p>
     obj2 = obj;
 </code></pre>
 
-<p>So if we can&rsquo;t assign these unique pointers, how do we move them around? Using
+<p>The compiler is enforcing the unique ownership semantics, so we can&rsquo;t
+accidentally do the wrong thing.</p>
+
+<p>But if we can&rsquo;t assign these unique pointers, how do we move them around? Using
 the new explicit <em>move</em> support in C++11 (which is itself a large and complex
 topic). This transfers ownership of the pointer from one <code>unique_ptr</code> instance
 to another:</p>
@@ -347,6 +351,61 @@ requirements, this array support can be very useful.</p>
 </span><span class='line'>    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; &quot;</span><span class="p">;</span>
 </span><span class='line'>    <span class="n">objarray</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">process</span><span class="p">();</span>
 </span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Returning objects from functions</h2>
+
+<p>The <code>unique_ptr</code> idiom is especially useful when you need to return an allocated
+resource from a function or method, but don&rsquo;t want to worry about having to
+free&hellip;***</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">&gt;</span> <span class="n">make_foo</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">&gt;</span> <span class="n">obj</span><span class="p">(</span><span class="k">new</span> <span class="n">Foo</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// prepare obj</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">obj</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Containers</h2>
+
+<p>The <em>move</em> support enables efficient storage of <code>unique_ptr</code> managed objects in
+containers (one of the limitations of the deprecated <code>std::auto_ptr</code>).  If
+you have a vector of pointers to objects, you need to manually free them.
+So instead of:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">*&gt;</span> <span class="n">v</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>we can instead use:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">&gt;</span> <span class="o">&gt;</span> <span class="n">v</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>then when creating the object, we use the explicit <em>move</em> support to pass
+ownership of the object to the container (and avoid any reallocations or
+temporaries):</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">&gt;</span> <span class="n">q</span><span class="p">(</span><span class="k">new</span> <span class="n">Foo</span><span class="p">(</span><span class="n">i</span><span class="p">));</span>
+</span><span class='line'><span class="n">v</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">q</span><span class="p">));</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
