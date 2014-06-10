@@ -4,7 +4,7 @@
   <title><![CDATA[Category: memory | antonym.org]]></title>
   <link href="http://antonym.org//blog/categories/memory/atom.xml" rel="self"/>
   <link href="http://antonym.org//"/>
-  <updated>2014-02-26T09:06:01+11:00</updated>
+  <updated>2014-06-10T22:58:48+10:00</updated>
   <id>http://antonym.org//</id>
   <author>
     <name><![CDATA[Gavin Baker]]></name>
@@ -168,6 +168,10 @@ obj-&gt;process();
 <li>the object will be deleted if an exception is thrown</li>
 </ul>
 
+
+<p>It bears spelling this out: when used correctly, <code>std::unique_ptr</code> can virtually
+eliminate memory leaks.  This makes the cost of the conversion process
+worthwhile!</p>
 
 <p>The <code>unique_ptr</code> type is templated over the pointer type, and its constructor
 takes the allocated pointer returned from the <code>new</code> operator.  And because the
@@ -367,7 +371,7 @@ return obj;
 
 <p>The object will be freed when the caller stops referencing it.</p>
 
-<h2>Storing in Containers</h2>
+<h2>Containers</h2>
 
 <p>The <em>move</em> support enables efficient storage of <code>unique_ptr</code> managed objects in
 containers (one of the limitations of the deprecated <code>std::auto_ptr</code>).  If you
@@ -398,12 +402,30 @@ v.push_back(std::move(q));
 the <code>unique_ptr</code> instances it owns.  This automatic releasing of resources
 can save a great deal of debugging pain and potential memory leaks.</p>
 
-<h2>Overheads</h2>
+<h2>Overhead</h2>
 
 <p>The benefits of using <code>std::unique_ptr</code> are many.  And fortunately, the cost of
-using this support is minimal.  The is an overhead of one word per instance (8
-bytes on a 64-bit architecture).  The code generated for a method invocation
-involves an extra pointer indirection, which might cost a few percent.</p>
+using this support is minimal (though for embedded systems, needs to be
+carefully considered).  The is a memory overhead of one word per instance (eg. 8
+bytes on a 64-bit architecture).</p>
+
+<p>The code generated for a method invocation involves an extra pointer
+indirection, the overhead which seems to be in the order of 2-3% (based on some
+simplistic tests; see the repo for full source).</p>
+
+<h2>Upgrading</h2>
+
+<p>The process to convert existing code which uses manual memory management to
+using smart pointers may not be trivial, but the long-term benefits of more
+maintainable and reliable code are frequently worth the investment of time.
+Going through the process may well highlight complex memory management
+strategies or error-prone code, and eliminate even more problems.</p>
+
+<ul>
+<li>Search for allocations using <code>new</code></li>
+<li>Remove calls to <code>delete</code></li>
+</ul>
+
 
 <h2>Other smart pointer types</h2>
 

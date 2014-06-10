@@ -9,8 +9,8 @@
   <meta name="author" content="Gavin Baker">
 
   
-  <meta name="description" content="Concurrency is one of the most significant challenges facing software
-development today. As the gains in processor performance diminish year over &hellip;">
+  <meta name="description" content="The humble for loop is one of the oldest control flow control constructs
+in the Algol-family of languages. Yet while other languages have extended &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -33,6 +33,10 @@ development today. As the gains in processor performance diminish year over &hel
 <link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 <link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
+<a href="https://twitter.com/gavinb" rel="me">Twitter</a>
+<link rel="openid.server" href="https://indieauth.com/openid" />
+<link rel="openid.delegate" href="http://gavinb.antonym.org/" />
+
   <!-- after custom head -->
   
   <script type="text/javascript">
@@ -78,6 +82,129 @@ development today. As the gains in processor performance diminish year over &hel
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+  
+    
+      <h1 class="entry-title"><a href="/2014/02/c-plus-plus-11-range-based-for-loops.html">C++11 Range-based for Loops</a></h1>
+      
+      
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-25T08:44:00+11:00" pubdate data-updated="true">2014-02-25</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>The humble <code>for</code> loop is one of the oldest control flow control constructs
+in the Algol-family of languages.  Yet while other languages have extended
+their syntax to allow <code>for</code> loops to do all sorts of crazy and useful things
+beyond iterate over a range of numbers, C and C++ have remained steadfast &ndash;
+until now.</p>
+
+<p>The <code>for</code> loop finally has a new syntax to better support iterators and
+ranges (a great new feature in C++11/14).  So you can now iterate over much
+more than just numbers.</p>
+
+<p>The C++ container classes provide iterators, but the looping syntax is
+rather unweildly but familiar pattern:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">vec</span><span class="p">;</span>
+</span><span class='line'><span class="c1">// ...</span>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;::</span><span class="n">iter</span> <span class="n">it</span><span class="p">;</span>
+</span><span class='line'><span class="k">for</span> <span class="p">(</span><span class="n">it</span> <span class="o">=</span> <span class="n">vec</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span> <span class="n">it</span> <span class="o">!=</span> <span class="n">vec</span><span class="p">.</span><span class="n">end</span><span class="p">();</span> <span class="o">++</span><span class="n">it</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="kt">int</span><span class="o">&amp;</span> <span class="n">n</span> <span class="o">=</span> <span class="o">*</span><span class="n">it</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">total</span> <span class="o">+=</span> <span class="n">n</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>For some time, the most excellent <a href="http://www.boost.org/">Boost++ project</a>
+has provided some syntactic sugar to reduce the complexity of this code
+considerably.  By using Boost&rsquo;s <code>foreach</code> library, you can replace the above
+loop with the much simpler:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">vec</span><span class="p">;</span>
+</span><span class='line'><span class="c1">// ...</span>
+</span><span class='line'><span class="k">for</span> <span class="p">(</span><span class="kt">int</span><span class="o">&amp;</span> <span class="n">num</span><span class="p">,</span> <span class="n">vec</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">total</span> <span class="o">+=</span> <span class="n">n</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>But now the C++11 specification has this style of syntax (with a slight
+change of punctuation; it uses &lsquo;:&rsquo; rather than &lsquo;,&rsquo;). So now you can write:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">vec</span><span class="p">;</span>
+</span><span class='line'><span class="c1">// ...</span>
+</span><span class='line'><span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="n">n</span> <span class="o">:</span> <span class="n">vec</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">total</span> <span class="o">+=</span> <span class="n">n</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This is obviously much cleaner and clearer than the iterator-based code.  If
+all you need to do is iterate over a container, you can start using this
+syntax straight away.</p>
+
+<p>(Aside: if you are actually going to sum the contents of a vector, using the
+<code>reduce</code> algorithm is even better.)</p>
+
+<h2>Ranges</h2>
+
+<p>The iterators in the STL have <code>begin()</code> and <code>end()</code> methods to control
+iteration loops.  New in C++11 are <code>begin()</code> and <code>end()</code> <em>functions</em>, which
+can be used to construct ranges.  So what is a range?</p>
+
+<h2>The new <code>for</code> loop in detail</h2>
+
+<p>So how does this new <code>for</code> loop actually work?</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -210,9 +337,10 @@ lifecycle is non-deterministic.</p>
   </header>
 
 
-  <div class="entry-content"><p>C++11 introduces many significant improvements to the language and runtime.
-One of the most important is to do with memory management &ndash; specifically,
-smart pointers.</p>
+  <div class="entry-content"><p>C++11 introduces many significant improvements to the language and runtime. One
+of the most important is to do with memory management &ndash; specifically, smart
+pointers.  The <code>unique_ptr</code> makes managing dynamically allocated memory safe and
+simple.</p>
 
 </div>
   
@@ -499,49 +627,6 @@ What could possibly go wrong?</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-  
-    
-      <h1 class="entry-title"><a href="/2009/09/stl-filtering.html">STL: Filtering</a></h1>
-      
-      
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2009-09-16T11:51:00+10:00" pubdate data-updated="true">2009-09-16</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>The STL makes it easy to create lists, iterate over lists, and apply a function to each member of a list.  So how do you filter a vector according to some criteria?  It&rsquo;s not hard, but the obvious solution isn&rsquo;t <em>quite</em> enough.  Here&rsquo;s how.</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/2009/09/stl-filtering.html">Read more &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -557,6 +642,10 @@ What could possibly go wrong?</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/2014/02/c-plus-plus-11-range-based-for-loops.html">C++11 Range-based for loops</a>
+      </li>
+    
+      <li class="post">
         <a href="/2014/02/c-plus-plus-11-futures.html">C++11 Futures</a>
       </li>
     
@@ -570,10 +659,6 @@ What could possibly go wrong?</p>
     
       <li class="post">
         <a href="/2013/10/what-is-rust.html">What is Rust?</a>
-      </li>
-    
-      <li class="post">
-        <a href="/2012/02/threading-with-boost---part-iii-mutexes.html">Threading with Boost - Part III: Mutexes</a>
       </li>
     
   </ul>

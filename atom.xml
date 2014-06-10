@@ -4,7 +4,7 @@
   <title><![CDATA[antonym.org]]></title>
   <link href="http://antonym.org//atom.xml" rel="self"/>
   <link href="http://antonym.org//"/>
-  <updated>2014-02-26T08:49:10+11:00</updated>
+  <updated>2014-06-10T22:58:48+10:00</updated>
   <id>http://antonym.org//</id>
   <author>
     <name><![CDATA[Gavin Baker]]></name>
@@ -12,6 +12,104 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    
+    <title type="html"><![CDATA[C++11 Range-based for loops]]></title>
+    <link href="http://antonym.org//2014/02/c-plus-plus-11-range-based-for-loops.html"/>
+    
+    <updated>2014-02-25T08:44:00+11:00</updated>
+    <id>http://antonym.org//2014/02/c-plus-plus-11-range-based-for-loops</id>
+    
+    <content type="html"><![CDATA[<p>The humble <code>for</code> loop is one of the oldest control flow control constructs
+in the Algol-family of languages.  Yet while other languages have extended
+their syntax to allow <code>for</code> loops to do all sorts of crazy and useful things
+beyond iterate over a range of numbers, C and C++ have remained steadfast &ndash;
+until now.</p>
+
+<p>The <code>for</code> loop finally has a new syntax to better support iterators and
+ranges (a great new feature in C++11/14).  So you can now iterate over much
+more than just numbers.</p>
+
+<p>The C++ container classes provide iterators, but the looping syntax is
+rather unweildly but familiar pattern:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">vec</span><span class="p">;</span>
+</span><span class='line'><span class="c1">// ...</span>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;::</span><span class="n">iter</span> <span class="n">it</span><span class="p">;</span>
+</span><span class='line'><span class="k">for</span> <span class="p">(</span><span class="n">it</span> <span class="o">=</span> <span class="n">vec</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span> <span class="n">it</span> <span class="o">!=</span> <span class="n">vec</span><span class="p">.</span><span class="n">end</span><span class="p">();</span> <span class="o">++</span><span class="n">it</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="kt">int</span><span class="o">&amp;</span> <span class="n">n</span> <span class="o">=</span> <span class="o">*</span><span class="n">it</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">total</span> <span class="o">+=</span> <span class="n">n</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>For some time, the most excellent <a href="http://www.boost.org/">Boost++ project</a>
+has provided some syntactic sugar to reduce the complexity of this code
+considerably.  By using Boost&rsquo;s <code>foreach</code> library, you can replace the above
+loop with the much simpler:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">vec</span><span class="p">;</span>
+</span><span class='line'><span class="c1">// ...</span>
+</span><span class='line'><span class="k">for</span> <span class="p">(</span><span class="kt">int</span><span class="o">&amp;</span> <span class="n">num</span><span class="p">,</span> <span class="n">vec</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">total</span> <span class="o">+=</span> <span class="n">n</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>But now the C++11 specification has this style of syntax (with a slight
+change of punctuation; it uses &lsquo;:&rsquo; rather than &lsquo;,&rsquo;). So now you can write:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">vec</span><span class="p">;</span>
+</span><span class='line'><span class="c1">// ...</span>
+</span><span class='line'><span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="n">n</span> <span class="o">:</span> <span class="n">vec</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">total</span> <span class="o">+=</span> <span class="n">n</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This is obviously much cleaner and clearer than the iterator-based code.  If
+all you need to do is iterate over a container, you can start using this
+syntax straight away.</p>
+
+<p>(Aside: if you are actually going to sum the contents of a vector, using the
+<code>reduce</code> algorithm is even better.)</p>
+
+<h2>Ranges</h2>
+
+<p>The iterators in the STL have <code>begin()</code> and <code>end()</code> methods to control
+iteration loops.  New in C++11 are <code>begin()</code> and <code>end()</code> <em>functions</em>, which
+can be used to construct ranges.  So what is a range?</p>
+
+<h2>The new <code>for</code> loop in detail</h2>
+
+<p>So how does this new <code>for</code> loop actually work?</p>
+]]></content>
+    
+  </entry>
   
   <entry>
     
@@ -267,9 +365,10 @@ between threads, or throughout code that has complex lifetime requirements.</p>
     <updated>2014-01-31T18:29:00+11:00</updated>
     <id>http://antonym.org//2014/01/c-plus-plus-11-unique-pointer</id>
     
-    <content type="html"><![CDATA[<p>C++11 introduces many significant improvements to the language and runtime.
-One of the most important is to do with memory management &ndash; specifically,
-smart pointers.</p>
+    <content type="html"><![CDATA[<p>C++11 introduces many significant improvements to the language and runtime. One
+of the most important is to do with memory management &ndash; specifically, smart
+pointers.  The <code>unique_ptr</code> makes managing dynamically allocated memory safe and
+simple.</p>
 
 <!--more-->
 
@@ -309,6 +408,8 @@ pointer types in C++11.</p>
 </span></code></pre></td></tr></table></div></figure>
 
 
+<h2>Properties</h2>
+
 <p>The <code>std::unique_ptr</code> class enforces several useful properties:</p>
 
 <ul>
@@ -317,6 +418,10 @@ pointer types in C++11.</p>
 <li>the object will be deleted if an exception is thrown</li>
 </ul>
 
+
+<p>It bears spelling this out: when used correctly, <code>std::unique_ptr</code> can virtually
+eliminate memory leaks.  This makes the cost of the conversion process
+worthwhile!</p>
 
 <p>The <code>unique_ptr</code> type is templated over the pointer type, and its constructor
 takes the allocated pointer returned from the <code>new</code> operator.  And because the
@@ -331,6 +436,8 @@ class.</p>
 <p><strong>Note 3:</strong> When invoking <code>std::unique_ptr</code> methods on the smart pointer itself,
 remember to use the dot <code>.</code> operator. When invoking methods on the object pointer,
 use the arrow <code>-&gt;</code> operator as you normally would (since it is overloaded to return the underlying object pointer).</p>
+
+<h2>Sample</h2>
 
 <p>Once the variable goes out of scope, <code>delete</code> will be called to release the memory,
 and the destructor will be invoked as usual, as this simple example shows:</p>
@@ -518,8 +625,9 @@ requirements, this array support can be very useful.</p>
 <h2>Returning objects from functions</h2>
 
 <p>The <code>unique_ptr</code> idiom is especially useful when you need to return an allocated
-resource from a function or method, but don&rsquo;t want to worry about having to
-free&hellip;***</p>
+resource from a function or method, but don&rsquo;t want to worry about having to free
+the object later.  This sample function returns a unique pointer to the caller,
+transferring ownership by implicitly moving the result:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -540,19 +648,22 @@ free&hellip;***</p>
 </span></code></pre></td></tr></table></div></figure>
 
 
+<p>The object will be freed when the caller stops referencing it.</p>
+
 <h2>Containers</h2>
 
 <p>The <em>move</em> support enables efficient storage of <code>unique_ptr</code> managed objects in
-containers (one of the limitations of the deprecated <code>std::auto_ptr</code>).  If
-you have a vector of pointers to objects, you need to manually free them.
-So instead of:</p>
+containers (one of the limitations of the deprecated <code>std::auto_ptr</code>).  If you
+have a vector of pointers to objects, you need to carefully manage ownership
+(eg. does the creator or the container own the allocations?) and manually free
+them. But with <code>unique_ptr</code>, instead of:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">*&gt;</span> <span class="n">v</span><span class="p">;</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>we can instead use:</p>
+<p>we can write:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">&gt;</span> <span class="o">&gt;</span> <span class="n">v</span><span class="p">;</span>
@@ -568,6 +679,35 @@ temporaries):</p>
 </pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">&gt;</span> <span class="n">q</span><span class="p">(</span><span class="k">new</span> <span class="n">Foo</span><span class="p">(</span><span class="n">i</span><span class="p">));</span>
 </span><span class='line'><span class="n">v</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">q</span><span class="p">));</span>
 </span></code></pre></td></tr></table></div></figure>
+
+
+<p>When the <code>vector</code> goes out of scope, its destructor will in turn release all
+the <code>unique_ptr</code> instances it owns.  This automatic releasing of resources
+can save a great deal of debugging pain and potential memory leaks.</p>
+
+<h2>Overhead</h2>
+
+<p>The benefits of using <code>std::unique_ptr</code> are many.  And fortunately, the cost of
+using this support is minimal (though for embedded systems, needs to be
+carefully considered).  The is a memory overhead of one word per instance (eg. 8
+bytes on a 64-bit architecture).</p>
+
+<p>The code generated for a method invocation involves an extra pointer
+indirection, the overhead which seems to be in the order of 2-3% (based on some
+simplistic tests; see the repo for full source).</p>
+
+<h2>Upgrading</h2>
+
+<p>The process to convert existing code which uses manual memory management to
+using smart pointers may not be trivial, but the long-term benefits of more
+maintainable and reliable code are frequently worth the investment of time.
+Going through the process may well highlight complex memory management
+strategies or error-prone code, and eliminate even more problems.</p>
+
+<ul>
+<li>Search for allocations using <code>new</code></li>
+<li>Remove calls to <code>delete</code></li>
+</ul>
 
 
 <h2>Other smart pointer types</h2>
@@ -3658,28 +3798,6 @@ Date: 07/09/2009 03:26:30 PM</p>
 <p>It should be noted that since running Subversion from a local repository like this is the exception rather than the norm for most projects, the performance advantage it has thanks to its fast diff engine evaporates against network latency.  Thus using a distributed VCS such as Mercurial can be a great productivity boost, as you only pay for the network when you need to branch or merge between developers, a far less common operation.</p>
 
 <p>This comparison has reinforced my positive impressions of Mercurial, and I hope it serves to bolster peoples&#8217; confidence in its ability to scale and perform.  It has all the features of Subversion, plus many more groovy features like patch queues (which I may blog about one day).  Since Mercurial is less well known, I hope more people will <a href="http://www.selenic.com/mercurial/">give Mercurial a try</a>.</p>
-]]></content>
-    
-  </entry>
-  
-  <entry>
-    
-    <title type="html"><![CDATA[NSOpenGLView and text]]></title>
-    <link href="http://antonym.org//2007/09/nsopenglview-and-text.html"/>
-    
-    <updated>2007-09-28T10:28:00+10:00</updated>
-    <id>http://antonym.org//2007/09/nsopenglview-and-text</id>
-    
-    <content type="html"><![CDATA[<p>The Cocoa view class <code>NSOpenGLView</code>, which automates all the initialisation required to provide an OpenGL context for drawing, is very useful indeed.  It would also seem that <code>aglUseFont</code> is a nice simple way to load up a font to draw some text in your view.  So long as it isn&rsquo;t the aforementioned <code>NSOpenGLView</code>, that is.</p>
-
-<!--more-->
-
-
-<p>I found out the hard way that the way <code>NSOpenGLView</code> initialises the OpenGL context is not compatible with the <code>AGL</code> API.  So you can handle all the pixel formats and so on yourself but have easy fonts, or the other way round.  The <code>glut</code> text call does actually work, albeit in a rather less flexible manner.</p>
-
-<p>I guess this explains why there&rsquo;s a bunch of font/text utility libraries for OpenGL &ndash; it&rsquo;s non-trivial.  But if all you want is a quick and dirty text-drawing function, go for glut.</p>
-
-<p>One day I&rsquo;ll figure out how to properly render accelerated Quartz text into an OpenGL context, and write an article about it.</p>
 ]]></content>
     
   </entry>

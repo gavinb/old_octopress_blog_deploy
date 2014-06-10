@@ -4,7 +4,7 @@
   <title><![CDATA[Category: c++11 | antonym.org]]></title>
   <link href="http://antonym.org//blog/categories/c-plus-plus-11/atom.xml" rel="self"/>
   <link href="http://antonym.org//"/>
-  <updated>2014-02-26T09:06:01+11:00</updated>
+  <updated>2014-06-10T22:58:48+10:00</updated>
   <id>http://antonym.org//</id>
   <author>
     <name><![CDATA[Gavin Baker]]></name>
@@ -12,6 +12,89 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[C++11 Range-based for loops]]></title>
+    <link href="http://antonym.org//2014/02/c-plus-plus-11-range-based-for-loops.html"/>
+    <updated>2014-02-25T08:44:00+11:00</updated>
+    <id>http://antonym.org//2014/02/c-plus-plus-11-range-based-for-loops</id>
+    <content type="html"><![CDATA[<p>The humble <code>for</code> loop is one of the oldest control flow control constructs
+in the Algol-family of languages.  Yet while other languages have extended
+their syntax to allow <code>for</code> loops to do all sorts of crazy and useful things
+beyond iterate over a range of numbers, C and C++ have remained steadfast &ndash;
+until now.</p>
+
+<p>The <code>for</code> loop finally has a new syntax to better support iterators and
+ranges (a great new feature in C++11/14).  So you can now iterate over much
+more than just numbers.</p>
+
+<p>The C++ container classes provide iterators, but the looping syntax is
+rather unweildly but familiar pattern:</p>
+
+<p>```c++</p>
+
+<pre><code>std::vector&lt;int&gt; vec;
+// ...
+std::vector&lt;int&gt;::iter it;
+for (it = vec.begin(); it != vec.end(); ++it)
+{
+    int&amp; n = *it;
+    total += n;
+}
+</code></pre>
+
+<p>```</p>
+
+<p>For some time, the most excellent <a href="http://www.boost.org/">Boost++ project</a>
+has provided some syntactic sugar to reduce the complexity of this code
+considerably.  By using Boost&rsquo;s <code>foreach</code> library, you can replace the above
+loop with the much simpler:</p>
+
+<p>```c++</p>
+
+<pre><code>std::vector&lt;int&gt; vec;
+// ...
+for (int&amp; num, vec)
+{
+    total += n;
+}
+</code></pre>
+
+<p>```</p>
+
+<p>But now the C++11 specification has this style of syntax (with a slight
+change of punctuation; it uses &lsquo;:&rsquo; rather than &lsquo;,&rsquo;). So now you can write:</p>
+
+<p>```c++</p>
+
+<pre><code>std::vector&lt;int&gt; vec;
+// ...
+for (auto n : vec)
+{
+    total += n;
+}
+</code></pre>
+
+<p>```</p>
+
+<p>This is obviously much cleaner and clearer than the iterator-based code.  If
+all you need to do is iterate over a container, you can start using this
+syntax straight away.</p>
+
+<p>(Aside: if you are actually going to sum the contents of a vector, using the
+<code>reduce</code> algorithm is even better.)</p>
+
+<h2>Ranges</h2>
+
+<p>The iterators in the STL have <code>begin()</code> and <code>end()</code> methods to control
+iteration loops.  New in C++11 are <code>begin()</code> and <code>end()</code> <em>functions</em>, which
+can be used to construct ranges.  So what is a range?</p>
+
+<h2>The new <code>for</code> loop in detail</h2>
+
+<p>So how does this new <code>for</code> loop actually work?</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[C++11 Futures]]></title>
@@ -285,6 +368,10 @@ obj-&gt;process();
 </ul>
 
 
+<p>It bears spelling this out: when used correctly, <code>std::unique_ptr</code> can virtually
+eliminate memory leaks.  This makes the cost of the conversion process
+worthwhile!</p>
+
 <p>The <code>unique_ptr</code> type is templated over the pointer type, and its constructor
 takes the allocated pointer returned from the <code>new</code> operator.  And because the
 pointer <code>operator-&gt;()</code> is overloaded, the smart pointer object can be used just
@@ -483,7 +570,7 @@ return obj;
 
 <p>The object will be freed when the caller stops referencing it.</p>
 
-<h2>Storing in Containers</h2>
+<h2>Containers</h2>
 
 <p>The <em>move</em> support enables efficient storage of <code>unique_ptr</code> managed objects in
 containers (one of the limitations of the deprecated <code>std::auto_ptr</code>).  If you
@@ -514,12 +601,30 @@ v.push_back(std::move(q));
 the <code>unique_ptr</code> instances it owns.  This automatic releasing of resources
 can save a great deal of debugging pain and potential memory leaks.</p>
 
-<h2>Overheads</h2>
+<h2>Overhead</h2>
 
 <p>The benefits of using <code>std::unique_ptr</code> are many.  And fortunately, the cost of
-using this support is minimal.  The is an overhead of one word per instance (8
-bytes on a 64-bit architecture).  The code generated for a method invocation
-involves an extra pointer indirection, which might cost a few percent.</p>
+using this support is minimal (though for embedded systems, needs to be
+carefully considered).  The is a memory overhead of one word per instance (eg. 8
+bytes on a 64-bit architecture).</p>
+
+<p>The code generated for a method invocation involves an extra pointer
+indirection, the overhead which seems to be in the order of 2-3% (based on some
+simplistic tests; see the repo for full source).</p>
+
+<h2>Upgrading</h2>
+
+<p>The process to convert existing code which uses manual memory management to
+using smart pointers may not be trivial, but the long-term benefits of more
+maintainable and reliable code are frequently worth the investment of time.
+Going through the process may well highlight complex memory management
+strategies or error-prone code, and eliminate even more problems.</p>
+
+<ul>
+<li>Search for allocations using <code>new</code></li>
+<li>Remove calls to <code>delete</code></li>
+</ul>
+
 
 <h2>Other smart pointer types</h2>
 
@@ -530,39 +635,6 @@ involves an extra pointer indirection, which might cost a few percent.</p>
 <li><code>std::weak_ptr</code></li>
 </ul>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Boost now and C++11 later]]></title>
-    <link href="http://antonym.org//2014/01/boost-now-and-c-plus-plus-11-later.html"/>
-    <updated>2014-01-14T20:16:00+11:00</updated>
-    <id>http://antonym.org//2014/01/boost-now-and-c-plus-plus-11-later</id>
-    <content type="html"><![CDATA[<p>The C++11 standard has been around for a few years now (with the first published
-in 2009???).  We are fortunate that both the <code>gcc</code> project and the <code>clang</code>
-project have implemented comprehensive support for the new language and library
-features.  So if you&rsquo;re using the current versions of these tools, you can take
-advantage of all the new features right now.</p>
-
-<p>Unfortunately, some of the larger compiler vendors are still lagging in their
-support for the new, shiny C++11 features.  A thorough <a href="http://cpprocks.com/c11-compiler-support-shootout-visual-studio-gcc-clang-intel/">summary of major
-compiler support</a>
-shows GCC and Clang are way ahead of the Microsoft and Intel compilers.</p>
-
-<p>Whether your project is constrained by toolchain support, 3rd party library
-support, or upgrading your toolchain isn&rsquo;t currently feasible, fortunately there
-are ways to get many of the new features &lsquo;for free&rsquo;.</p>
-
-<p>The <a href="http://www.boost.org/">Boost project</a> provides a comprehensive set of C++
-libraries which provide essential features, as well as acting as an unofficial
-staging ground for many new C++ library features.  So most of the new goodness
-with <code>unique_ptr</code> and friends can be had right now, simply by using Boost.</p>
-
-<p>Modern C++ memory management</p>
-
-<p>C++11        | Boost
-<code>unique_ptr</code> | <code>scoped_ptr</code>
-<code>shared_ptr</code> | <code>shared_ptr</code></p>
 ]]></content>
   </entry>
   

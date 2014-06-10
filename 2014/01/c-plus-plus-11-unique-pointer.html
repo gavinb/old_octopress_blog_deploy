@@ -9,8 +9,8 @@
   <meta name="author" content="Gavin Baker">
 
   
-  <meta name="description" content="C++11 introduces many significant improvements to the language and runtime.
-One of the most important is to do with memory management &ndash; &hellip;">
+  <meta name="description" content="C++11 introduces many significant improvements to the language and runtime. One
+of the most important is to do with memory management &ndash; &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -33,6 +33,10 @@ One of the most important is to do with memory management &ndash; &hellip;">
 <link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 <link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
+<a href="https://twitter.com/gavinb" rel="me">Twitter</a>
+<link rel="openid.server" href="https://indieauth.com/openid" />
+<link rel="openid.delegate" href="http://gavinb.antonym.org/" />
+
   <!-- after custom head -->
   
   <script type="text/javascript">
@@ -106,9 +110,10 @@ One of the most important is to do with memory management &ndash; &hellip;">
   </header>
 
 
-<div class="entry-content"><p>C++11 introduces many significant improvements to the language and runtime.
-One of the most important is to do with memory management &ndash; specifically,
-smart pointers.</p>
+<div class="entry-content"><p>C++11 introduces many significant improvements to the language and runtime. One
+of the most important is to do with memory management &ndash; specifically, smart
+pointers.  The <code>unique_ptr</code> makes managing dynamically allocated memory safe and
+simple.</p>
 
 <!--more-->
 
@@ -148,6 +153,8 @@ pointer types in C++11.</p>
 </span></code></pre></td></tr></table></div></figure>
 
 
+<h2>Properties</h2>
+
 <p>The <code>std::unique_ptr</code> class enforces several useful properties:</p>
 
 <ul>
@@ -156,6 +163,10 @@ pointer types in C++11.</p>
 <li>the object will be deleted if an exception is thrown</li>
 </ul>
 
+
+<p>It bears spelling this out: when used correctly, <code>std::unique_ptr</code> can virtually
+eliminate memory leaks.  This makes the cost of the conversion process
+worthwhile!</p>
 
 <p>The <code>unique_ptr</code> type is templated over the pointer type, and its constructor
 takes the allocated pointer returned from the <code>new</code> operator.  And because the
@@ -170,6 +181,8 @@ class.</p>
 <p><strong>Note 3:</strong> When invoking <code>std::unique_ptr</code> methods on the smart pointer itself,
 remember to use the dot <code>.</code> operator. When invoking methods on the object pointer,
 use the arrow <code>-&gt;</code> operator as you normally would (since it is overloaded to return the underlying object pointer).</p>
+
+<h2>Sample</h2>
 
 <p>Once the variable goes out of scope, <code>delete</code> will be called to release the memory,
 and the destructor will be invoked as usual, as this simple example shows:</p>
@@ -357,8 +370,9 @@ requirements, this array support can be very useful.</p>
 <h2>Returning objects from functions</h2>
 
 <p>The <code>unique_ptr</code> idiom is especially useful when you need to return an allocated
-resource from a function or method, but don&rsquo;t want to worry about having to
-free&hellip;***</p>
+resource from a function or method, but don&rsquo;t want to worry about having to free
+the object later.  This sample function returns a unique pointer to the caller,
+transferring ownership by implicitly moving the result:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -379,19 +393,22 @@ free&hellip;***</p>
 </span></code></pre></td></tr></table></div></figure>
 
 
+<p>The object will be freed when the caller stops referencing it.</p>
+
 <h2>Containers</h2>
 
 <p>The <em>move</em> support enables efficient storage of <code>unique_ptr</code> managed objects in
-containers (one of the limitations of the deprecated <code>std::auto_ptr</code>).  If
-you have a vector of pointers to objects, you need to manually free them.
-So instead of:</p>
+containers (one of the limitations of the deprecated <code>std::auto_ptr</code>).  If you
+have a vector of pointers to objects, you need to carefully manage ownership
+(eg. does the creator or the container own the allocations?) and manually free
+them. But with <code>unique_ptr</code>, instead of:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">*&gt;</span> <span class="n">v</span><span class="p">;</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>we can instead use:</p>
+<p>we can write:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">&gt;</span> <span class="o">&gt;</span> <span class="n">v</span><span class="p">;</span>
@@ -407,6 +424,35 @@ temporaries):</p>
 </pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">&gt;</span> <span class="n">q</span><span class="p">(</span><span class="k">new</span> <span class="n">Foo</span><span class="p">(</span><span class="n">i</span><span class="p">));</span>
 </span><span class='line'><span class="n">v</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">q</span><span class="p">));</span>
 </span></code></pre></td></tr></table></div></figure>
+
+
+<p>When the <code>vector</code> goes out of scope, its destructor will in turn release all
+the <code>unique_ptr</code> instances it owns.  This automatic releasing of resources
+can save a great deal of debugging pain and potential memory leaks.</p>
+
+<h2>Overhead</h2>
+
+<p>The benefits of using <code>std::unique_ptr</code> are many.  And fortunately, the cost of
+using this support is minimal (though for embedded systems, needs to be
+carefully considered).  The is a memory overhead of one word per instance (eg. 8
+bytes on a 64-bit architecture).</p>
+
+<p>The code generated for a method invocation involves an extra pointer
+indirection, the overhead which seems to be in the order of 2-3% (based on some
+simplistic tests; see the repo for full source).</p>
+
+<h2>Upgrading</h2>
+
+<p>The process to convert existing code which uses manual memory management to
+using smart pointers may not be trivial, but the long-term benefits of more
+maintainable and reliable code are frequently worth the investment of time.
+Going through the process may well highlight complex memory management
+strategies or error-prone code, and eliminate even more problems.</p>
+
+<ul>
+<li>Search for allocations using <code>new</code></li>
+<li>Remove calls to <code>delete</code></li>
+</ul>
 
 
 <h2>Other smart pointer types</h2>
@@ -487,6 +533,10 @@ temporaries):</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/2014/02/c-plus-plus-11-range-based-for-loops.html">C++11 Range-based for loops</a>
+      </li>
+    
+      <li class="post">
         <a href="/2014/02/c-plus-plus-11-futures.html">C++11 Futures</a>
       </li>
     
@@ -500,10 +550,6 @@ temporaries):</p>
     
       <li class="post">
         <a href="/2013/10/what-is-rust.html">What is Rust?</a>
-      </li>
-    
-      <li class="post">
-        <a href="/2012/02/threading-with-boost---part-iii-mutexes.html">Threading with Boost - Part III: Mutexes</a>
       </li>
     
   </ul>
