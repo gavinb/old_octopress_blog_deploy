@@ -4,7 +4,7 @@
   <title><![CDATA[Category: c++ | antonym.org]]></title>
   <link href="http://antonym.org//blog/categories/c-plus-plus/atom.xml" rel="self"/>
   <link href="http://antonym.org//"/>
-  <updated>2014-06-10T22:58:48+10:00</updated>
+  <updated>2014-06-13T22:54:59+10:00</updated>
   <id>http://antonym.org//</id>
   <author>
     <name><![CDATA[Gavin Baker]]></name>
@@ -33,7 +33,9 @@ rather unweildly but familiar pattern:</p>
 
 <p>```c++</p>
 
-<pre><code>std::vector&lt;int&gt; vec;
+<pre><code>#include &lt;vector&gt;
+
+std::vector&lt;int&gt; vec;
 // ...
 std::vector&lt;int&gt;::iter it;
 for (it = vec.begin(); it != vec.end(); ++it)
@@ -52,9 +54,12 @@ loop with the much simpler:</p>
 
 <p>```c++</p>
 
-<pre><code>std::vector&lt;int&gt; vec;
+<pre><code>#include &lt;boost/foreach.hpp&gt;
+#define foreach BOOST_FOREACH
+
+std::vector&lt;int&gt; vec;
 // ...
-for (int&amp; num, vec)
+foreach (int&amp; num, vec)
 {
     total += n;
 }
@@ -67,7 +72,9 @@ change of punctuation; it uses &lsquo;:&rsquo; rather than &lsquo;,&rsquo;). So 
 
 <p>```c++</p>
 
-<pre><code>std::vector&lt;int&gt; vec;
+<pre><code>#include &lt;vector&gt;
+
+std::vector&lt;int&gt; vec;
 // ...
 for (auto n : vec)
 {

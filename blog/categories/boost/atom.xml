@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Boost | antonym.org]]></title>
   <link href="http://antonym.org//blog/categories/boost/atom.xml" rel="self"/>
   <link href="http://antonym.org//"/>
-  <updated>2014-06-10T22:58:48+10:00</updated>
+  <updated>2014-06-13T22:54:59+10:00</updated>
   <id>http://antonym.org//</id>
   <author>
     <name><![CDATA[Gavin Baker]]></name>
@@ -12,6 +12,279 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Threading with Boost - Part IV: Mutex Examples]]></title>
+    <link href="http://antonym.org//2012/02/threading-with-boost---part-iv-mutex-examples.html"/>
+    <updated>2012-02-22T00:00:00+11:00</updated>
+    <id>http://antonym.org//2012/02/threading-with-boost---part-iv-mutex-examples</id>
+    <content type="html"><![CDATA[<p>This article continues the series on threading with Boost, by looking in
+depth at several different example programs which illustrate different
+aspects of using mutexes.  We look at the code, and discuss how it is
+implemented.</p>
+
+<h1>Mutex Examples</h1>
+
+<p>The full source for the sample applications is provided below.  It is
+designed to be fully portable, and has been tested on Mac OS X and Linux.
+It should work fine on Windows (please send a patch if it doesn&rsquo;t!).</p>
+
+<p>You can browse all the sources in the <a href="http://bitbucket.org/gavinb/boost_samples">Boost Samples repository</a>
+for the latest, or use <a href="http://www.selenic.com/mercurial/">Mercurial</a>
+to clone your own copy with this shell command:</p>
+
+<pre><code>hg clone http://hg.antonym.org/src/boost_mutex
+</code></pre>
+
+<p>Running <code>bjam</code> or <code>make</code> will build all the examples for you, which you can
+run from the appropriate subdirectory (depending on your toolchain and
+architecture).</p>
+
+<h1>Duelling Threads</h1>
+
+<p>Source module: <code>duel.cpp</code></p>
+
+<p>This example shows how threads are sensitive to timing and scheduling.
+There is a global counter which starts at 0.  Two threads are created which
+both try to modify the same counter; one incrementing and the other
+decrementing.  The program runs for a fixed time, then the counter is
+printed.</p>
+
+<p>What would you expect to happen?  (It is worth thinking about this before
+reading on&hellip;!)  Assuming the threads get equal time to run, you would think
+that their effects would cancel each other out &ndash; that the same number of
+increments and decrements would occur, and the result would be 0, or at
+least very close to 0. Right?</p>
+
+<p>Here&rsquo;s the result of running the test 10 times for 5 seconds each:</p>
+
+<pre><code>Final counter = -1
+Final counter = -3
+Final counter = 1
+Final counter = -1
+Final counter = 0
+Final counter = 3
+Final counter = -57
+Final counter = -8
+Final counter = 7
+Final counter = -5
+</code></pre>
+
+<p>Often the result is quite close to zero, but there are several runs which
+are significantly above or below 0. And there&rsquo;s one huge outlier where one
+of the counter threads (quiz: which one?) was starved of some time while the
+other kept working (answer: the incrementing thread, since the counter is
+negative, indicating that the decrementing thread was scheduled for longer).</p>
+
+<p>So even on a machine with very few other processes running, even small
+variations in timing and scheduling can lead to a significant variation in
+the result.</p>
+
+<p>The moral of this story: <em>the interaction between threads is time-sensitive
+and non-deterministic</em> (in the absence of synchronisation).</p>
+
+<h1>Trylock with Queueing Threads</h1>
+
+<p>Source module: <code>trylock.cpp</code></p>
+
+<p>This sample illustrates two cooperating threads: a <em>producer</em> which places
+work items in a queue, and a <em>consumer</em> which removes work items from the
+queue.  The shared queue is protected by a mutex.</p>
+
+<p>Each thread locks the mutex when pushing or pulling work items, to protect
+against concurrent access.  Work items are arbitrarily represented by random
+numbers.  Each thread holds the lock for a random time delay to simulate
+processing.</p>
+
+<p>Since the producer may be holding the lock when the consumer wants to access
+the queue (or vice versa), the consumer performs a <code>try_lock</code> on the mutex.
+So instead of blocking until the mutex is free (as a regular call to
+<code>lock()</code> would), the call fails immediately if the mutex is already locked,
+and the thread resumes.  This contention is reported separately, as it is
+import</p>
+
+<p>Each thread prints out the stage it is executing, to enable analysis of the
+interaction.</p>
+
+<p>Note that this technique is <strong>not</strong> a good model for real world use &ndash; it is
+specifically designed to illustrate one aspect of using mutexes.  For a much
+better implementation of the Producer-Consumer pattern, see the article on
+Boost Condition variables later in this series.</p>
+
+<p>Takehome message: <em>thread contention for shared resources wastes processor
+cycles and can erase performance improvements gained from concurrent code</em>.</p>
+
+<h1>Mutex Locking with Timeout</h1>
+
+<p>Source module: <code>timedlock.cpp</code></p>
+
+<p>Shows how to use <code>try_lock</code> on a mutex.  A &lsquo;holding&rsquo; thread idles for a
+short time, then grabs the mutex and holds it for another short time before
+unlocking it.  The second thread is the &lsquo;trying&rsquo; thread, in that it idles
+and then <em>tries</em> to acquire a lock on the mutex.  But it specifies a timeout
+by calling the <code>timed_lock()</code> method, and can fail if the holding thread
+hasn&rsquo;t released the mutex in time.  If it manages to grab the mutex, it
+holds it for a short time also.  The idle and holding times are different,
+to ensure the threads don&rsquo;t run in lockstep.  Note that <code>unlock()</code> is only
+called if the lock succeeds!</p>
+
+<h1>Recursive Lock</h1>
+
+<p>Source module: <code>reclock.cpp</code></p>
+
+<p>Illustrates recursively locking a mutex.  A singleton class,
+ResourceManager, can register and unregister clients.  Since this may be
+called from the context of any worker thread, it uses a mutex when accessing
+the dictionary of client information.  Since retain/release management also
+requires the mutex be held during updates, this serves as an illustration of
+recursive locking.  These methods can be called individually, or from within
+the register/unregister methods, which also hold the mutex.  For example:</p>
+
+<pre><code>registerClient()                  lockCount = 0
+    mMutex.lock()                 lockCount = 1
+    retainClient()                lockCount = 1
+        mMutex.lock()             lockCount = 2
+        mMutex.unlock()           lockCount = 1
+    mMutex.unlock()               lockCount = 0
+</code></pre>
+
+<h1>Deadlock</h1>
+
+<p>Source module: <code>deadlock.cpp</code></p>
+
+<p>Imagine you have multiple co-operating threads as well as multiple shared
+resources.  Each shared resource is dutifully protected by its own mutex.
+So provided each thread locks the mutex before accessing the resource,
+everything should run smoothly, right? What could possibly go wrong?</p>
+
+<p>A <a href="http://en.wikipedia.org/wiki/Deadlock"><strong>deadlock</strong></a> is what could go
+wrong, and appears as if the program has simply hung.  It&rsquo;s relatively easy
+for these situations to occur, but it is also relatively easy to prevent
+deadlocks with some care and thought.</p>
+
+<p>A deadlock occurs when thread one is holding lock A while waiting for lock
+B, which itself is held by thread two which is waiting for lock A.  In other
+words, the two threads are both waiting for each other to do something that
+can never happen.  An <em>impasse</em>!</p>
+
+<p>Now this example is <em>intentionally</em> written to fall into a deadlock.  So
+whatever you do, don&rsquo;t copy the code from this example into your own code.
+Study it and make sure you understand <em>why</em> it is wrong.</p>
+
+<p>In the source, thread one wants to lock both mutex A and mutex B, and it
+does so in that order.  It will then perform some processing, and unlock the
+two mutexes.  Thread two is similar, in that it wants to lock mutex A and
+mutex B before it can safely do its work.  However, the poor programmer who
+wrote this code hadn&rsquo;t had their second cup of coffee that morning, and
+wrote the code such that it first locks mutex B, <em>then</em> mutex A.  No big
+deal, right?</p>
+
+<p>The program prints information about its progress, including which thread is
+in what state, such as processing, waiting for a lock, and so on.  This
+makes it easier for us to analyse what is going on.  (When debugging
+multithreaded code, <code>printf</code> is your friend!)</p>
+
+<p>Each thread holds both locks while they work, which can take a random length
+of time.  This setup can work ok for a little while, provided the timing is
+just right.  This can be seen in the trace below, which shows the normal
+output of the program:</p>
+
+<pre><code>ONE idle
+TWO idle
+ONE wait_A
+ONE wait_B
+ONE processing
+TWO wait_B
+ONE unlock_B
+ONE unlock_A
+ONE idle
+TWO wait_A
+TWO processing
+TWO unlock_A
+TWO unlock_B
+TWO idle
+TWO wait_B
+TWO wait_A
+TWO processing
+ONE wait_A
+TWO unlock_A
+TWO unlock_B
+TWO idle
+ONE wait_B
+ONE processing
+ONE unlock_B
+ONE unlock_A
+ONE idle
+TWO wait_B
+TWO wait_A
+TWO processing
+TWO unlock_A
+TWO unlock_B
+TWO idle
+TWO wait_B
+TWO wait_A
+TWO processing
+TWO unlock_A
+TWO unlock_B
+TWO idle
+...
+</code></pre>
+
+<p>but before long at all, the program will invariably hang.  At this point,
+you will have to use <code>Control-C</code> (or your platform&rsquo;s equivalent) to kill the
+program.  And if you run it a few times, you will notice the same two
+patterns always appearing at the end of the trace; either:</p>
+
+<pre><code>...
+ONE wait_A
+TWO wait_B
+ONE wait_B
+TWO wait_A
+</code></pre>
+
+<p>or:</p>
+
+<pre><code>...
+TWO wait_B
+ONE wait_A
+TWO wait_A
+ONE wait_B
+</code></pre>
+
+<p>Reflecting back to the trace when everything seemed to be working, we see
+that the threads ran smoothly when they managed to lock both locks at once.
+But notice how these telltale signs, these skidmarks leading up to the
+moment of the crash, show thread one and two locking are always
+<em>interleaved</em> when they acquire these locks?</p>
+
+<p>In the first example, thread one acquires mutex A, and before it can lock
+mutex B, thread two is scheduled, and comes along and locks mutex B. Then
+thread one tries to acquire mutex B and blocks since it is already locked by
+thread two, waiting forever, being a patient worker thread.  At this point,
+thread two can run again, and tries to acquire mutex A.  Unfortunately, this
+lock is held by thread one which is not coming back until it gets mutex B &ndash;
+which will never happen.  Because thread two is now blocked forever, waiting
+on mutex A.  Your only consolation is that they probably won&rsquo;t consume any
+CPU cycles while they remain in this deadlock.  But the program certainly
+isn&rsquo;t going anywhere!</p>
+
+<p>So how can this be avoided?  Fortunately, the fix is simple &ndash; always acquire
+the mutexes in the same order, and (ideally) release them in the reverse
+order.  This fix is an exercise left for the reader, but verify for yourself
+that the program will run as long as you like once the locks are acquired in
+the same order.</p>
+
+<p>Why does this work?  Because it prevents the possibility of holding a
+contested mutex while blocking on another.</p>
+
+<p>Remember: <em>Always acquire multiple mutexes in the same order to avoid
+deadlocks.</em></p>
+
+<h1>Exclusive Shared Mutex with Access Semantics</h1>
+
+<p>Source module: <code>sharedlock.cpp</code></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Threading with Boost - Part III: Mutexes]]></title>
