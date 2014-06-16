@@ -4,7 +4,7 @@
   <title><![CDATA[antonym.org]]></title>
   <link href="http://antonym.org//atom.xml" rel="self"/>
   <link href="http://antonym.org//"/>
-  <updated>2014-06-13T22:54:59+10:00</updated>
+  <updated>2014-06-16T23:49:50+10:00</updated>
   <id>http://antonym.org//</id>
   <author>
     <name><![CDATA[Gavin Baker]]></name>
@@ -863,9 +863,12 @@ about the future of Rust, and look forward to contributing.</p>
     <id>http://antonym.org//2012/02/threading-with-boost&#8212;part-iv-mutex-examples</id>
     
     <content type="html"><![CDATA[<p>This article continues the series on threading with Boost, by looking in
-depth at several different example programs which illustrate different
-aspects of using mutexes.  We look at the code, and discuss how it is
-implemented.</p>
+depth at several sample programs which illustrate different aspects of
+mutexes.  We look at the code, and discuss how it is implemented, including
+how to avoid common problems.</p>
+
+<!--more-->
+
 
 <h1>Mutex Examples</h1>
 
@@ -886,7 +889,7 @@ architecture).</p>
 
 <h1>Duelling Threads</h1>
 
-<p>Source module: <code>duel.cpp</code></p>
+<p>Source module: <a href="http://bitbucket.org/gavinb/boost_samples/src/tip/mutexes/duel.cpp"><code>duel.cpp</code></a></p>
 
 <p>This example shows how threads are sensitive to timing and scheduling.
 There is a global counter which starts at 0.  Two threads are created which
@@ -929,7 +932,7 @@ and non-deterministic</em> (in the absence of synchronisation).</p>
 
 <h1>Trylock with Queueing Threads</h1>
 
-<p>Source module: <code>trylock.cpp</code></p>
+<p>Source module: <a href="http://bitbucket.org/gavinb/boost_samples/src/tip/mutexes/trylock.cpp"><code>trylock.cpp</code></a></p>
 
 <p>This sample illustrates two cooperating threads: a <em>producer</em> which places
 work items in a queue, and a <em>consumer</em> which removes work items from the
@@ -945,7 +948,7 @@ the queue (or vice versa), the consumer performs a <code>try_lock</code> on the 
 So instead of blocking until the mutex is free (as a regular call to
 <code>lock()</code> would), the call fails immediately if the mutex is already locked,
 and the thread resumes.  This contention is reported separately, as it is
-import</p>
+important to be able to see how often the threads collide.</p>
 
 <p>Each thread prints out the stage it is executing, to enable analysis of the
 interaction.</p>
@@ -960,7 +963,7 @@ cycles and can erase performance improvements gained from concurrent code</em>.<
 
 <h1>Mutex Locking with Timeout</h1>
 
-<p>Source module: <code>timedlock.cpp</code></p>
+<p>Source module: <a href="http://bitbucket.org/gavinb/boost_samples/src/tip/mutexes/timedlock.cpp"><code>timedlock.cpp</code></a></p>
 
 <p>Shows how to use <code>try_lock</code> on a mutex.  A &lsquo;holding&rsquo; thread idles for a
 short time, then grabs the mutex and holds it for another short time before
@@ -972,9 +975,13 @@ holds it for a short time also.  The idle and holding times are different,
 to ensure the threads don&rsquo;t run in lockstep.  Note that <code>unlock()</code> is only
 called if the lock succeeds!</p>
 
+<p>Recommended Usage: <em>Use a timeout when trying to lock a mutex if you can
+easily do some other useful work, or if you cannot guarantee you can acquire
+the resource within a reasonable timeframe.</em></p>
+
 <h1>Recursive Lock</h1>
 
-<p>Source module: <code>reclock.cpp</code></p>
+<p>Source module: <a href="http://bitbucket.org/gavinb/boost_samples/src/tip/mutexes/reclock.cpp"><code>reclock.cpp</code></a></p>
 
 <p>Illustrates recursively locking a mutex.  A singleton class,
 ResourceManager, can register and unregister clients.  Since this may be
@@ -992,9 +999,16 @@ the register/unregister methods, which also hold the mutex.  For example:</p>
     mMutex.unlock()               lockCount = 0
 </code></pre>
 
+<p>Npte: <em>Recursive mutexes should be used rarely, if at all. Thinking you Need
+a recursive mutex may be a sign that you have a structural problem with the code.</em></p>
+
+<p>Fun fact: <em>The person who implemented recursive mutexes in <code>pthreads</code> did it
+as a bit of a joke, just to prove it was possible &ndash; not really intending for
+them to be used in real programs.</em></p>
+
 <h1>Deadlock</h1>
 
-<p>Source module: <code>deadlock.cpp</code></p>
+<p>Source module: <a href="http://bitbucket.org/gavinb/boost_samples/src/tip/mutexes/deadlock.cpp"><code>deadlock.cpp</code></a></p>
 
 <p>Imagine you have multiple co-operating threads as well as multiple shared
 resources.  Each shared resource is dutifully protected by its own mutex.
@@ -1126,7 +1140,39 @@ deadlocks.</em></p>
 
 <h1>Exclusive Shared Mutex with Access Semantics</h1>
 
-<p>Source module: <code>sharedlock.cpp</code></p>
+<p>Source module: <a href="http://bitbucket.org/gavinb/boost_samples/src/tip/mutexes/sharedlock.cpp"><code>sharedlock.cpp</code></a></p>
+
+<p>This example shows how three worker threads can co-operate accessing a
+shared resource, where two are reading and the third is writing.  It is
+frequently important to manage access in this way, and can drastically
+improve performance by increasing concurrency.</p>
+
+<p>If a thread is only reading from a shared resource, it does not require
+exclusive access.  Thus many threads can safely obtain read-only access to a
+resource.  It is only if a thread needs to write to the resource to update
+it that it will need exclusive access, to ensure the data is updated
+atomically (as seen by any worker threads) and remain consistent.</p>
+
+<p>Thus by granting multiple threads concurrent read access, concurrency is
+increased in proportion to the number of read-only threads.  The only
+disadvantage is that any thread wishing to modify the shared resource
+(ie. use an exclusive lock) must wait until <em>all</em> reading threads have
+finished.  This provides a good incentive to have the scope of the locks as
+short as possible, to reduce the time a writing thread would need to wait
+for exclusive access.</p>
+
+<p>In this example, A network thread simulates producing data by ading random
+numbers to a container.  A display thread shows the data on screen, and a
+database thread writes the numbers to a file.  The network thread uses an
+exclusive write lock to update the shared data container, while the other
+two threads use a shared read-only lock, which means they can both
+concurrently access the data safely.  If the network thread tries to access
+the data while either of the other two have a read-lock, it has to wait
+until all threads release their shared locks.</p>
+
+<p>(Normally a producer-consumer setup such as this would use a Condition
+variable to signal when more data is ready, but we&rsquo;re saving that for a
+future installment.)</p>
 ]]></content>
     
   </entry>
