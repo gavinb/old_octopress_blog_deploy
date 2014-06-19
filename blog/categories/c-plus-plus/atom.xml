@@ -4,7 +4,7 @@
   <title><![CDATA[Category: c++ | antonym.org]]></title>
   <link href="http://antonym.org//blog/categories/c-plus-plus/atom.xml" rel="self"/>
   <link href="http://antonym.org//"/>
-  <updated>2014-06-16T23:49:50+10:00</updated>
+  <updated>2014-06-19T23:18:28+10:00</updated>
   <id>http://antonym.org//</id>
   <author>
     <name><![CDATA[Gavin Baker]]></name>
@@ -19,17 +19,20 @@
     <updated>2014-02-25T08:44:00+11:00</updated>
     <id>http://antonym.org//2014/02/c-plus-plus-11-range-based-for-loops</id>
     <content type="html"><![CDATA[<p>The humble <code>for</code> loop is one of the oldest control flow control constructs
-in the Algol-family of languages.  Yet while other languages have extended
+in the Algol family of languages.  Yet while other languages have extended
 their syntax to allow <code>for</code> loops to do all sorts of crazy and useful things
 beyond iterate over a range of numbers, C and C++ have remained steadfast &ndash;
 until now.</p>
 
 <p>The <code>for</code> loop finally has a new syntax to better support iterators and
-ranges (a great new feature in C++11/14).  So you can now iterate over much
-more than just numbers.</p>
+ranges, just two great new features in C++11.  So you can now easily iterate
+over much more than just numbers.</p>
 
-<p>The C++ container classes provide iterators, but the looping syntax is
-rather unweildly but familiar pattern:</p>
+<!--more-->
+
+
+<p>The C++ container classes in the Standard Template Library (STL) provide
+iterators, but the familiar looping syntax is the rather unwieldly pattern:</p>
 
 <p>```c++</p>
 
@@ -47,10 +50,10 @@ for (it = vec.begin(); it != vec.end(); ++it)
 
 <p>```</p>
 
-<p>For some time, the most excellent <a href="http://www.boost.org/">Boost++ project</a>
-has provided some syntactic sugar to reduce the complexity of this code
-considerably.  By using Boost&rsquo;s <code>foreach</code> library, you can replace the above
-loop with the much simpler:</p>
+<p>For some time, the <a href="http://www.boost.org/">Boost++ project</a> has provided
+some syntactic sugar to reduce the complexity of this code considerably.  By
+using the <a href="http://www.boost.org/libs/foreach/">Boost <code>foreach</code></a> library, you
+can replace the above loop with the much simpler:</p>
 
 <p>```c++</p>
 
@@ -67,8 +70,9 @@ foreach (int&amp; num, vec)
 
 <p>```</p>
 
-<p>But now the C++11 specification has this style of syntax (with a slight
-change of punctuation; it uses &lsquo;:&rsquo; rather than &lsquo;,&rsquo;). So now you can write:</p>
+<p>But now the C++11 specification finally has this style of syntax built in to
+the language (with a slight change of punctuation; it uses <code>:</code> rather than
+<code>,</code>). So now you can write:</p>
 
 <p>```c++</p>
 
@@ -84,22 +88,201 @@ for (auto n : vec)
 
 <p>```</p>
 
-<p>This is obviously much cleaner and clearer than the iterator-based code.  If
-all you need to do is iterate over a container, you can start using this
-syntax straight away.</p>
+<p>This is obviously much cleaner and clearer than the explicit iterator-based
+code shown above.  If all you need to do is iterate over an STL container,
+you can start using this syntax straight away.</p>
 
-<p>(Aside: if you are actually going to sum the contents of a vector, using the
-<code>reduce</code> algorithm is even better.)</p>
-
-<h2>Ranges</h2>
-
-<p>The iterators in the STL have <code>begin()</code> and <code>end()</code> methods to control
-iteration loops.  New in C++11 are <code>begin()</code> and <code>end()</code> <em>functions</em>, which
-can be used to construct ranges.  So what is a range?</p>
+<p>(Aside: if you are actually going to sum the contents of a vector as in this
+example, using the <code>reduce</code> algorithm is even better.)</p>
 
 <h2>The new <code>for</code> loop in detail</h2>
 
-<p>So how does this new <code>for</code> loop actually work?</p>
+<p>So how does this new <a href="http://en.cppreference.com/w/cpp/language/range-for">range-based <code>for</code></a>
+loop actually work?  Well, given the simple expression:</p>
+
+<p>```c++</p>
+
+<pre><code>for ( range_declaration : range_expression ) loop_statement     
+</code></pre>
+
+<p>```</p>
+
+<p>this loop is equivalent to the following expanded code:</p>
+
+<p>```c++</p>
+
+<pre><code>{
+    auto &amp;&amp; __range = range_expression;
+    for (auto __begin = __range.begin(),
+        __end = __range.end();
+        __begin != __end; ++__begin)
+    {
+        range_declaration = *__begin;
+        loop_statement
+    }
+}
+</code></pre>
+
+<p>```</p>
+
+<p>Stepping through line by line, we see that the <code>for</code> loop lives inside its
+own block. First, <code>__range</code> is evaluated to determine the sequence over
+which to iterate.  Then (as in the traditional container case) the <code>_begin</code>
+and <code>__end</code> variables are used to control the loop, incrementing <code>__begin</code>
+until it reaches <code>__end</code> (which is one past the last entry).  The loop body
+dereferences the iterator to get the item value at the current position, and
+then the code in <code>loop_statement</code> is executed.</p>
+
+<p>This construct also works naturally with plain arrays, where the bound is
+added to the beginning to determine the range.</p>
+
+<p>Finally, this works with the new <code>begin()/end()</code> range functions in the
+C++11 standard library, described next.</p>
+
+<h2>Ranges</h2>
+
+<p>Iterators defined by containers in the STL have <code>begin()</code> and <code>end()</code>
+methods to control iteration loops.  New in C++11 are <code>begin()</code> and <code>end()</code>
+<em>functions</em> (in the <code>std</code> namespace), which can be used to work with ranges.
+So what is a range?  Essentially a <code>begin()/end()</code> pair which define the
+extents of an iteration over a container.  By making <code>begin()/end()</code> common
+functions, generic algorithms can more easily work with user-defined
+containers that live outside the STL.</p>
+
+<p>The simple form of their declarations are as follows:</p>
+
+<p>```c++
+template&lt; class C >
+auto begin( C&amp; c ) &ndash;> decltype(c.begin());</p>
+
+<p>template&lt; class C >
+auto end( C&amp; c ) &ndash;> decltype(c.end());
+```</p>
+
+<p>This uses some new C++11 features to basically say that, for whatever type
+you pass to these functions, they will return you something of the same type
+as the <code>begin()</code> or <code>end()</code> methods they define within the class.  This
+works with C style arrays, initialiser lists, STL containers and any
+user-defined types.  In short, it is a much more flexible form of the
+original STL pattern.</p>
+
+<h2>Custom classes and ranges</h2>
+
+<p>To add range support to your own class, you must provide the following support:</p>
+
+<ul>
+<li><code>begin()</code> and <code>end()</code>, either as methods or overloaded functions, that
+return the appropriate iterators</li>
+</ul>
+
+
+<p>and then you need an iterator class with the following features:</p>
+
+<ul>
+<li>dereferencing to access the current item (<code>operator*</code>)</li>
+<li>inequality to compare iterators (<code>operator!=</code>)</li>
+<li>pre-increment to advance the iterator to the next item (<code>operator++</code>)</li>
+</ul>
+
+
+<p>Given a container class, you could define your iterator class something like
+this, for example:</p>
+
+<p>```c++</p>
+
+<pre><code>class MyIterator
+{
+public:
+
+    MyIterator(const MyContainer&amp; c, unsigned idx = 0)
+            : m_container(c),
+              m_index(idx)
+    {}
+
+    // Required
+    bool operator!=(const MyIterator&amp; other)
+    {
+        return (m_index != other.m_index);
+    }
+
+    // Required
+    const MyIterator&amp; operator++()
+    {
+        m_index++;
+        return *this;
+    }
+
+    // Required
+    MyObject&amp; operator*() const;
+
+private:
+    const MyContainer&amp;      m_container;
+    unsigned                m_index;
+};
+
+MyObject&amp; MyIterator::operator*() const
+{
+    return m_container.get(m_index);
+}
+</code></pre>
+
+<p>```</p>
+
+<p>Its responsibilities are primarily to keep a reference to its container
+proper, and maintain the index of the current item.  The methods marked
+<code>required</code> are the minimum interface to participate in the range-based <code>for</code>
+loop support.  The implementation is very straightforward.</p>
+
+<p>The container class must provide methods to generate iterator classes;
+something like this:</p>
+
+<p>```c++</p>
+
+<pre><code>class MyContainer
+{
+public:
+    MyContainer(unsigned capacity);
+    //...
+
+    // Required
+    MyIterator begin () const
+    {
+        return MyIterator(*this, 0);
+    }
+
+    // Required
+    MyIterator end () const
+    {
+        return MyIterator(*this, m_currentIndex);
+    }
+
+    //...
+};
+</code></pre>
+
+<p>```</p>
+
+<p>This allows your own custom classes to be used in a very natural way with
+the new <code>for</code> loop, such as this example:</p>
+
+<p>```c++</p>
+
+<pre><code>MyContainer     cont(10);
+
+cont.add(MyObject(9, "IX"));
+cont.add(MyObject(56, "LVI"));
+cont.add(MyObject(43, "XLIII"));
+cont.add(MyObject(1984, "MCMXXCIV"));
+
+for ( auto obj : cont)
+{
+    std::cout &lt;&lt; obj.number() &lt;&lt; ": " &lt;&lt; obj.description() &lt;&lt; std::endl;
+}
+</code></pre>
+
+<p>```</p>
+
+<p>The full source to the examples is available in my <a href="https://github.com/gavinb/cplusplus11/rangefor/">Github C++11 samples</a>.</p>
 ]]></content>
   </entry>
   
@@ -646,94 +829,96 @@ strategies or error-prone code, and eliminate even more problems.</p>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[STL Iterators and Performance]]></title>
-    <link href="http://antonym.org//2008/05/stl-iterators-and-performance.html"/>
-    <updated>2008-05-30T11:02:00+10:00</updated>
-    <id>http://antonym.org//2008/05/stl-iterators-and-performance</id>
-    <content type="html"><![CDATA[<p>The Standard Template Library (STL) for C++ provides a set of powerful and flexible templated container classes.  Never again will you have to hand-craft a doubly-linked list (and get your pointer arithmetic mixed up) &mdash; just use <code>std::list&lt;T&gt;</code>.</p>
-
-<p>Now most of the idiomatic C++ code I&rsquo;ve read that uses STL iterators uses the prefix <code>operator++</code> to move the iterator forward.  And so I had long ago adopted this too, with a vague recollection of having read somewhere that it performed better.  But why?  Good question&hellip;</p>
+    <title type="html"><![CDATA[Modern C++11 Memory Management]]></title>
+    <link href="http://antonym.org//2014/01/modern-c-plus-plus-11-memory-management.html"/>
+    <updated>2014-01-31T09:41:00+11:00</updated>
+    <id>http://antonym.org//2014/01/modern-c-plus-plus-11-memory-management</id>
+    <content type="html"><![CDATA[<p>Memory management in low level code has changed slowly over the years.  In
+traditional C code, you would allocate memory with <code>malloc()</code> and release it
+with <code>free()</code>.</p>
 
 <!--more-->
 
 
-<p>The use of the post-increment operator is well established idiomatic code for looping (in both C and C++):</p>
+<p>```
+char* buffer = malloc(BUFFER_SIZE);</p>
 
-<p>```c++
-  for ( unsigned i = 0; i &lt; array_length; i++ )
-  {</p>
+<p>fill_buffer(buffer, BUFFER_SIZE);
+process_buffer(buffer, BUFFER_SIZE);</p>
 
-<pre><code>// do something with array[i]
-// ...
-</code></pre>
-
-<p>  }
+<p>free(buffer);
 ```</p>
 
-<p>When the indexing variable is an ordinal type (usually an integer), the incrementing order makes no difference.  The expressions <code>++i</code> and <code>i++</code> are identical in this case.  And so many people developing in C++ simply use the same style in C++ with their iterator code.  Why would it matter?</p>
-
-<p>Well, it turns out that it does.  If the indexing variable is a class, such as an iterator, there are some subtle differences between the pre-increment and post-increment operators that may have a big impact on performance.</p>
-
-<p>Referring back to Scott Meyer&rsquo;s wonderful <a href="http://www.amazon.com/More-Effective-C%2B%2B-Addison-Wesley-Professional/dp/020163371X/ref=pd_bbs_sr_1/002-4241626-5806441?ie=UTF8&amp;s=books&amp;qid=1190249817&amp;sr=8-1">More Effective C++</a> book, I tracked down the explanation (item 6, page 31), which I will attempt to reproduce here in simplified form.  The signature of the pre-increment <code>operator++</code> for a class T is:</p>
-
-<p><code>c++
-  T&amp; operator++(); // prefix
-</code></p>
-
-<p>while the post-increment operator had a dummy parameter added to make the signature unique:</p>
-
-<p><code>c++
-  const T operator++( int ); // postfix
-</code></p>
-
-<p>But that isn&rsquo;t the only difference &ndash; notice that the prefix operator returns a <em>reference</em> to the object itself (permitting chaining of method calls), while the postfix operator returns a <em>const object</em>, semantically defined as the previous value.  (This is for consistency with the behaviour of ordinal types.)</p>
-
-<p>The result is that the pre-increment operator modifies the object in-place, whereas the post-increment operator will result in temporaries being created, invoking the constructor and destructor.  So something as simple as <code>++it</code> versus <code>it++</code> turns out to have some significant side-effects when applied to an object with overloaded operators.  Since this is the case with virtually all iterators in the STL, as well as many other similar objects, it is worth investigating.</p>
-
-<p>So I decided to quantify the difference, to see how much of a difference it made.  I wrote a test program that created a very large (5 million) array of integers, and iterated over the array.  I used a high-resolution timer to time two versions of the loop, identical save for one being pre-increment and one being post-increment.  After a warmup of 3 runs, I ran the test 10 times, collected the timings and compared them.</p>
-
-<p>The results were very interesting: on an Intel workstation, the pre-increment code took an average of 14.1ns per call, while the post-increment code took 27.6ns per call.  That&rsquo;s a significant difference of 49%, or nearly twice as fast!  A plot of 10 iterations each is shown below:</p>
-
-<p><img src="/img/results_ppc_g4.png"></p>
-
-<p>So &ndash; it really can improve the performance of your code to write:</p>
-
-<p>``` c++
-  mylist::const_iterator it;
-  for ( it = numbers.begin(); it != numbers.end(); ++it )
-  {</p>
-
-<pre><code>// do something with *it
-</code></pre>
-
-<p>  }
-```</p>
-
-<p>For small arrays, it may not make much of a noticeable difference, but every cycle counts, and a little consistency goes a long way.  Using the prefix increment will enable your application to scale better.</p>
-
-<p>Using the prefix form won&rsquo;t make your actual loop run twice as fast, as the iterator increment is only one component contributing to the performance, and the looping overhead may indeed be swamped by the execution time of the body.  So as always, YMMV!</p>
-
-<p>I have provided the test source in C++, along with an R script to summarise and plot the output.  You can download it via the attachment linked at the end of this article.  The code should compile on any POSIX-conforming system with a decent C++ compiler.  And if you do your own performance tests, please drop me a line and let me know what you found.</p>
-
-<p>As one final note, the wonderful <a href="http://www.boost.org/">Boost++ library</a> provides the <code>foreach</code> module, which provides a powerful wrapper to iterate over containers with a nice clean simple syntax:</p>
-
-<p>``` c++
-int total = 0;
-foreach( int num, numbers )
-{</p>
-
-<pre><code>total += num;
-</code></pre>
-
-<p>}
-```</p>
-
-<p>And yes, it uses the pre-increment operator for maximum performance.</p>
-
-<p>The source used for this article:</p>
+<p>Some of the problems with this approach were:</p>
 
 <ul>
-<li><a href="http://www.github.com/gavinb/iterperf/">iterperf source on GitHub</a></li>
+<li><code>malloc()</code> might fail if the system is running low on memory, so you would
+have to check for a <code>NULL</code> return and handle the error appropriately.</li>
+<li>you might forget to call <code>free()</code>, thus leaking memory. This is especially
+common when there are multiple code paths, early returns and so on.</li>
+<li>the memory might be referred to <em>after</em> its release, causing subtle bugs
+or crashes.</li>
+<li>sharing the memory between threads was error-prone and relied on complex
+systems to avoid leaking or trashing memory.</li>
+</ul>
+
+
+<p>The above code is also perfectly valid C++, albeit not exactly idiomatic.
+Rather than rely on the C runtime, C++ introduced heap management into the
+language itself, with the <code>new</code> and <code>delete</code> operators:</p>
+
+<p>```c++
+Buffer* buffer = new Buffer(BUFFER_SIZE);</p>
+
+<p>buffer->fill(0xaa);
+buffer->process();</p>
+
+<p>delete buffer;
+```</p>
+
+<p>This too is not without its issues:</p>
+
+<ul>
+<li>If the system is low on memory, <code>new</code> could fail and throw an exception
+(the default behaviour). This would require a <code>try/catch</code> block to handle
+the failure, otherwise the program would abort.</li>
+<li><code>new</code> could also be configured to return <code>NULL</code>, requiring an entirely
+different error handling strategy.</li>
+<li>It is generally inadvisable to mix memory allocated with <code>new</code> with memory
+allocated using <code>malloc()</code> (as they could potentially be allocated in
+different heap areanas, and cause corruption).</li>
+</ul>
+
+
+<h2>Modern Memory Management</h2>
+
+<p>To drastically simplify memory management and reduce the potential for bugs,
+C++11 introduces several types of <em>smart pointers</em>:</p>
+
+<ul>
+<li><code>std::unique_ptr</code>: a pointer which is automatically freed when the pointer
+goes out of scope, and has a single owner at all times</li>
+<li><code>std::shared_ptr</code>: a reference-counting pointer which can be shared among
+multiple threads, and deletes the object when the last reference is released</li>
+<li><code>std::weak_ptr</code>: a handle which does not hold a reference, but can be
+materialised into a <code>std::shared_ptr</code> on demand</li>
+</ul>
+
+
+<p>These three smart pointer types should be able to cover the vast majority of
+memory management needs in a typcail application.  (There will always be
+exceptions which need custom allocation strategies, such as high performance
+games, numerical processing, etc).</p>
+
+<p>By using the correct smart pointer according to the desired semantics, you
+can virtually eliminate leaks and other common memory problems.</p>
+
+<p>These are each covered in detail in their own articles below:</p>
+
+<ul>
+<li><a href="/2014/01/c-plus-plus-11-unique-pointer.html">Unique Pointer</a></li>
+<li><a href="/2014/02/c-plus-plus-11-shared-pointer.html">Shared Pointer</a></li>
+<li>Weak Pointer (TBA)</li>
 </ul>
 
 ]]></content>

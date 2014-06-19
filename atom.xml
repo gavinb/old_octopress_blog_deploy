@@ -4,7 +4,7 @@
   <title><![CDATA[antonym.org]]></title>
   <link href="http://antonym.org//atom.xml" rel="self"/>
   <link href="http://antonym.org//"/>
-  <updated>2014-06-16T23:49:50+10:00</updated>
+  <updated>2014-06-19T23:18:28+10:00</updated>
   <id>http://antonym.org//</id>
   <author>
     <name><![CDATA[Gavin Baker]]></name>
@@ -22,17 +22,20 @@
     <id>http://antonym.org//2014/02/c-plus-plus-11-range-based-for-loops</id>
     
     <content type="html"><![CDATA[<p>The humble <code>for</code> loop is one of the oldest control flow control constructs
-in the Algol-family of languages.  Yet while other languages have extended
+in the Algol family of languages.  Yet while other languages have extended
 their syntax to allow <code>for</code> loops to do all sorts of crazy and useful things
 beyond iterate over a range of numbers, C and C++ have remained steadfast &ndash;
 until now.</p>
 
 <p>The <code>for</code> loop finally has a new syntax to better support iterators and
-ranges (a great new feature in C++11/14).  So you can now iterate over much
-more than just numbers.</p>
+ranges, just two great new features in C++11.  So you can now easily iterate
+over much more than just numbers.</p>
 
-<p>The C++ container classes provide iterators, but the looping syntax is
-rather unweildly but familiar pattern:</p>
+<!--more-->
+
+
+<p>The C++ container classes in the Standard Template Library (STL) provide
+iterators, but the familiar looping syntax is the rather unwieldly pattern:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -57,10 +60,10 @@ rather unweildly but familiar pattern:</p>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>For some time, the most excellent <a href="http://www.boost.org/">Boost++ project</a>
-has provided some syntactic sugar to reduce the complexity of this code
-considerably.  By using Boost&rsquo;s <code>foreach</code> library, you can replace the above
-loop with the much simpler:</p>
+<p>For some time, the <a href="http://www.boost.org/">Boost++ project</a> has provided
+some syntactic sugar to reduce the complexity of this code considerably.  By
+using the <a href="http://www.boost.org/libs/foreach/">Boost <code>foreach</code></a> library, you
+can replace the above loop with the much simpler:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -83,8 +86,9 @@ loop with the much simpler:</p>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>But now the C++11 specification has this style of syntax (with a slight
-change of punctuation; it uses &lsquo;:&rsquo; rather than &lsquo;,&rsquo;). So now you can write:</p>
+<p>But now the C++11 specification finally has this style of syntax built in to
+the language (with a slight change of punctuation; it uses <code>:</code> rather than
+<code>,</code>). So now you can write:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -105,22 +109,267 @@ change of punctuation; it uses &lsquo;:&rsquo; rather than &lsquo;,&rsquo;). So 
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>This is obviously much cleaner and clearer than the iterator-based code.  If
-all you need to do is iterate over a container, you can start using this
-syntax straight away.</p>
+<p>This is obviously much cleaner and clearer than the explicit iterator-based
+code shown above.  If all you need to do is iterate over an STL container,
+you can start using this syntax straight away.</p>
 
-<p>(Aside: if you are actually going to sum the contents of a vector, using the
-<code>reduce</code> algorithm is even better.)</p>
-
-<h2>Ranges</h2>
-
-<p>The iterators in the STL have <code>begin()</code> and <code>end()</code> methods to control
-iteration loops.  New in C++11 are <code>begin()</code> and <code>end()</code> <em>functions</em>, which
-can be used to construct ranges.  So what is a range?</p>
+<p>(Aside: if you are actually going to sum the contents of a vector as in this
+example, using the <code>reduce</code> algorithm is even better.)</p>
 
 <h2>The new <code>for</code> loop in detail</h2>
 
-<p>So how does this new <code>for</code> loop actually work?</p>
+<p>So how does this new <a href="http://en.cppreference.com/w/cpp/language/range-for">range-based <code>for</code></a>
+loop actually work?  Well, given the simple expression:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="k">for</span> <span class="p">(</span> <span class="n">range_declaration</span> <span class="o">:</span> <span class="n">range_expression</span> <span class="p">)</span> <span class="n">loop_statement</span>      
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>this loop is equivalent to the following expanded code:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">auto</span> <span class="o">&amp;&amp;</span> <span class="n">__range</span> <span class="o">=</span> <span class="n">range_expression</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="n">__begin</span> <span class="o">=</span> <span class="n">__range</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span>
+</span><span class='line'>        <span class="n">__end</span> <span class="o">=</span> <span class="n">__range</span><span class="p">.</span><span class="n">end</span><span class="p">();</span>
+</span><span class='line'>        <span class="n">__begin</span> <span class="o">!=</span> <span class="n">__end</span><span class="p">;</span> <span class="o">++</span><span class="n">__begin</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">range_declaration</span> <span class="o">=</span> <span class="o">*</span><span class="n">__begin</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">loop_statement</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Stepping through line by line, we see that the <code>for</code> loop lives inside its
+own block. First, <code>__range</code> is evaluated to determine the sequence over
+which to iterate.  Then (as in the traditional container case) the <code>_begin</code>
+and <code>__end</code> variables are used to control the loop, incrementing <code>__begin</code>
+until it reaches <code>__end</code> (which is one past the last entry).  The loop body
+dereferences the iterator to get the item value at the current position, and
+then the code in <code>loop_statement</code> is executed.</p>
+
+<p>This construct also works naturally with plain arrays, where the bound is
+added to the beginning to determine the range.</p>
+
+<p>Finally, this works with the new <code>begin()/end()</code> range functions in the
+C++11 standard library, described next.</p>
+
+<h2>Ranges</h2>
+
+<p>Iterators defined by containers in the STL have <code>begin()</code> and <code>end()</code>
+methods to control iteration loops.  New in C++11 are <code>begin()</code> and <code>end()</code>
+<em>functions</em> (in the <code>std</code> namespace), which can be used to work with ranges.
+So what is a range?  Essentially a <code>begin()/end()</code> pair which define the
+extents of an iteration over a container.  By making <code>begin()/end()</code> common
+functions, generic algorithms can more easily work with user-defined
+containers that live outside the STL.</p>
+
+<p>The simple form of their declarations are as follows:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="k">template</span><span class="o">&lt;</span> <span class="k">class</span> <span class="nc">C</span> <span class="o">&gt;</span>
+</span><span class='line'><span class="k">auto</span> <span class="n">begin</span><span class="p">(</span> <span class="n">C</span><span class="o">&amp;</span> <span class="n">c</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">decltype</span><span class="p">(</span><span class="n">c</span><span class="p">.</span><span class="n">begin</span><span class="p">());</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">template</span><span class="o">&lt;</span> <span class="k">class</span> <span class="nc">C</span> <span class="o">&gt;</span>
+</span><span class='line'><span class="k">auto</span> <span class="n">end</span><span class="p">(</span> <span class="n">C</span><span class="o">&amp;</span> <span class="n">c</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">decltype</span><span class="p">(</span><span class="n">c</span><span class="p">.</span><span class="n">end</span><span class="p">());</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This uses some new C++11 features to basically say that, for whatever type
+you pass to these functions, they will return you something of the same type
+as the <code>begin()</code> or <code>end()</code> methods they define within the class.  This
+works with C style arrays, initialiser lists, STL containers and any
+user-defined types.  In short, it is a much more flexible form of the
+original STL pattern.</p>
+
+<h2>Custom classes and ranges</h2>
+
+<p>To add range support to your own class, you must provide the following support:</p>
+
+<ul>
+<li><code>begin()</code> and <code>end()</code>, either as methods or overloaded functions, that
+return the appropriate iterators</li>
+</ul>
+
+
+<p>and then you need an iterator class with the following features:</p>
+
+<ul>
+<li>dereferencing to access the current item (<code>operator*</code>)</li>
+<li>inequality to compare iterators (<code>operator!=</code>)</li>
+<li>pre-increment to advance the iterator to the next item (<code>operator++</code>)</li>
+</ul>
+
+
+<p>Given a container class, you could define your iterator class something like
+this, for example:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="k">class</span> <span class="nc">MyIterator</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'><span class="k">public</span><span class="o">:</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">MyIterator</span><span class="p">(</span><span class="k">const</span> <span class="n">MyContainer</span><span class="o">&amp;</span> <span class="n">c</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="n">idx</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>            <span class="o">:</span> <span class="n">m_container</span><span class="p">(</span><span class="n">c</span><span class="p">),</span>
+</span><span class='line'>              <span class="n">m_index</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// Required</span>
+</span><span class='line'>    <span class="kt">bool</span> <span class="k">operator</span><span class="o">!=</span><span class="p">(</span><span class="k">const</span> <span class="n">MyIterator</span><span class="o">&amp;</span> <span class="n">other</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">(</span><span class="n">m_index</span> <span class="o">!=</span> <span class="n">other</span><span class="p">.</span><span class="n">m_index</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// Required</span>
+</span><span class='line'>    <span class="k">const</span> <span class="n">MyIterator</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">++</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">m_index</span><span class="o">++</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// Required</span>
+</span><span class='line'>    <span class="n">MyObject</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">*</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">private</span><span class="o">:</span>
+</span><span class='line'>    <span class="k">const</span> <span class="n">MyContainer</span><span class="o">&amp;</span>      <span class="n">m_container</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">unsigned</span>                <span class="n">m_index</span><span class="p">;</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">MyObject</span><span class="o">&amp;</span> <span class="n">MyIterator</span><span class="o">::</span><span class="k">operator</span><span class="o">*</span><span class="p">()</span> <span class="k">const</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">m_container</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">m_index</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Its responsibilities are primarily to keep a reference to its container
+proper, and maintain the index of the current item.  The methods marked
+<code>required</code> are the minimum interface to participate in the range-based <code>for</code>
+loop support.  The implementation is very straightforward.</p>
+
+<p>The container class must provide methods to generate iterator classes;
+something like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="k">class</span> <span class="nc">MyContainer</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'><span class="k">public</span><span class="o">:</span>
+</span><span class='line'>    <span class="n">MyContainer</span><span class="p">(</span><span class="kt">unsigned</span> <span class="n">capacity</span><span class="p">);</span>
+</span><span class='line'>    <span class="c1">//...</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// Required</span>
+</span><span class='line'>    <span class="n">MyIterator</span> <span class="n">begin</span> <span class="p">()</span> <span class="k">const</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">MyIterator</span><span class="p">(</span><span class="o">*</span><span class="k">this</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// Required</span>
+</span><span class='line'>    <span class="n">MyIterator</span> <span class="n">end</span> <span class="p">()</span> <span class="k">const</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">MyIterator</span><span class="p">(</span><span class="o">*</span><span class="k">this</span><span class="p">,</span> <span class="n">m_currentIndex</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//...</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This allows your own custom classes to be used in a very natural way with
+the new <code>for</code> loop, such as this example:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">MyContainer</span>     <span class="n">cont</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">cont</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">MyObject</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="s">&quot;IX&quot;</span><span class="p">));</span>
+</span><span class='line'><span class="n">cont</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">MyObject</span><span class="p">(</span><span class="mi">56</span><span class="p">,</span> <span class="s">&quot;LVI&quot;</span><span class="p">));</span>
+</span><span class='line'><span class="n">cont</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">MyObject</span><span class="p">(</span><span class="mi">43</span><span class="p">,</span> <span class="s">&quot;XLIII&quot;</span><span class="p">));</span>
+</span><span class='line'><span class="n">cont</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">MyObject</span><span class="p">(</span><span class="mi">1984</span><span class="p">,</span> <span class="s">&quot;MCMXXCIV&quot;</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">for</span> <span class="p">(</span> <span class="k">auto</span> <span class="n">obj</span> <span class="o">:</span> <span class="n">cont</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">obj</span><span class="p">.</span><span class="n">number</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;: &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">obj</span><span class="p">.</span><span class="n">description</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The full source to the examples is available in my <a href="https://github.com/gavinb/cplusplus11/rangefor/">Github C++11 samples</a>.</p>
 ]]></content>
     
   </entry>
@@ -731,6 +980,119 @@ strategies or error-prone code, and eliminate even more problems.</p>
 <ul>
 <li><code>std::shared_ptr</code></li>
 <li><code>std::weak_ptr</code></li>
+</ul>
+
+]]></content>
+    
+  </entry>
+  
+  <entry>
+    
+    <title type="html"><![CDATA[Modern C++11 Memory Management]]></title>
+    <link href="http://antonym.org//2014/01/modern-c-plus-plus-11-memory-management.html"/>
+    
+    <updated>2014-01-31T09:41:00+11:00</updated>
+    <id>http://antonym.org//2014/01/modern-c-plus-plus-11-memory-management</id>
+    
+    <content type="html"><![CDATA[<p>Memory management in low level code has changed slowly over the years.  In
+traditional C code, you would allocate memory with <code>malloc()</code> and release it
+with <code>free()</code>.</p>
+
+<!--more-->
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>char* buffer = malloc(BUFFER_SIZE);
+</span><span class='line'>
+</span><span class='line'>fill_buffer(buffer, BUFFER_SIZE);
+</span><span class='line'>process_buffer(buffer, BUFFER_SIZE);
+</span><span class='line'>
+</span><span class='line'>free(buffer);</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Some of the problems with this approach were:</p>
+
+<ul>
+<li><code>malloc()</code> might fail if the system is running low on memory, so you would
+have to check for a <code>NULL</code> return and handle the error appropriately.</li>
+<li>you might forget to call <code>free()</code>, thus leaking memory. This is especially
+common when there are multiple code paths, early returns and so on.</li>
+<li>the memory might be referred to <em>after</em> its release, causing subtle bugs
+or crashes.</li>
+<li>sharing the memory between threads was error-prone and relied on complex
+systems to avoid leaking or trashing memory.</li>
+</ul>
+
+
+<p>The above code is also perfectly valid C++, albeit not exactly idiomatic.
+Rather than rely on the C runtime, C++ introduced heap management into the
+language itself, with the <code>new</code> and <code>delete</code> operators:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='c++'><span class='line'><span class="n">Buffer</span><span class="o">*</span> <span class="n">buffer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Buffer</span><span class="p">(</span><span class="n">BUFFER_SIZE</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">buffer</span><span class="o">-&gt;</span><span class="n">fill</span><span class="p">(</span><span class="mh">0xaa</span><span class="p">);</span>
+</span><span class='line'><span class="n">buffer</span><span class="o">-&gt;</span><span class="n">process</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">delete</span> <span class="n">buffer</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This too is not without its issues:</p>
+
+<ul>
+<li>If the system is low on memory, <code>new</code> could fail and throw an exception
+(the default behaviour). This would require a <code>try/catch</code> block to handle
+the failure, otherwise the program would abort.</li>
+<li><code>new</code> could also be configured to return <code>NULL</code>, requiring an entirely
+different error handling strategy.</li>
+<li>It is generally inadvisable to mix memory allocated with <code>new</code> with memory
+allocated using <code>malloc()</code> (as they could potentially be allocated in
+different heap areanas, and cause corruption).</li>
+</ul>
+
+
+<h2>Modern Memory Management</h2>
+
+<p>To drastically simplify memory management and reduce the potential for bugs,
+C++11 introduces several types of <em>smart pointers</em>:</p>
+
+<ul>
+<li><code>std::unique_ptr</code>: a pointer which is automatically freed when the pointer
+goes out of scope, and has a single owner at all times</li>
+<li><code>std::shared_ptr</code>: a reference-counting pointer which can be shared among
+multiple threads, and deletes the object when the last reference is released</li>
+<li><code>std::weak_ptr</code>: a handle which does not hold a reference, but can be
+materialised into a <code>std::shared_ptr</code> on demand</li>
+</ul>
+
+
+<p>These three smart pointer types should be able to cover the vast majority of
+memory management needs in a typcail application.  (There will always be
+exceptions which need custom allocation strategies, such as high performance
+games, numerical processing, etc).</p>
+
+<p>By using the correct smart pointer according to the desired semantics, you
+can virtually eliminate leaks and other common memory problems.</p>
+
+<p>These are each covered in detail in their own articles below:</p>
+
+<ul>
+<li><a href="http://antonym.org//2014/01/c-plus-plus-11-unique-pointer.html">Unique Pointer</a></li>
+<li><a href="http://antonym.org//2014/02/c-plus-plus-11-shared-pointer.html">Shared Pointer</a></li>
+<li>Weak Pointer (TBA)</li>
 </ul>
 
 ]]></content>
@@ -4039,74 +4401,6 @@ Date: 07/09/2009 03:26:30 PM</p>
 
 
 <p>So using the Boost foreach module would have actually avoided the above bug.  Though it wouldn&rsquo;t be nearly as satisfying, as I wouldn&rsquo;t have been able to blog about it.</p>
-]]></content>
-    
-  </entry>
-  
-  <entry>
-    
-    <title type="html"><![CDATA[Gloves off: Mercurial vs Subversion]]></title>
-    <link href="http://antonym.org//2007/12/gloves-off-mercurial-vs-subversion.html"/>
-    
-    <updated>2007-12-04T23:53:00+11:00</updated>
-    <id>http://antonym.org//2007/12/gloves-off-mercurial-vs-subversion</id>
-    
-    <content type="html"><![CDATA[<p>I use <a href="http://subversion.tigris.org/">Subversion</a> on a daily basis, and <a href="http://www.selenic.com/mercurial/">Mercurial</a> a few days a week.  I have noticed that Mercurial <em>seems</em> to be faster with a lot of common operations, but I figured it wasn&rsquo;t a fair comparison as Mercurial was always operating locally, while Subversion has to hit the network for many (but certainly not all) operations.</p>
-
-<p>So I decided to do some very rough performance comparisons on a local repository.  And after some quick timings of common operations, this is what I found&hellip;</p>
-
-<!--more-->
-
-
-<p>(Updated: fixed table and added graph.)</p>
-
-<h2>Method</h2>
-
-<p>This is a very rough, and thus not very rigourous evaluation.  I performed all tests on a PowerBook G4 1GHz running Mac OS X 10.5 under the same operating conditions (ie. on the train home from work).  The versions used:</p>
-
-<ul>
-<li>Subversion 1.4.4</li>
-<li>Mercurial 0.9.5 with Python 2.5</li>
-</ul>
-
-
-<p>I created both repositories locally (under <code>/tmp</code>) and performed the equivalent operations with both VC systems.  The source tree used was a recent version of the Django source tree, which is fairly large (2263 files, 568 dirs, 18Mb).  For the <code>svn import</code> equivalent, I did an <code>hg commit -A</code> of the source tree.  For the <code>svn checkout</code> equivalent, I did an <code>hg clone</code> of the tree.  For the non-mutating operations (eg. <code>status</code>) I ran the same command 5 times and picked the best.</p>
-
-<p>I tried to be as fair as possible, but not take days to actually come up with some figures.  So without further ado&hellip;</p>
-
-<h2>Results</h2>
-
-<p>All times as reported by the <code>bash time</code> command, taking the real time value (ie. elapsed system time):</p>
-
-<table>
-<tr><th>Operation</th><th>Mercurial</th><th>Subversion</th><th>Speedup</th></tr>
-<tr><td>Create Repository</td><td>0.346s</td><td>0.279s</td><td>svn 1.2X</td></tr>
-<tr><td>Import source tree</td><td>12.241s</td><td>1m3.781s</td><td>hg 5.2X</td></tr>
-<tr><td>Checkout</td><td>19.808s</td><td>1m1.356s</td><td>hg 3.1X</td></tr>
-<tr><td>Status (1 mod)</td><td>0.631s</td><td>0.265s</td><td>svn 2.4X</td></tr>
-<tr><td>Diff (1 mod)</td><td>0.778s</td><td>0.212s</td><td>svn 3.7X</td></tr>
-<tr><td>Diff (2 mods)</td><td>0.784s</td><td>0.331s</td><td>svn 2.4X</td></tr>
-<tr><td>Commit (2 mods)</td><td>1.164s</td><td>3.442s</td><td>hg 3.0X</td></tr>
-<tr><td>Add file</td><td>0.544s</td><td>0.121s</td><td>svn 4.5X</td></tr>
-<tr><td>Commit</td><td>0.922s</td><td>2.920s</td><td>hg 3.2X</td></tr>
-<tr><td>Total</td><td>37.218s</td><td>132.707s</td><td>hg 3.6X</td></tr>
-</table>
-
-
-
-
-<div class="thumbnail"><a href="http://skitch.com/gavinb/rpts/mercurialsubversionperformance"><img src="http://img.skitch.com/20080107-nxs9pdi91q8ie9d7d6qrhswmkb.preview.jpg" alt="MercurialSubversionPerformance" /></a><br /></div>
-
-
-<h2>Conclusions</h2>
-
-<p>A simple count of which is faster for each operation shows both scored 5/10, so in that sense they are evenly matched.  But in the cases where Subversion was faster, the times were still well under 1sec, so the difference is far less noticeable.  It is clear from the above that for many expensive operations, Mercurial is significantly faster than Subversion, even for large I/O operations such as commits and importing.  Given Mercurial is written in Python (apart from one small module IIRC), and Subversion is compiled C, this is all the more impressive.  Looking at the overall total times for the test workload, Mercurial comes out at 3.6 times faster than Subversion.  If you are spending a lot of time with your VC system, this can make a huge difference to your workday productivity.</p>
-
-<p>Clearly the build-in diff engine in Subversion gives it a major advantage in diffs, a very important and common operation. Mercurial is still competitive, and in real-world tests seem to scale well.  Having tested it at work with an even larger source tree (the Boost++ library), Mercurial actually seemed to be faster than Subversion for status operations in particular (around a second versus several seconds).</p>
-
-<p>It should be noted that since running Subversion from a local repository like this is the exception rather than the norm for most projects, the performance advantage it has thanks to its fast diff engine evaporates against network latency.  Thus using a distributed VCS such as Mercurial can be a great productivity boost, as you only pay for the network when you need to branch or merge between developers, a far less common operation.</p>
-
-<p>This comparison has reinforced my positive impressions of Mercurial, and I hope it serves to bolster peoples&#8217; confidence in its ability to scale and perform.  It has all the features of Subversion, plus many more groovy features like patch queues (which I may blog about one day).  Since Mercurial is less well known, I hope more people will <a href="http://www.selenic.com/mercurial/">give Mercurial a try</a>.</p>
 ]]></content>
     
   </entry>

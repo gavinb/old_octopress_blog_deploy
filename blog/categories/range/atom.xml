@@ -4,7 +4,7 @@
   <title><![CDATA[Category: range | antonym.org]]></title>
   <link href="http://antonym.org//blog/categories/range/atom.xml" rel="self"/>
   <link href="http://antonym.org//"/>
-  <updated>2014-06-16T23:49:50+10:00</updated>
+  <updated>2014-06-19T23:18:28+10:00</updated>
   <id>http://antonym.org//</id>
   <author>
     <name><![CDATA[Gavin Baker]]></name>
@@ -19,17 +19,20 @@
     <updated>2014-02-25T08:44:00+11:00</updated>
     <id>http://antonym.org//2014/02/c-plus-plus-11-range-based-for-loops</id>
     <content type="html"><![CDATA[<p>The humble <code>for</code> loop is one of the oldest control flow control constructs
-in the Algol-family of languages.  Yet while other languages have extended
+in the Algol family of languages.  Yet while other languages have extended
 their syntax to allow <code>for</code> loops to do all sorts of crazy and useful things
 beyond iterate over a range of numbers, C and C++ have remained steadfast &ndash;
 until now.</p>
 
 <p>The <code>for</code> loop finally has a new syntax to better support iterators and
-ranges (a great new feature in C++11/14).  So you can now iterate over much
-more than just numbers.</p>
+ranges, just two great new features in C++11.  So you can now easily iterate
+over much more than just numbers.</p>
 
-<p>The C++ container classes provide iterators, but the looping syntax is
-rather unweildly but familiar pattern:</p>
+<!--more-->
+
+
+<p>The C++ container classes in the Standard Template Library (STL) provide
+iterators, but the familiar looping syntax is the rather unwieldly pattern:</p>
 
 <p>```c++</p>
 
@@ -47,10 +50,10 @@ for (it = vec.begin(); it != vec.end(); ++it)
 
 <p>```</p>
 
-<p>For some time, the most excellent <a href="http://www.boost.org/">Boost++ project</a>
-has provided some syntactic sugar to reduce the complexity of this code
-considerably.  By using Boost&rsquo;s <code>foreach</code> library, you can replace the above
-loop with the much simpler:</p>
+<p>For some time, the <a href="http://www.boost.org/">Boost++ project</a> has provided
+some syntactic sugar to reduce the complexity of this code considerably.  By
+using the <a href="http://www.boost.org/libs/foreach/">Boost <code>foreach</code></a> library, you
+can replace the above loop with the much simpler:</p>
 
 <p>```c++</p>
 
@@ -67,8 +70,9 @@ foreach (int&amp; num, vec)
 
 <p>```</p>
 
-<p>But now the C++11 specification has this style of syntax (with a slight
-change of punctuation; it uses &lsquo;:&rsquo; rather than &lsquo;,&rsquo;). So now you can write:</p>
+<p>But now the C++11 specification finally has this style of syntax built in to
+the language (with a slight change of punctuation; it uses <code>:</code> rather than
+<code>,</code>). So now you can write:</p>
 
 <p>```c++</p>
 
@@ -84,22 +88,201 @@ for (auto n : vec)
 
 <p>```</p>
 
-<p>This is obviously much cleaner and clearer than the iterator-based code.  If
-all you need to do is iterate over a container, you can start using this
-syntax straight away.</p>
+<p>This is obviously much cleaner and clearer than the explicit iterator-based
+code shown above.  If all you need to do is iterate over an STL container,
+you can start using this syntax straight away.</p>
 
-<p>(Aside: if you are actually going to sum the contents of a vector, using the
-<code>reduce</code> algorithm is even better.)</p>
-
-<h2>Ranges</h2>
-
-<p>The iterators in the STL have <code>begin()</code> and <code>end()</code> methods to control
-iteration loops.  New in C++11 are <code>begin()</code> and <code>end()</code> <em>functions</em>, which
-can be used to construct ranges.  So what is a range?</p>
+<p>(Aside: if you are actually going to sum the contents of a vector as in this
+example, using the <code>reduce</code> algorithm is even better.)</p>
 
 <h2>The new <code>for</code> loop in detail</h2>
 
-<p>So how does this new <code>for</code> loop actually work?</p>
+<p>So how does this new <a href="http://en.cppreference.com/w/cpp/language/range-for">range-based <code>for</code></a>
+loop actually work?  Well, given the simple expression:</p>
+
+<p>```c++</p>
+
+<pre><code>for ( range_declaration : range_expression ) loop_statement     
+</code></pre>
+
+<p>```</p>
+
+<p>this loop is equivalent to the following expanded code:</p>
+
+<p>```c++</p>
+
+<pre><code>{
+    auto &amp;&amp; __range = range_expression;
+    for (auto __begin = __range.begin(),
+        __end = __range.end();
+        __begin != __end; ++__begin)
+    {
+        range_declaration = *__begin;
+        loop_statement
+    }
+}
+</code></pre>
+
+<p>```</p>
+
+<p>Stepping through line by line, we see that the <code>for</code> loop lives inside its
+own block. First, <code>__range</code> is evaluated to determine the sequence over
+which to iterate.  Then (as in the traditional container case) the <code>_begin</code>
+and <code>__end</code> variables are used to control the loop, incrementing <code>__begin</code>
+until it reaches <code>__end</code> (which is one past the last entry).  The loop body
+dereferences the iterator to get the item value at the current position, and
+then the code in <code>loop_statement</code> is executed.</p>
+
+<p>This construct also works naturally with plain arrays, where the bound is
+added to the beginning to determine the range.</p>
+
+<p>Finally, this works with the new <code>begin()/end()</code> range functions in the
+C++11 standard library, described next.</p>
+
+<h2>Ranges</h2>
+
+<p>Iterators defined by containers in the STL have <code>begin()</code> and <code>end()</code>
+methods to control iteration loops.  New in C++11 are <code>begin()</code> and <code>end()</code>
+<em>functions</em> (in the <code>std</code> namespace), which can be used to work with ranges.
+So what is a range?  Essentially a <code>begin()/end()</code> pair which define the
+extents of an iteration over a container.  By making <code>begin()/end()</code> common
+functions, generic algorithms can more easily work with user-defined
+containers that live outside the STL.</p>
+
+<p>The simple form of their declarations are as follows:</p>
+
+<p>```c++
+template&lt; class C >
+auto begin( C&amp; c ) &ndash;> decltype(c.begin());</p>
+
+<p>template&lt; class C >
+auto end( C&amp; c ) &ndash;> decltype(c.end());
+```</p>
+
+<p>This uses some new C++11 features to basically say that, for whatever type
+you pass to these functions, they will return you something of the same type
+as the <code>begin()</code> or <code>end()</code> methods they define within the class.  This
+works with C style arrays, initialiser lists, STL containers and any
+user-defined types.  In short, it is a much more flexible form of the
+original STL pattern.</p>
+
+<h2>Custom classes and ranges</h2>
+
+<p>To add range support to your own class, you must provide the following support:</p>
+
+<ul>
+<li><code>begin()</code> and <code>end()</code>, either as methods or overloaded functions, that
+return the appropriate iterators</li>
+</ul>
+
+
+<p>and then you need an iterator class with the following features:</p>
+
+<ul>
+<li>dereferencing to access the current item (<code>operator*</code>)</li>
+<li>inequality to compare iterators (<code>operator!=</code>)</li>
+<li>pre-increment to advance the iterator to the next item (<code>operator++</code>)</li>
+</ul>
+
+
+<p>Given a container class, you could define your iterator class something like
+this, for example:</p>
+
+<p>```c++</p>
+
+<pre><code>class MyIterator
+{
+public:
+
+    MyIterator(const MyContainer&amp; c, unsigned idx = 0)
+            : m_container(c),
+              m_index(idx)
+    {}
+
+    // Required
+    bool operator!=(const MyIterator&amp; other)
+    {
+        return (m_index != other.m_index);
+    }
+
+    // Required
+    const MyIterator&amp; operator++()
+    {
+        m_index++;
+        return *this;
+    }
+
+    // Required
+    MyObject&amp; operator*() const;
+
+private:
+    const MyContainer&amp;      m_container;
+    unsigned                m_index;
+};
+
+MyObject&amp; MyIterator::operator*() const
+{
+    return m_container.get(m_index);
+}
+</code></pre>
+
+<p>```</p>
+
+<p>Its responsibilities are primarily to keep a reference to its container
+proper, and maintain the index of the current item.  The methods marked
+<code>required</code> are the minimum interface to participate in the range-based <code>for</code>
+loop support.  The implementation is very straightforward.</p>
+
+<p>The container class must provide methods to generate iterator classes;
+something like this:</p>
+
+<p>```c++</p>
+
+<pre><code>class MyContainer
+{
+public:
+    MyContainer(unsigned capacity);
+    //...
+
+    // Required
+    MyIterator begin () const
+    {
+        return MyIterator(*this, 0);
+    }
+
+    // Required
+    MyIterator end () const
+    {
+        return MyIterator(*this, m_currentIndex);
+    }
+
+    //...
+};
+</code></pre>
+
+<p>```</p>
+
+<p>This allows your own custom classes to be used in a very natural way with
+the new <code>for</code> loop, such as this example:</p>
+
+<p>```c++</p>
+
+<pre><code>MyContainer     cont(10);
+
+cont.add(MyObject(9, "IX"));
+cont.add(MyObject(56, "LVI"));
+cont.add(MyObject(43, "XLIII"));
+cont.add(MyObject(1984, "MCMXXCIV"));
+
+for ( auto obj : cont)
+{
+    std::cout &lt;&lt; obj.number() &lt;&lt; ": " &lt;&lt; obj.description() &lt;&lt; std::endl;
+}
+</code></pre>
+
+<p>```</p>
+
+<p>The full source to the examples is available in my <a href="https://github.com/gavinb/cplusplus11/rangefor/">Github C++11 samples</a>.</p>
 ]]></content>
   </entry>
   
