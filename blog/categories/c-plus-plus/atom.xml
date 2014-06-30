@@ -4,7 +4,7 @@
   <title><![CDATA[Category: c++ | antonym.org]]></title>
   <link href="http://antonym.org//blog/categories/c-plus-plus/atom.xml" rel="self"/>
   <link href="http://antonym.org//"/>
-  <updated>2014-06-19T23:18:28+10:00</updated>
+  <updated>2014-06-30T23:08:54+10:00</updated>
   <id>http://antonym.org//</id>
   <author>
     <name><![CDATA[Gavin Baker]]></name>
@@ -12,6 +12,362 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[C++11 and override]]></title>
+    <link href="http://antonym.org//2014/06/c-plus-plus-11-and-override.html"/>
+    <updated>2014-06-26T18:57:00+10:00</updated>
+    <id>http://antonym.org//2014/06/c-plus-plus-11-and-override</id>
+    <content type="html"><![CDATA[<p>The new <code>override</code> modifier can be applied to a virtual method in C++11, and
+instructs the compiler that the method is intended to override a virtual
+method defined in the parent class.  The primary advantage is that typos and
+mismatched method signatures that would have resulted in subtle bugs and
+unintended runtime bheaviour before can now be detected at build time and
+easily corrected.</p>
+
+<!--more-->
+
+
+<h1>Without <code>override</code></h1>
+
+<p>Imagine we have the following code:</p>
+
+<p>```c++
+// Base class with virtual method
+class Base0
+{
+public:</p>
+
+<pre><code>virtual void foo(int num)
+{
+    std::cout &lt;&lt; "Base0::foo(int)" &lt;&lt; std::endl;
+}
+</code></pre>
+
+<p>};</p>
+
+<p>// Derived class with mismatched type.
+// This error will not be caught.
+class Derived0 : public Base0
+{
+public:</p>
+
+<pre><code>virtual void foo(float num)
+{
+    std::cout &lt;&lt; "Derived0::foo(float)" &lt;&lt; std::endl;
+}
+</code></pre>
+
+<p>};
+```</p>
+
+<p>The intent was for <code>Derived0</code> to implement its own <code>foo()</code> method to
+override the <code>Base0::foo(int)</code> method.  However, the developer made a
+mistake in the type signature and the parameter type does not match (<code>float</code>
+here versus <code>int</code> above).  The result is that <code>Derived0::foo(float)</code> is a
+distinct method from <code>Base0::foo(int)</code> and will not necessarily be called on
+all the occasions the developer intended.  Typically this would be when a
+polymorphic call on a <code>Base0</code> pointer type to a <code>Derived0</code> instance was
+expected to call the derived implementation.  In other words, given some
+test code which exercises the <code>foo</code> method for each class, if we write:</p>
+
+<p>```c++
+std::unique_ptr<Base0>   b0(new Base0);
+std::unique_ptr<Base0>   d0(new Derived0);</p>
+
+<p>b0->foo(123);
+d0->foo(123);
+```</p>
+
+<p>then the output we see is not what we might expect:</p>
+
+<p><code>c++
+Base0::foo(int)
+Base0::foo(int)
+</code></p>
+
+<p>The developer had intended that <code>Derived0</code> be invoked in the second call,
+but the <code>Base0</code> version was called instead, since it matches the type
+signature of the method in the base class and <code>foo(float)</code> is not considered
+an overriding method.</p>
+
+<h1>With <code>override</code></h1>
+
+<p>The fix is to add the <code>override</code> modifier to the method declaration in the
+derived class to make our intentions explicit.</p>
+
+<p>```c++
+// Base class with virtual method
+class Base1
+{
+public:</p>
+
+<pre><code>virtual void foo(int num)
+{
+    std::cout &lt;&lt; "Base1::foo(int)" &lt;&lt; std::endl;
+}
+</code></pre>
+
+<p>};</p>
+
+<p>// Derived class intends to override.
+// Since parent type signature doesn&rsquo;t match,
+// this error will be caught
+class Derived1 : public Base1
+{
+public:</p>
+
+<pre><code>virtual void foo(float num) override
+{
+    std::cout &lt;&lt; "Derived1::foo(int)" &lt;&lt; std::endl;
+}
+</code></pre>
+
+<p>};
+```</p>
+
+<p>Now if we attempt to compile this code, we will receive the following error:</p>
+
+<p>```
+override1.cpp:28:18: error: &lsquo;foo&rsquo; marked &lsquo;override&rsquo; but does not override any member functions</p>
+
+<pre><code>virtual void foo(float num) override;
+             ^
+</code></pre>
+
+<p>1 error generated.
+```</p>
+
+<p>The fix is simple; update the type signature to match the parent.  The code
+then compiles, and the following test code:</p>
+
+<p>```c++
+std::unique_ptr<Base1>   b1(new Base1);
+std::unique_ptr<Base1>   d1(new Derived1);</p>
+
+<p>b1->foo(123);
+d1->foo(123);
+```</p>
+
+<p>works correctly, producing the following expected result:</p>
+
+<p><code>
+Base1::foo(int)
+Derived1::foo(int)
+</code></p>
+
+<h1>When to use <code>override</code></h1>
+
+<p>The <code>override</code> modifier should be used in modern C++ code whenever a virtual
+function is overridden in a derived class.  The use of <code>override</code> can catch
+some subtle bugs that would be otherwise be time-consuming and difficult to
+detect and correct.</p>
+
+<p>The <code>override</code> modifier only has a compile-time impact, so there is no
+runtime cost whatsoever to using it.</p>
+
+<p>There is one consideration &ndash; since <code>override</code> is a C++11 feature, care must
+be taken to ensure that the target toolchain is compatible with modern
+features.  Older compilers would need a compatability mode to ignore this
+modifier in order to build.</p>
+
+<h1>Sample Code</h1>
+
+<p>THe sample code can be otained from:</p>
+
+<ul>
+<li><a href="https://github.com/gavinb/cplusplus11/override/">https://github.com/gavinb/cplusplus11/override/</a></li>
+</ul>
+
+
+<h1>Final vs Override</h1>
+
+<p>In addition to the <code>override</code> modifier, there is support for expressing the
+opposite sense; the <code>final</code> declaration instructs the compiler that the
+method cannot be overridden by a dervied class.  The <code>final</code> modifier is
+explained in its own article, <a href="/2014/06/c-plus-plus-11-and-final.html">C++11 and override</a>.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[C++11 and final]]></title>
+    <link href="http://antonym.org//2014/06/c-plus-plus-11-and-final.html"/>
+    <updated>2014-06-24T17:50:00+10:00</updated>
+    <id>http://antonym.org//2014/06/c-plus-plus-11-and-final</id>
+    <content type="html"><![CDATA[<p>One of the lesser known &ndash; but still very useful &ndash; enhancements to C++11 is
+the addition of the <code>final</code> keyword.  This essentially mirrors the <code>final</code>
+feature in Java, which has existed since its inception.</p>
+
+<!--more-->
+
+
+<p>The <code>final</code> keyword in C++11 can be applied to either an entire class or a
+method.  When applied to a class, it signifies that the class is <em>closed to
+derivation</em>; that is, you cannot create a class derived from a <code>final</code>
+class.</p>
+
+<p>The second way is when applying <code>final</code> to a method, which prevents the
+method from being overridden by a derived class (though it is still possible
+to create subclasses).</p>
+
+<h1>How do you declare a <code>final</code> class?</h1>
+
+<p>Given a base class and a derived class, you would normally write:</p>
+
+<p>```c++
+class Base0
+{
+};</p>
+
+<p>class Derived0 : Base0
+{
+};
+```</p>
+
+<p>However, if you wish to prevent the base class from being subclassed, simply
+add <code>final</code> after the classname, thus:</p>
+
+<p>```c++
+class Base1 final
+{
+};</p>
+
+<p>// Error!
+class Derived1 : Base1
+{
+};
+```</p>
+
+<p>If you try to compile this code, you will get the error:</p>
+
+<p>```
+finalclass.cpp:16:18: error: base &lsquo;Base1&rsquo; is marked &lsquo;final&rsquo;
+class Derived1 : Base1</p>
+
+<pre><code>             ^
+</code></pre>
+
+<p>finalclass.cpp:12:7: note: &lsquo;Base1&rsquo; declared here
+class Base1 final</p>
+
+<pre><code>  ^
+</code></pre>
+
+<p>1 error generated.
+```</p>
+
+<p>The compiler specifically prevents any subclassing of <code>Base1</code> with a hard
+error.</p>
+
+<h1>How do you declare a <code>final</code> method?</h1>
+
+<p>It is also possible to mark an indvidual method as <code>final</code>.  The method must
+be <code>virtual</code> to begin with, and making it <code>final</code> prevents it from being
+overriden in a derived class.</p>
+
+<p>(If the method isn&rsquo;t virtual, you would be effectively creating a shadow
+method that overrides the base method.)</p>
+
+<p>Take the following simple example of a derived class overriding a virtual
+function declared in the base:</p>
+
+<p>```c++
+class Base0
+{</p>
+
+<pre><code>virtual void foo();
+</code></pre>
+
+<p>};</p>
+
+<p>class Derived0 : Base0
+{</p>
+
+<pre><code>void foo();
+</code></pre>
+
+<p>};
+```</p>
+
+<p>This compiles and works just fine.  But if we wanted to ensure that the
+method was not reimplmented in any derived classes (For example, to preserve
+important behaviour), simply adding the <code>final</code> modifier at the end of the
+method declaration.  So given the following example:</p>
+
+<p>```c++
+class Base1
+{</p>
+
+<pre><code>virtual void foo() final;
+</code></pre>
+
+<p>};</p>
+
+<p>class Derived1 : Base1
+{</p>
+
+<pre><code>// Error!
+void foo();
+</code></pre>
+
+<p>};
+```</p>
+
+<p>the compiler gives us the following error:</p>
+
+<p>```
+finalmethod.cpp:21:10: error: declaration of &lsquo;foo&rsquo; overrides a &lsquo;final&rsquo; function</p>
+
+<pre><code>void foo();
+     ^
+</code></pre>
+
+<p>finalmethod.cpp:16:18: note: overridden virtual function is here</p>
+
+<pre><code>virtual void foo() final;
+             ^
+</code></pre>
+
+<p>1 error generated.
+```</p>
+
+<h1>Why is <code>final</code> useful?</h1>
+
+<p>Marking a method or entire class as <code>final</code> could be useful if you need to
+prevent client code from modifying the behaviour of your base class.  This
+may be to enforce &lsquo;contractual&rsquo; behaviour (as in Eiffel; not in a legal
+sense!), or it may be to prevent resource management problems.</p>
+
+<p>It should be noted that this is in <em>no way</em> a security measure.  This is
+purely a compile-time directive to the compiler to enforce the policy, and
+has no other effect than to generate an error and stop compiling.  In
+attacking any real-world application, a determined cracker would have any
+number of mechanisms at their disposal to bypass restrictions that this
+might impose.</p>
+
+<p>This information about finality can also be exploited by the compiler to
+optimize code, using a technique known as <em>devirtualisation</em>. If the
+compiler knows it doesn&rsquo;t have to use the vtable (virtual method table) to
+dispatch the method call, it can potentially generate more efficient code.</p>
+
+<h1>Sample Code</h1>
+
+<p>THe sample code can be otained from:</p>
+
+<ul>
+<li><a href="https://github.com/gavinb/cplusplus11/final/">https://github.com/gavinb/cplusplus11/final/</a></li>
+</ul>
+
+
+<h1>Final vs Override</h1>
+
+<p>In addition to the <code>final</code> modifier, there is support for expressing the
+opposite sense; the <code>override</code> declaration makes it explicit to the compiler
+that you are intentionally overriding a virtual method from a base class.
+This is explained in its own article, <a href="/2014/06/c-plus-plus-11-and-override.html">C++11 and
+override</a>.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[C++11 Range-based for loops]]></title>
@@ -500,427 +856,6 @@ and is destroyed after main completes.</p>
 
 <p>The new <code>std::shared_ptr</code> support makes it easy to share heap-allocated memory
 between threads, or throughout code that has complex lifetime requirements.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[C++11 Smart Pointers: Unique Pointer]]></title>
-    <link href="http://antonym.org//2014/01/c-plus-plus-11-unique-pointer.html"/>
-    <updated>2014-01-31T18:29:00+11:00</updated>
-    <id>http://antonym.org//2014/01/c-plus-plus-11-unique-pointer</id>
-    <content type="html"><![CDATA[<p>C++11 introduces many significant improvements to the language and runtime. One
-of the most important is to do with memory management &ndash; specifically, smart
-pointers.  The <code>unique_ptr</code> makes managing dynamically allocated memory safe and
-simple.</p>
-
-<!--more-->
-
-
-<p>Instead of using a bare pointer type in C++, the modern C++11 style is now to
-use <code>std::unique_ptr</code>.  This class will automatically free the allocated memory
-once the variable goes out of scope.  This is the simplest of the new smart
-pointer types in C++11.</p>
-
-<p>Whereas before, you might write:</p>
-
-<p>```c++</p>
-
-<pre><code>Foo* obj = new Foo;
-
-obj-&gt;process();
-
-delete obj;
-</code></pre>
-
-<p>```</p>
-
-<p>you can now write:</p>
-
-<p>```c++</p>
-
-<pre><code>std::unique_ptr&lt;Foo&gt; obj(new Foo);
-
-obj-&gt;process();
-
-// obj will be automatically deleted
-</code></pre>
-
-<p>```</p>
-
-<h2>Properties</h2>
-
-<p>The <code>std::unique_ptr</code> class enforces several useful properties:</p>
-
-<ul>
-<li>only a single reference to the allocated object can be active at any given time</li>
-<li>the object will be deleted when the smart pointer goes out of scope</li>
-<li>the object will be deleted if an exception is thrown</li>
-</ul>
-
-
-<p>It bears spelling this out: when used correctly, <code>std::unique_ptr</code> can virtually
-eliminate memory leaks.  This makes the cost of the conversion process
-worthwhile!</p>
-
-<p>The <code>unique_ptr</code> type is templated over the pointer type, and its constructor
-takes the allocated pointer returned from the <code>new</code> operator.  And because the
-pointer <code>operator-&gt;()</code> is overloaded, the smart pointer object can be used just
-like a regular pointer.</p>
-
-<p><strong>Note 1:</strong> For Boost users, this is almost the same as the <code>boost::scoped_ptr</code>
-class.</p>
-
-<p><strong>Note 2:</strong> This class supercedes the <code>std::auto_ptr</code>, which was deprecated in C++11.</p>
-
-<p><strong>Note 3:</strong> When invoking <code>std::unique_ptr</code> methods on the smart pointer itself,
-remember to use the dot <code>.</code> operator. When invoking methods on the object pointer,
-use the arrow <code>-&gt;</code> operator as you normally would (since it is overloaded to return the underlying object pointer).</p>
-
-<h2>Sample</h2>
-
-<p>Once the variable goes out of scope, <code>delete</code> will be called to release the memory,
-and the destructor will be invoked as usual, as this simple example shows:</p>
-
-<p>```c++</p>
-
-<h1>include <memory></h1>
-
-<h1>include <iostream></h1>
-
-<p>class Foo
-{
-public:</p>
-
-<pre><code>Foo() { std::cout &lt;&lt; "+++ Foo::Foo()\n"; }
-~Foo() { std::cout &lt;&lt; "--- Foo::~Foo()\n"; }
-void process() { std::cout &lt;&lt; "... Foo::process()\n"; }
-</code></pre>
-
-<p>};</p>
-
-<p>int main(int argc, char* argv[])
-{</p>
-
-<pre><code>std::cout &lt;&lt; "+++ main()\n";
-
-std::unique_ptr&lt;Foo&gt; obj(new Foo);
-obj-&gt;process();
-
-std::cout &lt;&lt; "--- main()\n";
-
-return 0;
-</code></pre>
-
-<p>}
-```</p>
-
-<p>The output is:</p>
-
-<pre><code>+++ main()
-+++ Foo::Foo()
-... Foo::process()
---- main()
---- Foo::~Foo()
-</code></pre>
-
-<h2>Explcit release</h2>
-
-<p>If you wish to delete the object before the holding pointer goes out of scope,
-you can use the <code>reset()</code> method on the smart pointer:</p>
-
-<p>```c++</p>
-
-<pre><code>std::unique_ptr&lt;Foo&gt; obj(new Foo);
-
-obj-&gt;process();
-obj.reset();
-</code></pre>
-
-<p>```</p>
-
-<p>(Notice that methods invoked on the smart pointer itself use <code>.</code> whereas
-methods on the target object use the overloaded dereference operator <code>-&gt;</code>).</p>
-
-<p>This results in the trace:</p>
-
-<pre><code>+++ main()
-+++ Foo::Foo()
-... Foo::process()
-... obj: 0x7fb733c047c0
---- Foo::~Foo()
---- main()
-</code></pre>
-
-<p>The simple difference here is that the object&rsquo;s destructor is called <em>before</em>
-the end of <code>main</code>, since we invoke <code>reset()</code> explicitly.  Above, the destructor
-is invoked <em>after</em> the end of <code>main</code>, since the smart pointer is going out of
-scope.  This is a subtle but important point.</p>
-
-<h2>Uniqueness</h2>
-
-<p>What happens if we try to assign this pointer to another smart pointer?</p>
-
-<p>```c++</p>
-
-<pre><code>std::unique_ptr&lt;Foo&gt; obj(new Foo);
-
-std::unique_ptr&lt;Foo&gt; obj2;
-
-obj2 = obj;
-</code></pre>
-
-<p>```</p>
-
-<p>We get a meaningful compiler error:</p>
-
-<pre><code>cpp11_unique_ptr_ex2.cpp:27:10: error: object of type 'std::__1::unique_ptr&lt;Foo,
-      std::__1::default_delete&lt;Foo&gt; &gt;' cannot be assigned because its copy
-      assignment operator is implicitly deleted
-    obj2 = obj;
-</code></pre>
-
-<p>The compiler is enforcing the unique ownership semantics, so we can&rsquo;t
-accidentally do the wrong thing.</p>
-
-<p>But if we can&rsquo;t assign these unique pointers, how do we move them around? Using
-the new explicit <em>move</em> support in C++11 (which is itself a large and complex
-topic). This transfers ownership of the pointer from one <code>unique_ptr</code> instance
-to another:</p>
-
-<p>```c++</p>
-
-<pre><code>std::unique_ptr&lt;Foo&gt; obj1(new Foo);
-std::unique_ptr&lt;Foo&gt; obj2;
-
-obj2 = std::move(obj1);
-</code></pre>
-
-<p>```</p>
-
-<p>The output of the test program shows the result (we can access the enclosed pointer
-using the <code>get()</code> method):</p>
-
-<pre><code>+++ main()
-+++ Foo::Foo()
-Before move:
-     obj1:0x7fa8b9d00000
-     obj2:0x0
-After move:
-     obj1:0x0
-     obj2:0x7fa8b9d00000
---- main()
---- Foo::~Foo()
-</code></pre>
-
-<p>Notice how only one <code>Foo</code> instance was created, and that its pointer value moved
-from <code>obj1</code> to <code>obj2</code>? After the <code>move</code> operation, the pointer in <code>obj1</code> is null.
-Thus move semantics preserve the single owner invariant.</p>
-
-<h2>Arrays</h2>
-
-<p>The <code>std::unique_ptr</code> class also has explicit support for handling arrays of
-pointers. It is not a replacement for <code>std::vector</code>, but depending on your
-requirements, this array support can be very useful.</p>
-
-<p>```c++
-const unsigned N = 10;</p>
-
-<p>std::unique_ptr&lt;Foo[]> objarray(new Foo [N]);</p>
-
-<p>for (unsigned i = 0; i &lt; N; i++)
-{</p>
-
-<pre><code>std::cout &lt;&lt; i &lt;&lt; " ";
-objarray[i].process();
-</code></pre>
-
-<p>}
-```</p>
-
-<h2>Returning objects from functions</h2>
-
-<p>The <code>unique_ptr</code> idiom is especially useful when you need to return an allocated
-resource from a function or method, but don&rsquo;t want to worry about having to free
-the object later.  This sample function returns a unique pointer to the caller,
-transferring ownership by implicitly moving the result:</p>
-
-<p>```c++
-std::unique_ptr<Foo> make_foo()
-{</p>
-
-<pre><code>std::unique_ptr&lt;Foo&gt; obj(new Foo);
-
-// prepare obj
-
-return obj;
-</code></pre>
-
-<p>}
-```</p>
-
-<p>The object will be freed when the caller stops referencing it.</p>
-
-<h2>Containers</h2>
-
-<p>The <em>move</em> support enables efficient storage of <code>unique_ptr</code> managed objects in
-containers (one of the limitations of the deprecated <code>std::auto_ptr</code>).  If you
-have a vector of pointers to objects, you need to carefully manage ownership
-(eg. does the creator or the container own the allocations?) and manually free
-them. But with <code>unique_ptr</code>, instead of:</p>
-
-<p><code>c++
-std::vector&lt;Foo*&gt; v;
-</code></p>
-
-<p>we can write:</p>
-
-<p><code>c++
-std::vector&lt; std::unique_ptr&lt;Foo&gt; &gt; v;
-</code></p>
-
-<p>then when creating the object, we use the explicit <em>move</em> support to pass
-ownership of the object to the container (and avoid any reallocations or
-temporaries):</p>
-
-<p><code>c++
-std::unique_ptr&lt;Foo&gt; q(new Foo(i));
-v.push_back(std::move(q));
-</code></p>
-
-<p>When the <code>vector</code> goes out of scope, its destructor will in turn release all
-the <code>unique_ptr</code> instances it owns.  This automatic releasing of resources
-can save a great deal of debugging pain and potential memory leaks.</p>
-
-<h2>Overhead</h2>
-
-<p>The benefits of using <code>std::unique_ptr</code> are many.  And fortunately, the cost of
-using this support is minimal (though for embedded systems, needs to be
-carefully considered).  The is a memory overhead of one word per instance (eg. 8
-bytes on a 64-bit architecture).</p>
-
-<p>The code generated for a method invocation involves an extra pointer
-indirection, the overhead which seems to be in the order of 2-3% (based on some
-simplistic tests; see the repo for full source).</p>
-
-<h2>Upgrading</h2>
-
-<p>The process to convert existing code which uses manual memory management to
-using smart pointers may not be trivial, but the long-term benefits of more
-maintainable and reliable code are frequently worth the investment of time.
-Going through the process may well highlight complex memory management
-strategies or error-prone code, and eliminate even more problems.</p>
-
-<ul>
-<li>Search for allocations using <code>new</code></li>
-<li>Remove calls to <code>delete</code></li>
-</ul>
-
-
-<h2>Other smart pointer types</h2>
-
-<p>Stay tuned for articles on:</p>
-
-<ul>
-<li><code>std::shared_ptr</code></li>
-<li><code>std::weak_ptr</code></li>
-</ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Modern C++11 Memory Management]]></title>
-    <link href="http://antonym.org//2014/01/modern-c-plus-plus-11-memory-management.html"/>
-    <updated>2014-01-31T09:41:00+11:00</updated>
-    <id>http://antonym.org//2014/01/modern-c-plus-plus-11-memory-management</id>
-    <content type="html"><![CDATA[<p>Memory management in low level code has changed slowly over the years.  In
-traditional C code, you would allocate memory with <code>malloc()</code> and release it
-with <code>free()</code>.</p>
-
-<!--more-->
-
-
-<p>```
-char* buffer = malloc(BUFFER_SIZE);</p>
-
-<p>fill_buffer(buffer, BUFFER_SIZE);
-process_buffer(buffer, BUFFER_SIZE);</p>
-
-<p>free(buffer);
-```</p>
-
-<p>Some of the problems with this approach were:</p>
-
-<ul>
-<li><code>malloc()</code> might fail if the system is running low on memory, so you would
-have to check for a <code>NULL</code> return and handle the error appropriately.</li>
-<li>you might forget to call <code>free()</code>, thus leaking memory. This is especially
-common when there are multiple code paths, early returns and so on.</li>
-<li>the memory might be referred to <em>after</em> its release, causing subtle bugs
-or crashes.</li>
-<li>sharing the memory between threads was error-prone and relied on complex
-systems to avoid leaking or trashing memory.</li>
-</ul>
-
-
-<p>The above code is also perfectly valid C++, albeit not exactly idiomatic.
-Rather than rely on the C runtime, C++ introduced heap management into the
-language itself, with the <code>new</code> and <code>delete</code> operators:</p>
-
-<p>```c++
-Buffer* buffer = new Buffer(BUFFER_SIZE);</p>
-
-<p>buffer->fill(0xaa);
-buffer->process();</p>
-
-<p>delete buffer;
-```</p>
-
-<p>This too is not without its issues:</p>
-
-<ul>
-<li>If the system is low on memory, <code>new</code> could fail and throw an exception
-(the default behaviour). This would require a <code>try/catch</code> block to handle
-the failure, otherwise the program would abort.</li>
-<li><code>new</code> could also be configured to return <code>NULL</code>, requiring an entirely
-different error handling strategy.</li>
-<li>It is generally inadvisable to mix memory allocated with <code>new</code> with memory
-allocated using <code>malloc()</code> (as they could potentially be allocated in
-different heap areanas, and cause corruption).</li>
-</ul>
-
-
-<h2>Modern Memory Management</h2>
-
-<p>To drastically simplify memory management and reduce the potential for bugs,
-C++11 introduces several types of <em>smart pointers</em>:</p>
-
-<ul>
-<li><code>std::unique_ptr</code>: a pointer which is automatically freed when the pointer
-goes out of scope, and has a single owner at all times</li>
-<li><code>std::shared_ptr</code>: a reference-counting pointer which can be shared among
-multiple threads, and deletes the object when the last reference is released</li>
-<li><code>std::weak_ptr</code>: a handle which does not hold a reference, but can be
-materialised into a <code>std::shared_ptr</code> on demand</li>
-</ul>
-
-
-<p>These three smart pointer types should be able to cover the vast majority of
-memory management needs in a typcail application.  (There will always be
-exceptions which need custom allocation strategies, such as high performance
-games, numerical processing, etc).</p>
-
-<p>By using the correct smart pointer according to the desired semantics, you
-can virtually eliminate leaks and other common memory problems.</p>
-
-<p>These are each covered in detail in their own articles below:</p>
-
-<ul>
-<li><a href="/2014/01/c-plus-plus-11-unique-pointer.html">Unique Pointer</a></li>
-<li><a href="/2014/02/c-plus-plus-11-shared-pointer.html">Shared Pointer</a></li>
-<li>Weak Pointer (TBA)</li>
-</ul>
-
 ]]></content>
   </entry>
   

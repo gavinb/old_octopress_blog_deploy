@@ -9,8 +9,8 @@
   <meta name="author" content="Gavin Baker">
 
   
-  <meta name="description" content="The humble for loop is one of the oldest control flow control constructs
-in the Algol family of languages. Yet while other languages have extended &hellip;">
+  <meta name="description" content="The new override modifier can be applied to a virtual method in C++11, and
+instructs the compiler that the method is intended to override a virtual &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -81,6 +81,99 @@ in the Algol family of languages. Yet while other languages have extended &helli
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+  
+    
+      <h1 class="entry-title"><a href="/2014/06/c-plus-plus-11-and-override.html">C++11 and Override</a></h1>
+      
+      
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-06-26T18:57:00+10:00" pubdate data-updated="true">2014-06-26</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>The new <code>override</code> modifier can be applied to a virtual method in C++11, and
+instructs the compiler that the method is intended to override a virtual
+method defined in the parent class.  The primary advantage is that typos and
+mismatched method signatures that would have resulted in subtle bugs and
+unintended runtime bheaviour before can now be detected at build time and
+easily corrected.</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/2014/06/c-plus-plus-11-and-override.html">Read more &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+  
+    
+      <h1 class="entry-title"><a href="/2014/06/c-plus-plus-11-and-final.html">C++11 and Final</a></h1>
+      
+      
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-06-24T17:50:00+10:00" pubdate data-updated="true">2014-06-24</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>One of the lesser known &ndash; but still very useful &ndash; enhancements to C++11 is
+the addition of the <code>final</code> keyword.  This essentially mirrors the <code>final</code>
+feature in Java, which has existed since its inception.</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/2014/06/c-plus-plus-11-and-final.html">Read more &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -460,103 +553,6 @@ how to avoid common problems.</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-  
-    
-      <h1 class="entry-title"><a href="/2011/12/bug-of-the-year-2011.html">Bug of the Year - 2011</a></h1>
-      
-      
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2011-12-24T18:24:00+11:00" pubdate data-updated="true">2011-12-24</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>My favourite bug of all time was uncovered because I was just too impatient.</p>
-
-<p>I was working on a fairly large and complex embedded project.  A microcontroller
-was interfacing with some custom hardware. It would configure, control, and
-monitor the hardware.  The microprocessor was running an RTOS with a lightweight
-TCP/IP stack, so remote clients could connect to the device via Ethernet and
-perform remote configuration.  We also used this for diagnostics and testing
-during development.  We had successfully used a similar design on several
-products, with great results.  We had also designed a protocol for monitoring
-and control that was used in earlier models,  and  we extended it here &ndash; though
-this product was significantly larger and more complex than its predecessors.
-What could possibly go wrong?</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/2011/12/bug-of-the-year-2011.html">Read more &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-  
-    
-      <h1 class="entry-title"><a href="/2011/03/good-code-gardening.html">Good Code Gardening</a></h1>
-      
-      
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2011-03-09T12:09:00+11:00" pubdate data-updated="true">2011-03-09</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>During a code review at work recently, we had an interesting discussion about code maintenance.  You could say that coding is a bit like gardening: while you are planting new seedlings, do you weed nearby areas as you go, or save up all the weeding for the next sunny weekend?  Should code maintenance be a continual, gradual process, or does it warrant being scheduled as a task in its own right?</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/2011/03/good-code-gardening.html">Read more &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -572,6 +568,14 @@ What could possibly go wrong?</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/2014/06/c-plus-plus-11-and-override.html">C++11 and override</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2014/06/c-plus-plus-11-and-final.html">C++11 and final</a>
+      </li>
+    
+      <li class="post">
         <a href="/2014/02/c-plus-plus-11-range-based-for-loops.html">C++11 Range-based for loops</a>
       </li>
     
@@ -581,14 +585,6 @@ What could possibly go wrong?</p>
     
       <li class="post">
         <a href="/2014/02/c-plus-plus-11-shared-pointer.html">C++11 Smart Pointers: Shared Pointer</a>
-      </li>
-    
-      <li class="post">
-        <a href="/2014/01/c-plus-plus-11-unique-pointer.html">C++11 Smart Pointers: Unique Pointer</a>
-      </li>
-    
-      <li class="post">
-        <a href="/2014/01/modern-c-plus-plus-11-memory-management.html">Modern C++11 Memory Management</a>
       </li>
     
   </ul>
